@@ -10,13 +10,13 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:muse.helloWorld"
+    "onCommand:muse.start"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "muse.helloWorld",
+        "command": "muse.start",
         "title": "start",
         "category": "muse"
       }

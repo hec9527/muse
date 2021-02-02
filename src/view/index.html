@@ -3,11 +3,261 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        border: none !important;
+        outline: none !important;
+        font-family: PingFangSC-Regular;
+      }
+
+      /* container-layout */
+      html,
+      body {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding-top: 16px;
+      }
+      #root,
+      .modal {
+        width: 85%;
+        min-width: 600px;
+      }
+      .modal {
+        display: block;
+        max-width: 70vh;
+      }
+      .modal-title,
+      .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 16px 0 8px;
+      }
+      .section-body {
+        padding: 8px 32px;
+      }
+      #env-container {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+      .env-item {
+        flex: 1 0 220px;
+        flex-grow: 1;
+        flex-shrink: 0;
+        flex-basis: 220px;
+      }
+      .env-title {
+        font-size: 18px;
+        font-weight: 500;
+        margin: 8px 0;
+      }
+      .env-list {
+        display: flex;
+        cursor: pointer;
+        padding: 4px 8px;
+        align-items: center;
+        border-radius: 4px;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .env-list > input {
+        margin-right: 4px;
+      }
+      .env-list:hover {
+        background: #567;
+      }
+
+      /* tool class */
+      .bold {
+        font-weight: bold;
+      }
+      .list {
+        margin: 8px 0;
+      }
+      * > .list:nth-child(1) {
+        margin-top: 0;
+      }
+      * > .list:nth-last-child(1) {
+        margin-bottom: 0;
+      }
+      .inline-box {
+        display: inline-block;
+      }
+      input[type="text"],
+      input[type="password"] {
+        margin-right: 16px;
+        width: 120px;
+        font-size: 14px;
+        background: none;
+        color: #fff;
+      }
+      input[type="text"]:focus,
+      input[type="password"]:focus {
+        border-bottom: 1px solid #a0a9b8;
+      }
+      input::placeholder {
+        font-size: 14px;
+      }
+    </style>
     <title>muse</title>
   </head>
   <body>
-    <!--  -->
-    <!--  -->
-    hello world
+    <div id="root">
+      <!-- 项目信息 -->
+      <div class="sections project-info">
+        <div class="section-title">项目信息</div>
+        <div class="section-body">
+          <div class="list bold">项目名称：<span id="project-name"></span></div>
+          <div class="list bold">当前分支：<span id="current-branch" style="color: #e23c39"></span></div>
+        </div>
+      </div>
+
+      <!-- 用户信息 -->
+      <div class="sections user-info">
+        <div class="section-title">用户信息</div>
+        <div class="section-body">
+          <div class="inline-box">
+            <label for="user-name">用户名：</label>
+            <input id="user-name" type="text" placeholder="请输入用户名" required />
+          </div>
+          <div class="inline-box">
+            <label for="user-passwd">密码：</label>
+            <input id="user-passwd" type="password" placeholder="请输入密码" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- 环境选择 -->
+      <div class="sections env-info">
+        <div class="section-title">环境选择</div>
+        <div class="section-body">
+          <div id="env-container">
+            <!-- <div class="env-item">
+              <div class="env-title">日常环境</div>
+              <div class="env-body">
+                <label for="daily1" class="env-list">
+                  <input type="radio" name="daily" id="daily1" />
+                  日常1套-d1.shurongdai.cn
+                </label>
+                <label for="daily2" class="env-list">
+                  <input type="radio" name="daily" id="daily2" />
+                  日常2套-d2.shurongdai.cn
+                </label>
+                <label for="daily3" class="env-list">
+                  <input type="radio" name="daily" id="daily3" />
+                  日常3套-d3.shurongdai.cn
+                </label>
+                <label for="daily4" class="env-list">
+                  <input type="radio" name="daily" id="daily4" />
+                  日常4套-d4.shurongdai.cn
+                </label>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 页面选择 -->
+      <div class="sections page-select">
+        <div class="section-title">页面选择</div>
+        <div class="section-body">
+          <!--  -->
+        </div>
+      </div>
+
+      <!-- 日志信息 -->
+      <div class="modal log-info hide">
+        <div class="modal-title">查看日志</div>
+      </div>
+    </div>
+
+    <script>
+      // cache element
+      const vscode = acquireVsCodeApi();
+      const el_proName = document.getElementById("project-name");
+      const el_proBranch = document.getElementById("current-branch");
+      const el_userName = document.getElementById("user-name");
+      const el_userPasswd = document.getElementById("user-passwd");
+      const el_envWrap = document.getElementById("env-container");
+
+      // render dom
+      function renderEnvList(envName, key, list) {
+        const wrap = document.createElement("div");
+        const body = document.createElement("div");
+        const title = document.createElement("div");
+        wrap.setAttribute("class", "env-item");
+        body.setAttribute("class", "env-body");
+        title.setAttribute("class", "env-title");
+        title.innerHTML = envName;
+        list.forEach((item, index) => {
+          body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
+                          <input type="radio" name="env" id="${key}${index}" />
+                          ${item.name}
+                        </label>`;
+        });
+        wrap.appendChild(title);
+        wrap.appendChild(body);
+        el_envWrap.appendChild(wrap);
+      }
+
+      // add eventlistener
+      el_userName.onchange = (e) => postUserInfo({ name: e.target.value });
+      el_userPasswd.onchange = (e) => postUserInfo({ passwd: e.target.value });
+
+      // post message to webivew and catch
+      function postUserInfo({ name, passwd }) {
+        vscode.postMessage({
+          cmd: "updateUserInfo",
+          data: {
+            name: name || el_userName.value,
+            passwd: passwd || el_userPasswd.value,
+          },
+        });
+      }
+
+      // handle message recive from webview
+      function updateUserInfo({ name, passwd }) {
+        el_userName.setAttribute("value", name);
+        el_userPasswd.setAttribute("value", passwd);
+      }
+      function updateProjectInfo({ appName, version }) {
+        el_proName.innerHTML = appName;
+        el_proBranch.innerHTML = version;
+      }
+      function updateEnvInfo({ envFilter, data }) {
+        Object.keys(data).forEach((key) => {
+          const env = envFilter.find((env) => env.key === key);
+          if (env !== undefined) {
+            const envName = env.name;
+            console.log(key, envName);
+            renderEnvList(envName, key, data[key]);
+          }
+        });
+      }
+
+      // add event listener
+      window.addEventListener("message", (e) => {
+        console.log("HTML recive message:", JSON.stringify(e.data));
+        const { cmd, data } = e.data;
+        switch (cmd) {
+          case "updateUserInfo":
+            updateUserInfo(data);
+            break;
+          case "updateProjectInfo":
+            updateProjectInfo(data);
+          case "updateEnvInfo":
+            updateEnvInfo(data);
+          default:
+            break;
+        }
+      });
+    </script>
   </body>
 </html>

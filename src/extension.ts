@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import { getWebViewContent } from "./util/";
+import { getWebViewContent, initWebviewDate } from "./util/";
+import { IMessage } from "./index.d";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "muse" is now active!');
@@ -7,29 +8,32 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("muse.start", () => {
-      vscode.window.showInformationMessage("Hello World from muse!");
-
       panel = vscode.window.createWebviewPanel("musePanel", "muse", vscode.ViewColumn.One, {
         enableScripts: true,
         retainContextWhenHidden: true,
       });
 
-      // panel.webview.html = getWebViewContent(context, './view/index.html');
-      panel.webview.html = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>muse</title>
-        </head>
-        <body>
-          <!--  -->
-          <!--  -->
-          hello world
-        </body>
-      </html>
-      `;
+      panel.webview.html = getWebViewContent(context, "src/view/index.html");
+      initWebviewDate(context);
+      panel.webview.onDidReceiveMessage((msg: IMessage) => {
+        console.log("webview recive msg:", JSON.stringify(msg));
+        switch (msg.cmd) {
+          case "updateUserInfo":
+            context.globalState.update("userInfo", msg.data);
+            break;
+          default:
+            break;
+        }
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("muse.postInfo", (info) => {
+      console.log("executeCommand command muse.postInfo", JSON.stringify(info));
+      if (panel) {
+        panel.webview.postMessage(info);
+      }
     })
   );
 }

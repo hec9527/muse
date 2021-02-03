@@ -21,8 +21,11 @@ export function activate(context: vscode.ExtensionContext) {
           case "updateUserInfo":
             context.globalState.update("userInfo", msg.data);
             break;
+          case "showInfo":
+            vscode.window.showErrorMessage(msg.data);
+            break;
           default:
-            vscode.window.showWarningMessage(`未知的CMD类型:${msg.cmd}`);
+            vscode.window.showWarningMessage(`未知的cmd类型:${(msg as any).cmd}`);
             break;
         }
       });

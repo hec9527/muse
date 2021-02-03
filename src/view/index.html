@@ -171,9 +171,10 @@
         </div>
       </div>
       <div class="">
-        <div class="publish-btn">发布</div>
+        <div class="publish-btn" id="publish-btn" onclick="validate()">发 布</div>
       </div>
     </div>
+
     <div id="root">
       <!-- 用户信息 -->
       <div class="sections user-info">
@@ -223,18 +224,25 @@
           <div id="page-container">
             <!-- inject by js -->
           </div>
-          <!-- <input type="checkbox" name="2" id="1" value="1" onclick="handleCheckBoxClick(this)" />aa -->
         </div>
       </div>
     </div>
 
+    <div class="modal">
+      <div class="modal-title">请确认发布信息!</div>
+      <div class="modal-body">
+        <!--  -->
+        <!--  -->
+      </div>
+      <div class="modal-footer">
+        <div class="btn cancel-btn">取 消</div>
+        <div class="btn ok-btn">确 认</div>
+      </div>
+    </div>
+
     <script>
-      // page data
-      const state = {
-        pages: [],
-        // true | false | 'indeterminate'
-        checkAll: false,
-      };
+      // publish data
+      const state = {};
 
       // cache element
       const vscode = acquireVsCodeApi();
@@ -246,6 +254,7 @@
       const el_pageWrap = document.getElementById("page-container");
       const el_checkAll = document.getElementById("check-all");
       const el_checkOppo = document.getElementById("check-opposite");
+      const el_publishBtn = document.getElementById("publish-btn");
 
       // render dom
       function renderEnvList(envName, key, list) {
@@ -258,7 +267,7 @@
         title.innerHTML = envName;
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
-                          <input type="radio" name="env" id="${key}${index}" />
+                          <input type="radio" name="env" class='envs' value="${item.name}" id="${key}${index}" />
                           <span>${item.name}</span>
                         </label>`;
         });
@@ -271,10 +280,13 @@
         el_pageWrap.innerHTML = "";
         pages.forEach((str, index) => {
           el_pageWrap.innerHTML += `<label for="page${index}" class="checkbox-list" title='${str}'>
-                          <input type="checkbox" name="pages" id="page${index}" onclick="handleCheckBoxClick()" />
+                          <input type="checkbox" class="pages" name="pages" id="page${index}" value="${str}" onclick="handleCheckBoxClick()" />
                           <span>${formatNum(index + 1)}.${str}</span>
                         </label>`;
         });
+      }
+      function renderModal() {
+        //
       }
 
       // add eventlistener
@@ -324,6 +336,47 @@
         const list = Array.from(el_pageWrap.getElementsByTagName("input"));
         list.forEach((item) => (item.checked = !item.checked));
         handleCheckBoxClick();
+      }
+      function publish() {
+        vscode.postMessage({
+          cmd: "publish",
+          data: state,
+        });
+      }
+
+      // validate
+      function validate() {
+        // 用户信息
+        const name = el_userName.getAttribute("value");
+        const passwd = el_userPasswd.getAttribute("value");
+        if (!name.length || !passwd.length) {
+          return vscode.postMessage({
+            cmd: "showInfo",
+            data: "请输入用户名和密码",
+          });
+        }
+        // 获取选择的环境
+        const envs = Array.from(el_envWrap.getElementsByClassName("envs"));
+        let env = envs.filter((item) => item.checked);
+        if (env.length <= 0 || !env[0].getAttribute("value")) {
+          return vscode.postMessage({
+            cmd: "showInfo",
+            data: "请选择发布环境",
+          });
+        }
+        env = env[0].getAttribute("value");
+        // 获取选择的页面
+        const pages = Array.from(el_pageWrap.getElementsByClassName("pages"));
+        let page = pages.filter((item) => item.checked);
+        if (page.length <= 0) {
+          return vscode.postMessage({
+            cmd: "showInfo",
+            data: "请选择发布页面",
+          });
+        }
+        page = page.map((item) => item.getAttribute("value"));
+        state = { name, passwd, env, page };
+        renderModal();
       }
 
       // handle message recive from webview

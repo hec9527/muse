@@ -3,7 +3,7 @@ import { getWebViewContent, initWebviewDate } from "./util/";
 import { IMessage } from "./index.d";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "muse" is now active!');
+  console.log('"muse" is active!');
   let panel: vscode.WebviewPanel;
 
   context.subscriptions.push(

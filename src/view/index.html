@@ -17,13 +17,14 @@
       html,
       body {
         width: 100%;
+        padding: 0 !important;
+      }
+      #root {
         display: flex;
         flex-direction: column;
         align-items: center;
-
-        /* padding-top: 16px; */
       }
-      #root {
+      .container {
         width: 85%;
         min-width: 360px;
         margin-bottom: 64px;
@@ -102,22 +103,78 @@
         align-items: center;
         font-size: 14px;
       }
-      .publish-btn {
-        position: absolute;
-        top: 12px;
-        right: 16px;
-        padding: 4px 7px;
+      /* btn */
+      .btn {
+        padding: 2px 7px;
         border-radius: 4px;
         cursor: pointer;
         color: #fff;
         transition: background 275ms linear;
         background: #3881e7;
       }
-      .publish-btn:hover {
+      .btn:hover {
         background: #2171e2;
+      }
+      .btn-text {
+        background: none !important;
+      }
+      .btn-text:hover {
+        background: none !important;
+      }
+      .publish-btn {
+        position: absolute;
+        top: 14px;
+        right: 24px;
+      }
+
+      /* modal 弹窗 */
+      .modal {
+        z-index: 10;
+        position: fixed;
+        top: 0px;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #567d;
+      }
+      .modal-content {
+        background: #234;
+        width: 500px;
+        border-radius: 8px;
+      }
+      .modal-title {
+        padding: 8px 0;
+        font-size: 20px;
+        border-bottom: 1px solid #4a527267;
+      }
+      .modal-body {
+        padding: 0 24px 16px;
+        max-height: 450px;
+        overflow-y: auto;
+      }
+      .info-title {
+        font-size: 18px;
+        margin: 16px 0 8px;
+      }
+      .info-message {
+        text-indent: 2em;
+        margin-bottom: 4px;
+      }
+      .modal-footer {
+        height: 42px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        border-top: 1px solid #4a527267;
+      }
+      .modal-footer > .btn {
+        margin-right: 8px;
       }
 
       /* tool class */
+      .hide {
+        display: none !important;
+      }
       .center {
         display: grid;
         place-items: center;
@@ -171,78 +228,79 @@
         </div>
       </div>
       <div class="">
-        <div class="publish-btn" id="publish-btn" onclick="validate()">发 布</div>
+        <div class="btn publish-btn" id="publish-btn" onclick="validate()">发 布</div>
       </div>
     </div>
 
     <div id="root">
-      <!-- 用户信息 -->
-      <div class="sections user-info">
-        <div class="section-title">用户信息</div>
-        <div class="section-body">
-          <div class="inline-box">
-            <label for="user-name">用户名：</label>
-            <input id="user-name" type="text" placeholder="请输入用户名" required />
-          </div>
-          <div class="inline-box">
-            <label for="user-passwd">密码：</label>
-            <input id="user-passwd" type="password" placeholder="请输入密码" required />
+      <div class="container">
+        <!-- 用户信息 -->
+        <div class="sections user-info">
+          <div class="section-title">用户信息</div>
+          <div class="section-body">
+            <div class="inline-box">
+              <label for="user-name">用户名：</label>
+              <input id="user-name" type="text" placeholder="请输入用户名" required />
+            </div>
+            <div class="inline-box">
+              <label for="user-passwd">密码：</label>
+              <input id="user-passwd" type="password" placeholder="请输入密码" required />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 环境选择 -->
-      <div class="sections env-info">
-        <div class="section-title">环境选择</div>
-        <div class="section-body">
-          <div id="env-container">
-            <!-- inject by js -->
+        <!-- 环境选择 -->
+        <div class="sections env-info">
+          <div class="section-title">环境选择</div>
+          <div class="section-body">
+            <div id="env-container">
+              <!-- inject by js -->
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 页面选择 -->
-      <div class="sections page-select">
-        <div class="section-title">
-          <span>页面选择</span>
-          <label for="check-all" class="check-wrap">
-            <input type="checkbox" name="check-all" id="check-all" indeterminate="true" onclick="handleCheckAll()" />
-            <span>全选</span>
-          </label>
-          <label for="check-opposite" class="check-wrap">
-            <input
-              type="checkbox"
-              name="check-opposite"
-              id="check-opposite"
-              indeterminate="true"
-              onclick="handleCheckOppo()"
-            />
-            <span>反选</span>
-          </label>
-        </div>
-        <div class="section-body">
-          <div id="page-container">
-            <!-- inject by js -->
+        <!-- 页面选择 -->
+        <div class="sections page-select">
+          <div class="section-title">
+            <span>页面选择</span>
+            <label for="check-all" class="check-wrap">
+              <input type="checkbox" name="check-all" id="check-all" indeterminate="true" onclick="handleCheckAll()" />
+              <span>全选</span>
+            </label>
+            <label for="check-opposite" class="check-wrap">
+              <input
+                type="checkbox"
+                name="check-opposite"
+                id="check-opposite"
+                indeterminate="true"
+                onclick="handleCheckOppo()"
+              />
+              <span>反选</span>
+            </label>
+          </div>
+          <div class="section-body">
+            <div id="page-container">
+              <!-- inject by js -->
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="modal">
-      <div class="modal-title">请确认发布信息!</div>
-      <div class="modal-body">
-        <!--  -->
-        <!--  -->
-      </div>
-      <div class="modal-footer">
-        <div class="btn cancel-btn">取 消</div>
-        <div class="btn ok-btn">确 认</div>
+    <div class="modal hide center" id="modal">
+      <div class="modal-content">
+        <div class="modal-title center">请确认发布信息!</div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer">
+          <div class="btn btn-text" onclick="unPublish()">取 消</div>
+          <div class="btn" onclick="publish()">确 认</div>
+        </div>
       </div>
     </div>
 
     <script>
       // publish data
-      const state = {};
+      let state = {};
 
       // cache element
       const vscode = acquireVsCodeApi();
@@ -255,6 +313,8 @@
       const el_checkAll = document.getElementById("check-all");
       const el_checkOppo = document.getElementById("check-opposite");
       const el_publishBtn = document.getElementById("publish-btn");
+      const el_modalWrap = document.getElementById("modal");
+      const el_modalBody = document.getElementById("modal-body");
 
       // render dom
       function renderEnvList(envName, key, list) {
@@ -286,7 +346,22 @@
         });
       }
       function renderModal() {
-        //
+        el_modalWrap.classList.remove("hide");
+        el_modalBody.innerHTML = "";
+        // el_modalBody
+        const renderGroup = (title, ...content) => {
+          const el = document.createElement("div");
+          el.setAttribute("class", "info-group");
+          el.innerHTML = `<div class="info-title"><b>${title}${
+            title === "发布页面" && content.length > 1 ? "（共" + content.length + "个页面）" : ""
+          }</b></div>`;
+          content.forEach((str) => {
+            el.innerHTML += `<div class='info-message'>${str}</div>`;
+          });
+          return el;
+        };
+        el_modalBody.appendChild(renderGroup("发布环境", state.env));
+        el_modalBody.appendChild(renderGroup("发布页面", ...state.page));
       }
 
       // add eventlistener
@@ -337,11 +412,21 @@
         list.forEach((item) => (item.checked = !item.checked));
         handleCheckBoxClick();
       }
+      function unPublish() {
+        el_modalWrap.classList.add("hide");
+        state = {};
+      }
       function publish() {
-        vscode.postMessage({
-          cmd: "publish",
-          data: state,
-        });
+        el_modalWrap.classList.add("hide");
+
+        if (Object.keys(state).length) {
+          vscode.postMessage({
+            cmd: "publish",
+            data: state,
+          });
+        } else {
+          console.log("数据验证失败：", JSON.stringify(state));
+        }
       }
 
       // validate

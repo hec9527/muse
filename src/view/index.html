@@ -7,7 +7,7 @@
       * {
         padding: 0;
         margin: 0;
-        border: none !important;
+        border: none;
         outline: none !important;
         font-family: PingFangSC-Regular;
       }
@@ -20,14 +20,16 @@
         justify-content: center;
         padding-top: 16px;
       }
-      #root,
+      #root {
+        width: 85%;
+        min-width: 600px;
+        margin-bottom: 64px;
+      }
       .modal {
         width: 85%;
         min-width: 600px;
-      }
-      .modal {
-        display: block;
         max-width: 70vh;
+        display: block;
       }
       .modal-title,
       .section-title {
@@ -45,6 +47,11 @@
         justify-content: flex-start;
         align-items: flex-start;
       }
+      #page-container {
+        display: grid;
+        gap: 4px 8px;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 2fr));
+      }
       .env-item {
         flex: 1 0 220px;
         flex-grow: 1;
@@ -56,6 +63,7 @@
         font-weight: 500;
         margin: 8px 0;
       }
+      .checkbox-list,
       .env-list {
         display: flex;
         cursor: pointer;
@@ -63,10 +71,17 @@
         align-items: center;
         border-radius: 4px;
         max-width: 180px;
+      }
+      .checkbox-list > span,
+      .env-list > span {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      .checkbox-list {
+        max-width: none;
+      }
+      .checkbox-list > input,
       .env-list > input {
         margin-right: 4px;
       }
@@ -100,7 +115,11 @@
       }
       input[type="text"]:focus,
       input[type="password"]:focus {
-        border-bottom: 1px solid #a0a9b8;
+        border-bottom: 1px solid #5e6064;
+      }
+      input[type="checkbox"]:checked ~ *,
+      input[type="radio"]:checked ~ * {
+        color: #287cfa;
       }
       input::placeholder {
         font-size: 14px;
@@ -168,7 +187,45 @@
       <div class="sections page-select">
         <div class="section-title">页面选择</div>
         <div class="section-body">
-          <!--  -->
+          <div id="page-container">
+            <!-- <label for="page1" class="checkbox-list">
+              <input type="checkbox" name="pages" id="page1" />
+              <span>src/p/5.8.2/page1/index</span>
+            </label>
+            <label for="page2" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page2" /><span>src/p/5.8.2/page2/index</span></label
+            >
+            <label for="page3" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page3" /><span>src/p/5.8.2/page3/index</span></label
+            >
+            <label for="page4" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page4" /><span>src/p/5.8.2/page4/index</span></label
+            >
+            <label for="page5" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page5" /><span>src/p/5.8.2/page5page5/index</span></label
+            >
+            <label for="page6" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page6" /><span>src/p/5.8.2/page6/index</span></label
+            >
+            <label for="page7" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page7" /><span>src/p/5.8.2/page7page7page7/index</span></label
+            >
+            <label for="page8" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page8" /><span>src/p/5.8.2/page8/index</span></label
+            >
+            <label for="page9" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page9" /><span>src/p/5.8.2/page9/index</span></label
+            >
+            <label for="page10" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page10" /><span>src/p/5.8.2/page10/index</span></label
+            >
+            <label for="page11" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page11" /><span>src/p/5.8.2/page11/index</span></label
+            >
+            <label for="page12" class="checkbox-list"
+              ><input type="checkbox" name="pages" id="page12" /><span>src/p/5.8.2/page12/index</span></label
+            > -->
+          </div>
         </div>
       </div>
 
@@ -179,6 +236,11 @@
     </div>
 
     <script>
+      // page data
+      const state = {
+        pages: [],
+      };
+
       // cache element
       const vscode = acquireVsCodeApi();
       const el_proName = document.getElementById("project-name");
@@ -186,6 +248,7 @@
       const el_userName = document.getElementById("user-name");
       const el_userPasswd = document.getElementById("user-passwd");
       const el_envWrap = document.getElementById("env-container");
+      const el_pageWrap = document.getElementById("page-container");
 
       // render dom
       function renderEnvList(envName, key, list) {
@@ -199,7 +262,7 @@
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
                           <input type="radio" name="env" id="${key}${index}" />
-                          ${item.name}
+                           <span>${item.name}</span>
                         </label>`;
         });
         wrap.appendChild(title);
@@ -231,14 +294,23 @@
         el_proName.innerHTML = appName;
         el_proBranch.innerHTML = version;
       }
-      function updateEnvInfo({ envFilter, data }) {
+      function updateEnvInfo({ envFilter = [], data = [] }) {
         Object.keys(data).forEach((key) => {
           const env = envFilter.find((env) => env.key === key);
           if (env !== undefined) {
             const envName = env.name;
-            console.log(key, envName);
             renderEnvList(envName, key, data[key]);
           }
+        });
+      }
+      function updatePagesInfo(pages = []) {
+        const formatNum = (num) => (num < 10 ? `&nbsp;${num}` : num);
+        el_pageWrap.innerHTML = "";
+        pages.forEach((str, index) => {
+          el_pageWrap.innerHTML += `<label for="page${index}" class="checkbox-list" title='${str}'>
+                                      <input type="checkbox" name="pages" id="page${index}" />
+                                      <span>${formatNum(index + 1)}.${str}</span>
+                                    </label>`;
         });
       }
 
@@ -252,9 +324,15 @@
             break;
           case "updateProjectInfo":
             updateProjectInfo(data);
+            break;
           case "updateEnvInfo":
             updateEnvInfo(data);
+            break;
+          case "updatePagesInfo":
+            updatePagesInfo(data);
+            break;
           default:
+            console.warn("未知CMD类型");
             break;
         }
       });

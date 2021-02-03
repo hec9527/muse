@@ -22,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
             context.globalState.update("userInfo", msg.data);
             break;
           default:
+            vscode.window.showWarningMessage(`未知的CMD类型:${msg.cmd}`);
             break;
         }
       });

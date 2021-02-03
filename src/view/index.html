@@ -18,13 +18,25 @@
       body {
         width: 100%;
         display: flex;
-        justify-content: center;
-        padding-top: 16px;
+        flex-direction: column;
+        align-items: center;
+
+        /* padding-top: 16px; */
       }
       #root {
         width: 85%;
         min-width: 360px;
         margin-bottom: 64px;
+      }
+      .page-title {
+        position: sticky;
+        width: 100vw;
+        top: 0;
+        background: #3a3f4d;
+      }
+      .page-title > .section-title {
+        margin: 0;
+        padding: 8px 0;
       }
       .section-title {
         font-size: 24px;
@@ -57,12 +69,12 @@
         font-weight: 500;
         margin: 8px 0;
       }
-      .check-all-wrap,
+      .check-wrap,
       .checkbox-list,
       .env-list {
         display: flex;
         cursor: pointer;
-        padding: 4px 8px;
+        padding: 4px;
         align-items: center;
         border-radius: 4px;
         max-width: 180px;
@@ -76,7 +88,7 @@
       .checkbox-list {
         max-width: none;
       }
-      .check-all-wrap > input,
+      .check-wrap > input,
       .checkbox-list > input,
       .env-list > input {
         margin-right: 4px;
@@ -85,13 +97,31 @@
       .env-list:hover {
         background: #567;
       }
-      .check-all-wrap {
+      .check-wrap {
         display: inline-flex;
         align-items: center;
         font-size: 14px;
       }
+      .publish-btn {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        padding: 4px 7px;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #fff;
+        transition: background 275ms linear;
+        background: #3881e7;
+      }
+      .publish-btn:hover {
+        background: #2171e2;
+      }
 
       /* tool class */
+      .center {
+        display: grid;
+        place-items: center;
+      }
       .bold {
         font-weight: bold;
       }
@@ -131,16 +161,20 @@
     <title>muse</title>
   </head>
   <body>
-    <div id="root">
-      <!-- 项目信息 -->
-      <div class="sections project-info">
-        <div class="section-title">项目信息</div>
-        <div class="section-body">
-          <div class="list bold">项目名称：<span id="project-name"></span></div>
-          <div class="list bold">当前分支：<span id="current-branch" style="color: #e23c39"></span></div>
+    <!-- 项目信息 -->
+    <div class="sections project-info page-title">
+      <div class="section-title center">
+        <div>
+          <span id="project-name"></span>
+          /
+          <span id="current-branch"></span>
         </div>
       </div>
-
+      <div class="">
+        <div class="publish-btn">发布</div>
+      </div>
+    </div>
+    <div id="root">
       <!-- 用户信息 -->
       <div class="sections user-info">
         <div class="section-title">用户信息</div>
@@ -170,15 +204,26 @@
       <div class="sections page-select">
         <div class="section-title">
           <span>页面选择</span>
-          <label for="check-all" class="check-all-wrap">
-            <input type="checkbox" name="check-all" id="check-all" indeterminate="true" />
+          <label for="check-all" class="check-wrap">
+            <input type="checkbox" name="check-all" id="check-all" indeterminate="true" onclick="handleCheckAll()" />
             <span>全选</span>
+          </label>
+          <label for="check-opposite" class="check-wrap">
+            <input
+              type="checkbox"
+              name="check-opposite"
+              id="check-opposite"
+              indeterminate="true"
+              onclick="handleCheckOppo()"
+            />
+            <span>反选</span>
           </label>
         </div>
         <div class="section-body">
           <div id="page-container">
             <!-- inject by js -->
           </div>
+          <!-- <input type="checkbox" name="2" id="1" value="1" onclick="handleCheckBoxClick(this)" />aa -->
         </div>
       </div>
     </div>
@@ -199,6 +244,8 @@
       const el_userPasswd = document.getElementById("user-passwd");
       const el_envWrap = document.getElementById("env-container");
       const el_pageWrap = document.getElementById("page-container");
+      const el_checkAll = document.getElementById("check-all");
+      const el_checkOppo = document.getElementById("check-opposite");
 
       // render dom
       function renderEnvList(envName, key, list) {
@@ -212,7 +259,7 @@
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
                           <input type="radio" name="env" id="${key}${index}" />
-                           <span>${item.name}</span>
+                          <span>${item.name}</span>
                         </label>`;
         });
         wrap.appendChild(title);
@@ -224,7 +271,7 @@
         el_pageWrap.innerHTML = "";
         pages.forEach((str, index) => {
           el_pageWrap.innerHTML += `<label for="page${index}" class="checkbox-list" title='${str}'>
-                          <input type="checkbox" name="pages" id="page${index}" />
+                          <input type="checkbox" name="pages" id="page${index}" onclick="handleCheckBoxClick()" />
                           <span>${formatNum(index + 1)}.${str}</span>
                         </label>`;
         });
@@ -245,13 +292,47 @@
         });
       }
 
+      // handle dom event
+      function handleCheckBoxClick() {
+        const list = Array.from(el_pageWrap.getElementsByTagName("input"));
+        const selected = list.filter((item) => item.checked);
+
+        if (selected.length === list.length) {
+          el_checkAll.indeterminate = false;
+          el_checkAll.checked = true;
+        } else if (selected.length === 0) {
+          el_checkAll.indeterminate = false;
+          el_checkAll.checked = false;
+        } else {
+          el_checkAll.indeterminate = true;
+          el_checkAll.checked = false;
+        }
+      }
+      function handleCheckAll() {
+        const list = Array.from(el_pageWrap.getElementsByTagName("input"));
+        el_checkAll.indeterminate = false;
+
+        if (!el_checkAll.checked) {
+          el_checkAll.checked = false;
+          list.forEach((item) => (item.checked = false));
+        } else {
+          el_checkAll.checked = true;
+          list.forEach((item) => (item.checked = true));
+        }
+      }
+      function handleCheckOppo() {
+        const list = Array.from(el_pageWrap.getElementsByTagName("input"));
+        list.forEach((item) => (item.checked = !item.checked));
+        handleCheckBoxClick();
+      }
+
       // handle message recive from webview
       function updateUserInfo({ name, passwd }) {
         el_userName.setAttribute("value", name);
         el_userPasswd.setAttribute("value", passwd);
       }
       function updateProjectInfo({ appName, version }) {
-        el_proName.innerHTML = appName;
+        el_proName.innerHTML = String(appName).toUpperCase();
         el_proBranch.innerHTML = version;
       }
       function updateEnvInfo({ envFilter = [], data = [] }) {

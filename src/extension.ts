@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getWebViewContent, initWebviewDate, publish } from "./util/";
+import path from "path";
 import { IMessage } from "./index.d";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -25,6 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
         retainContextWhenHidden: true,
       });
 
+      panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "logo.png"));
       panel.onDidDispose(() => (panel = undefined), null, context.subscriptions);
       panel.webview.html = getWebViewContent(context, "src/view/index.html");
       panel.webview.onDidReceiveMessage((msg: IMessage) => {
@@ -32,6 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
         switch (msg.cmd) {
           case "updateUserInfo":
             context.globalState.update("userInfo", msg.data);
+            vscode.commands.executeCommand("muse.postInfo", { cmd: "updateUserInfo", data: msg.data });
             break;
           case "showInfo":
             vscode.window.showErrorMessage(msg.data);

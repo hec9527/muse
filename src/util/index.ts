@@ -4,6 +4,7 @@ import fs from "fs";
 import axios from "axios";
 import { IMessage, IPublish, IConfig, IParams } from "../index.d";
 
+let isInitedProjectInfo = false;
 const workFolder = vscode.workspace.workspaceFolders;
 const URL_ENVRIONMENT_INFO = "https://tools.shurongdai.cn/api/awp/getDeployServerInfo.do";
 const URL_PUBLISH_CODE = "https://tools.shurongdai.cn/api/awp/publishNoTag.do";
@@ -35,12 +36,16 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
   // 这里只使用第一个，同时打开多个workspace的情况暂时不处理
   console.log("\n当前workspace信息:\n", JSON.stringify(workFolder[0]));
   const uri = workFolder[0].uri;
-  const res = await import(path.join(uri.fsPath, "config.json"));
-  const { appName, version, remotes, cdnhost, websiteHost } = res;
+  const res = fs.readFileSync(path.join(uri.fsPath, "config.json"), { encoding: "utf-8" });
+  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as IConfig;
   console.log("\n读取config.json:\n", res);
   vscode.commands.executeCommand("muse.postInfo", { cmd: "updateProjectInfo", data: { appName, version } });
   context.workspaceState.update("projectConfig", { appName, version, remotes, cdnhost, websiteHost });
   initPageInfo(context);
+  if (!isInitedProjectInfo) {
+    isInitedProjectInfo = true;
+    fs.watchFile(path.join(uri.fsPath, "config.json"), () => initProjectInfo(context));
+  }
 }
 
 async function initEnvrionmentInfo() {
@@ -126,7 +131,7 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
 
   console.log("\n发布信息\n", JSON.stringify(data));
 
-  // return false;
+  return false;
 
   axios.post(URL_PUBLISH_CODE, data, { headers: { "content-type": "application/json" } }).then((res) => {
     console.log("---------------发布结果----------------");

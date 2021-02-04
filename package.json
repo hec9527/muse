@@ -13,7 +13,15 @@
     "onCommand:muse.start",
     "workspaceContains:src/p"
   ],
+  "author": "hec9527",
+  "publisher": "hec9527",
+  "license": "MIT",
+  "logo": "logo.png",
   "main": "./out/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.100credit.cn/fed/muse.git"
+  },
   "contributes": {
     "commands": [
       {

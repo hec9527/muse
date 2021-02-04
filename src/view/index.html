@@ -436,7 +436,7 @@
         // 用户信息
         const name = el_userName.getAttribute("value");
         const passwd = el_userPasswd.getAttribute("value");
-        if (!name.length || !passwd.length) {
+        if (!name || !passwd) {
           return vscode.postMessage({
             cmd: "showInfo",
             data: "请输入用户名和密码",

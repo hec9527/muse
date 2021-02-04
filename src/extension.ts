@@ -4,8 +4,9 @@ import { IMessage } from "./index.d";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('"muse" is active!');
-  let panel: vscode.WebviewPanel;
+  let panel: vscode.WebviewPanel | undefined = undefined;
 
+  // 注册statusbar
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
   statusBarItem.text = "$(squirrel) Muse";
   statusBarItem.command = "muse.start";
@@ -13,15 +14,19 @@ export function activate(context: vscode.ExtensionContext) {
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
+  // 注册命令
   context.subscriptions.push(
     vscode.commands.registerCommand("muse.start", () => {
+      if (panel) {
+        return panel.reveal(vscode.ViewColumn.One);
+      }
       panel = vscode.window.createWebviewPanel("musePanel", "muse", vscode.ViewColumn.One, {
         enableScripts: true,
         retainContextWhenHidden: true,
       });
 
+      panel.onDidDispose(() => (panel = undefined), null, context.subscriptions);
       panel.webview.html = getWebViewContent(context, "src/view/index.html");
-      initWebviewDate(context);
       panel.webview.onDidReceiveMessage((msg: IMessage) => {
         console.log("webview recive msg:", JSON.stringify(msg));
         switch (msg.cmd) {
@@ -39,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
             break;
         }
       });
+      initWebviewDate(context);
     })
   );
 

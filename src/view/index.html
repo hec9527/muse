@@ -317,7 +317,7 @@
       const el_modalBody = document.getElementById("modal-body");
 
       // render dom
-      function renderEnvList(envName, key, list) {
+      function renderEnvList(envName, key, list = []) {
         const wrap = document.createElement("div");
         const body = document.createElement("div");
         const title = document.createElement("div");
@@ -327,9 +327,13 @@
         title.innerHTML = envName;
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
-                          <input type="radio" name="env" class='envs' value="${item.name}" id="${key}${index}" />
-                          <span>${item.name}</span>
-                        </label>`;
+                              <input 
+                                type="radio" name="env" class='envs' 
+                                id="${key}${index}" 
+                                data-name="${item.name}" 
+                                data-value=${JSON.stringify(item.value)} />
+                              <span>${item.name}</span>
+                            </label>`;
         });
         wrap.appendChild(title);
         wrap.appendChild(body);
@@ -340,15 +344,12 @@
         el_pageWrap.innerHTML = "";
         pages.forEach((str, index) => {
           el_pageWrap.innerHTML += `<label for="page${index}" class="checkbox-list" title='${str}'>
-                          <input type="checkbox" class="pages" name="pages" id="page${index}" value="${str}" onclick="handleCheckBoxClick()" />
-                          <span>${formatNum(index + 1)}.${str}</span>
-                        </label>`;
+                                      <input type="checkbox" class="pages" name="pages" id="page${index}" value="${str}" onclick="handleCheckBoxClick()" />
+                                      <span>${formatNum(index + 1)}.${str}</span>
+                                    </label>`;
         });
       }
       function renderModal() {
-        el_modalWrap.classList.remove("hide");
-        el_modalBody.innerHTML = "";
-        // el_modalBody
         const renderGroup = (title, ...content) => {
           const el = document.createElement("div");
           el.setAttribute("class", "info-group");
@@ -360,7 +361,9 @@
           });
           return el;
         };
-        el_modalBody.appendChild(renderGroup("发布环境", state.env));
+        el_modalWrap.classList.remove("hide");
+        el_modalBody.innerHTML = "";
+        el_modalBody.appendChild(renderGroup("发布环境", state.env.name));
         el_modalBody.appendChild(renderGroup("发布页面", ...state.page));
       }
 
@@ -443,13 +446,18 @@
         // 获取选择的环境
         const envs = Array.from(el_envWrap.getElementsByClassName("envs"));
         let env = envs.filter((item) => item.checked);
-        if (env.length <= 0 || !env[0].getAttribute("value")) {
+        if (env.length <= 0 || !env[0].dataset.name) {
           return vscode.postMessage({
             cmd: "showInfo",
             data: "请选择发布环境",
           });
         }
-        env = env[0].getAttribute("value");
+        console.log("env[0].dataset.name", env[0].dataset.name);
+        console.log("env[0].dataset.value", JSON.stringify(env[0].dataset.value));
+        env = {
+          name: env[0].dataset.name,
+          value: JSON.parse(env[0].dataset.value),
+        };
         // 获取选择的页面
         const pages = Array.from(el_pageWrap.getElementsByClassName("pages"));
         let page = pages.filter((item) => item.checked);

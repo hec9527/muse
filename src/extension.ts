@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getWebViewContent, initWebviewDate } from "./util/";
+import { getWebViewContent, initWebviewDate, publish } from "./util/";
 import { IMessage } from "./index.d";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -23,6 +23,9 @@ export function activate(context: vscode.ExtensionContext) {
             break;
           case "showInfo":
             vscode.window.showErrorMessage(msg.data);
+            break;
+          case "publish":
+            publish(context, msg.data);
             break;
           default:
             vscode.window.showWarningMessage(`未知的cmd类型:${(msg as any).cmd}`);

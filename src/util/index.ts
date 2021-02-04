@@ -126,7 +126,7 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
 
   console.log("\n发布信息\n", JSON.stringify(data));
 
-  return false;
+  // return false;
 
   axios.post(URL_PUBLISH_CODE, data, { headers: { "content-type": "application/json" } }).then((res) => {
     console.log("---------------发布结果----------------");
@@ -136,7 +136,9 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
       vscode.window.showErrorMessage("权限不足，请检查用户名和密码");
     } else if (res.data.code === 200) {
       const url = URL_SHOW_LOG(res.data.data.appName, res.data.data.publishKey);
-      console.log(url);
+      vscode.window.showInformationMessage("发布成功，是否查看发布日志?", "立即查看").then(() => {
+        vscode.env.openExternal(vscode.Uri.parse(url));
+      });
     } else {
       vscode.window.showErrorMessage("发布失败，请到 https://tools.shurongdai.cn 查看失败原因");
     }

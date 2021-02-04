@@ -24,16 +24,16 @@ export function initWebviewDate(context: vscode.ExtensionContext) {
 
 function initUserInfo(context: vscode.ExtensionContext) {
   const info = context.globalState.get<IMessage["data"]>("userInfo");
-  console.log("load cache data, userInfo:", JSON.stringify(info));
+  console.log("读取缓存信息, userInfo:", JSON.stringify(info));
   vscode.commands.executeCommand("muse.postInfo", { cmd: "updateUserInfo", data: info });
 }
 
-async function initProjectInfo(context: vscode.ExtensionContext) {
+export async function initProjectInfo(context: vscode.ExtensionContext) {
   if (!workFolder) {
     return vscode.window.showWarningMessage("请在目录中使用插件");
   }
   // 这里只使用第一个，同时打开多个workspace的情况暂时不处理
-  console.log("current workspace:", JSON.stringify(workFolder[0]));
+  console.log("当前workspace信息:", JSON.stringify(workFolder[0]));
   const uri = workFolder[0].uri;
   const res = await import(path.join(uri.fsPath, "config.json"));
   const { appName, version, remotes, cdnhost, websiteHost } = res;
@@ -119,6 +119,8 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
   };
 
   console.log("发布信息", JSON.stringify(data));
+
+  return false;
 
   axios.post(URL_PUBLISH_CODE, data, { headers: { "content-type": "application/json" } }).then((res) => {
     console.log("---------------发布结果----------------");

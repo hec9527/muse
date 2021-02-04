@@ -327,13 +327,13 @@
         title.innerHTML = envName;
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
-                              <input 
-                                type="radio" name="env" class='envs' 
-                                id="${key}${index}" 
-                                data-name="${item.name}" 
-                                data-value=${JSON.stringify(item.value)} />
-                              <span>${item.name}</span>
-                            </label>`;
+            <input 
+            type="radio" name="env" class='envs' 
+            id="${key}${index}" 
+            data-name="${item.name}" 
+            data-value='${JSON.stringify(item.value)}' />
+            <span>${item.name}</span>
+            </label>`;
         });
         wrap.appendChild(title);
         wrap.appendChild(body);
@@ -421,7 +421,6 @@
       }
       function publish() {
         el_modalWrap.classList.add("hide");
-
         if (Object.keys(state).length) {
           vscode.postMessage({
             cmd: "publish",
@@ -452,8 +451,6 @@
             data: "请选择发布环境",
           });
         }
-        console.log("env[0].dataset.name", env[0].dataset.name);
-        console.log("env[0].dataset.value", JSON.stringify(env[0].dataset.value));
         env = {
           name: env[0].dataset.name,
           value: JSON.parse(env[0].dataset.value),

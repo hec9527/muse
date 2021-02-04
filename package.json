@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:muse.start"
+    "onCommand:muse.start",
+    "workspaceContains:src/p"
   ],
   "main": "./out/extension.js",
   "contributes": {

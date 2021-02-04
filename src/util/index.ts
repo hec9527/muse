@@ -24,7 +24,7 @@ export function initWebviewDate(context: vscode.ExtensionContext) {
 
 function initUserInfo(context: vscode.ExtensionContext) {
   const info = context.globalState.get<IMessage["data"]>("userInfo");
-  console.log("读取缓存信息, userInfo:", JSON.stringify(info));
+  console.log("\n读取缓存信息, userInfo:\n", JSON.stringify(info));
   vscode.commands.executeCommand("muse.postInfo", { cmd: "updateUserInfo", data: info });
 }
 
@@ -33,11 +33,11 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
     return vscode.window.showWarningMessage("请在目录中使用插件");
   }
   // 这里只使用第一个，同时打开多个workspace的情况暂时不处理
-  console.log("当前workspace信息:", JSON.stringify(workFolder[0]));
+  console.log("\n当前workspace信息:\n", JSON.stringify(workFolder[0]));
   const uri = workFolder[0].uri;
   const res = await import(path.join(uri.fsPath, "config.json"));
   const { appName, version, remotes, cdnhost, websiteHost } = res;
-  console.log("读取config.json:", res);
+  console.log("\n读取config.json:\n", res);
   vscode.commands.executeCommand("muse.postInfo", { cmd: "updateProjectInfo", data: { appName, version } });
   context.workspaceState.update("projectConfig", { appName, version, remotes, cdnhost, websiteHost });
   initPageInfo(context);
@@ -45,7 +45,7 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
 
 async function initEnvrionmentInfo() {
   axios.post(URL_ENVRIONMENT_INFO).then((res) => {
-    console.log("环境信息：", res);
+    console.log("\n环境信息:\n", res);
     if (res.status !== 200 || res.data.code !== 0) {
       console.error("获取环境信息失败");
       return vscode.window.showErrorMessage("获取环境信息失败");
@@ -66,32 +66,38 @@ async function initEnvrionmentInfo() {
 function initPageInfo(context: vscode.ExtensionContext) {
   // 如果不是在目录中打开的则不处理
   if (workFolder) {
-    const pagePath = path.join(workFolder[0].uri.fsPath, "src/p");
-    if (!fs.existsSync(pagePath) || !fs.statSync(pagePath).isDirectory()) {
+    const pageRoot = path.join(workFolder[0].uri.fsPath, "src/p");
+    if (!fs.existsSync(pageRoot) || !fs.statSync(pageRoot).isDirectory()) {
       const msg = "请在bid工具构建的项目中使用该插件，'src/p'目录不存在";
       return vscode.window.showErrorMessage(msg);
     }
     // 读取初始化项目信息的时候保存的version
     const config = context.workspaceState.get<IConfig>("projectConfig");
     const { version } = config || {};
-    const dirs = fs.readdirSync(pagePath);
+    const pages: string[] = [];
 
-    try {
-      const pages: string[] = [];
-      dirs.forEach((str) => {
-        const fPath = path.join(pagePath, str, "index.html");
-        if (fs.existsSync(fPath) && fs.statSync(fPath).isFile()) {
-          return pages.push(`src/p/${str}/${version}/index`);
-        }
-        console.log("无index入口文件的目录：", str);
-      });
-      vscode.commands.executeCommand("muse.postInfo", {
-        cmd: "updatePagesInfo",
-        data: pages,
-      });
-    } catch (error) {
-      vscode.window.showErrorMessage(error);
-    }
+    const traverseFolder = (root: string, prefix = "src/p") => {
+      try {
+        const dirs = fs.readdirSync(root);
+        dirs.forEach((str) => {
+          const fPath = path.join(root, str, "index.html");
+          if (fs.existsSync(fPath) && fs.statSync(fPath).isFile()) {
+            pages.push(`${prefix}/${str}/${version}/index`);
+          } else {
+            const subDir = path.join(root, str);
+            fs.statSync(subDir).isDirectory() && traverseFolder(subDir, prefix + `/${str}`);
+          }
+        });
+      } catch (error) {
+        vscode.window.showErrorMessage(error);
+      }
+    };
+    traverseFolder(pageRoot);
+
+    vscode.commands.executeCommand("muse.postInfo", {
+      cmd: "updatePagesInfo",
+      data: pages,
+    });
   }
 }
 
@@ -118,7 +124,7 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
     jsEntry: params.page.reduce((pre, cur) => ((pre[cur] = rmVersion(`./${cur}.js`)), pre), {} as any),
   };
 
-  console.log("发布信息", JSON.stringify(data));
+  console.log("\n发布信息\n", JSON.stringify(data));
 
   return false;
 

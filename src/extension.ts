@@ -6,6 +6,13 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('"muse" is active!');
   let panel: vscode.WebviewPanel;
 
+  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+  statusBarItem.text = "$(squirrel) Muse";
+  statusBarItem.command = "muse.start";
+  statusBarItem.tooltip = "publish code with muse";
+  statusBarItem.show();
+  context.subscriptions.push(statusBarItem);
+
   context.subscriptions.push(
     vscode.commands.registerCommand("muse.start", () => {
       panel = vscode.window.createWebviewPanel("musePanel", "muse", vscode.ViewColumn.One, {

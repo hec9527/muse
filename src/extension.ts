@@ -14,7 +14,6 @@ export function activate(context: vscode.ExtensionContext) {
   statusBarItem.tooltip = "publish code with muse";
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
-
   // 注册命令
   context.subscriptions.push(
     vscode.commands.registerCommand("muse.start", () => {
@@ -28,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "logo.png"));
       panel.onDidDispose(() => (panel = undefined), null, context.subscriptions);
-      panel.webview.html = getWebViewContent(context, "src/view/index.html");
+      panel.webview.html = getWebViewContent(context, "view/index.html");
       panel.webview.onDidReceiveMessage((msg: IMessage) => {
         console.log("webview recive msg:", JSON.stringify(msg));
         switch (msg.cmd) {

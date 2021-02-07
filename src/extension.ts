@@ -1,11 +1,15 @@
 import * as vscode from "vscode";
-import { getWebViewContent, initWebviewDate, publish } from "./util/";
+import { checkWorkspace, getWebViewContent, initWebviewDate, publish } from "./util/";
 import path from "path";
 import { IMessage } from "./index.d";
 
 export function activate(context: vscode.ExtensionContext) {
   let panel: vscode.WebviewPanel | undefined = undefined;
   console.log("muse is active!");
+
+  if (!checkWorkspace()) {
+    return false;
+  }
 
   // 注册statusbar
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);

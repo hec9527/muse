@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.0.5
+
+添加项目启动时的 `workspace` 检测
+
 ## 0.0.4
 
 添加快捷键启动插件的功能 #`ctrl+p ctrl+p`

@@ -29,6 +29,13 @@
         "title": "start",
         "category": "muse"
       }
+    ],
+    "keybindings": [
+      {
+        "key": "ctrl+p ctrl+p",
+        "mac": "ctrl+p ctrl+p",
+        "command": "muse.start"
+      }
     ]
   },
   "scripts": {

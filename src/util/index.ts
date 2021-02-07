@@ -131,6 +131,8 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
 
   console.log("\n发布信息\n", JSON.stringify(data));
 
+  // return false;
+
   axios.post(URL_PUBLISH_CODE, data, { headers: { "content-type": "application/json" } }).then((res) => {
     console.log("---------------发布结果----------------");
     console.log(res);

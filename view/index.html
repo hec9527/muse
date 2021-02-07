@@ -327,10 +327,10 @@
         title.innerHTML = envName;
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
-            <input 
-            type="radio" name="env" class='envs' 
-            id="${key}${index}" 
-            data-name="${item.name}" 
+            <input
+            type="radio" name="env" class='envs'
+            id="${key}${index}"
+            data-name="${item.name}"
             data-value='${JSON.stringify(item.value)}' />
             <span>${item.name}</span>
             </label>`;
@@ -489,6 +489,7 @@
       }
 
       // add event listener
+      window.addEventListener("keydown", (e) => e.key === "Enter" && validate());
       window.addEventListener("message", (e) => {
         console.log("HTML recive message:", JSON.stringify(e.data));
         const { cmd, data } = e.data;

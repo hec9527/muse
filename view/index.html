@@ -170,8 +170,53 @@
       .modal-footer > .btn {
         margin-right: 8px;
       }
+      /* page filter */
+      #page-filter {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      #filter-clear {
+        display: inline-grid;
+        place-items: center;
+        background: #fff2;
+        min-width: 22px;
+        min-height: 22px;
+        cursor: pointer;
+        margin-left: 12px;
+        border-radius: 100%;
+      }
+      .filter-char {
+        background: #fff2;
+        display: inline-grid;
+        place-items: center;
+        padding: 3px 5px;
+        min-width: 12px;
+        cursor: pointer;
+      }
+      .filter-char.disabled {
+        color: #696d75;
+      }
+      #filter-clear:hover:not(.disabled),
+      .filter-char:hover:not(.disabled) {
+        color: #5ca9f8;
+        background: #fff5;
+      }
+      .filter-char:nth-of-type(1) {
+        padding-left: 8px;
+        border-radius: 4px 0 0 4px;
+      }
+      .filter-char:nth-last-child(2) {
+        padding-right: 8px;
+        border-radius: 0 4px 4px 0;
+      }
 
       /* tool class */
+      .disabled {
+        cursor: not-allowed !important;
+      }
       .hide {
         display: none !important;
       }
@@ -279,6 +324,7 @@
             </label>
           </div>
           <div class="section-body">
+            <div id="page-filter"></div>
             <div id="page-container">
               <!-- inject by js -->
             </div>
@@ -301,6 +347,9 @@
     <script>
       // publish data
       let state = {};
+      // 过滤器
+      let filter = [];
+      let filter_cahr = "";
 
       // cache element
       const vscode = acquireVsCodeApi();
@@ -310,6 +359,7 @@
       const el_userPasswd = document.getElementById("user-passwd");
       const el_envWrap = document.getElementById("env-container");
       const el_pageWrap = document.getElementById("page-container");
+      const el_pageFilter = document.getElementById("page-filter");
       const el_checkAll = document.getElementById("check-all");
       const el_checkOppo = document.getElementById("check-opposite");
       const el_publishBtn = document.getElementById("publish-btn");
@@ -365,6 +415,37 @@
         el_modalBody.innerHTML = "";
         el_modalBody.appendChild(renderGroup("发布环境", state.env.name));
         el_modalBody.appendChild(renderGroup("发布页面", ...state.page));
+      }
+      function renderPageFilter(pages = []) {
+        if (el_pageFilter.innerHTML !== "") {
+          return;
+        }
+        // 初始化过滤器
+        if (pages.length !== 0 && filter.length <= 0) {
+          const reg = /^src\/p\/(\w).*$/;
+          const _set = new Set();
+          pages.forEach((str) => {
+            const res = reg.exec(str);
+            if (res && res[1]) {
+              _set.add(res[1].toUpperCase());
+            }
+          });
+          filter = Array.from(_set);
+        }
+        // render filter
+        for (let i = 65; i <= 90; i++) {
+          const char = String.fromCharCode(i);
+          const disabled = filter.indexOf(char) === -1;
+          console.log(`render:${char}, disabled:${disabled}`);
+          el_pageFilter.innerHTML += `<label for="filter${i}" title='${char}' 
+                                      ${!disabled && `onclick="handleFilterClick(\'${char}\')"`}
+                                      class="filter-char ${disabled && "disabled"}">
+                                        <input type="radio" class="filter-radio hide" name="filter" 
+                                        id="filter${i}" value="${char}" ${disabled && "disabled"} />
+                                        <span>${char}</span>
+                                      </label>`;
+        }
+        el_pageFilter.innerHTML += `<span class='filter-clear' id='filter-clear' title='清除过滤器' onclick="handleFilterClick(${false})" >X</span>`;
       }
 
       // add eventlistener
@@ -429,6 +510,31 @@
         } else {
           console.log("数据验证失败：", JSON.stringify(state));
         }
+      }
+      function handleFilterClick(char = "") {
+        if (filter_cahr === char) return;
+        filter_cahr = char;
+        console.log(`当前过滤的key: ${char}`);
+        const reg = new RegExp(`^src\/p\/${char}.*$`, "i");
+        const list = el_pageWrap.getElementsByClassName("checkbox-list");
+        if (!char) {
+          const els = el_pageFilter.getElementsByClassName("filter-radio");
+          Array.from(els).forEach((el) => {
+            el.checked = false;
+          });
+        }
+        Array.from(list).forEach((el) => {
+          if (!char) {
+            el.classList.remove("hide");
+          } else {
+            const value = el.getAttribute("title");
+            if (reg.test(value)) {
+              el.classList.remove("hide");
+            } else {
+              el.classList.add("hide");
+            }
+          }
+        });
       }
 
       // validate
@@ -505,6 +611,8 @@
             break;
           case "updatePagesInfo":
             renderPagesInfo(data);
+            renderPageFilter(data);
+            handleFilterClick(false);
             break;
           default:
             console.warn("未知CMD类型");

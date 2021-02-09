@@ -2,7 +2,7 @@
   "name": "muse",
   "displayName": "Muse",
   "description": "muse is publish tool for bid",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.53.0"
   },
@@ -16,11 +16,11 @@
   "author": "hec9527",
   "publisher": "hec9527",
   "license": "MIT",
-  "logo": "logo.png",
+  "icon": "logo.png",
   "main": "./out/extension.js",
   "repository": {
     "type": "git",
-    "url": "http://gitlab.100credit.cn/fed/muse.git"
+    "url": "https://gitlab.100credit.cn/fed/muse.git"
   },
   "contributes": {
     "commands": [

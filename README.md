@@ -8,13 +8,7 @@
 
 ---
 
-![](source/shortcat.png)
-
-#### git
-
----
-
-![](./source/useage.gif)
+![](shortcat.png)
 
 ## 打包安装
 

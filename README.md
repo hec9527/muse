@@ -8,7 +8,7 @@
 
 ---
 
-![](shortcat.png)
+![shortcat.png](https://img.shurongdai.cn/group1/M00/00/24/wKgX2WAiPk2ANgYrAAYCGIlWCmg017.png)
 
 ## 打包安装
 

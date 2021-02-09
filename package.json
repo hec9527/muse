@@ -20,7 +20,7 @@
   "main": "./out/extension.js",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.100credit.cn/fed/muse.git"
+    "url": "http://gitlab.100credit.cn/fed/muse.git"
   },
   "contributes": {
     "commands": [

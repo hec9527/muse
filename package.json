@@ -16,7 +16,7 @@
   "author": "hec9527",
   "publisher": "hec9527",
   "license": "MIT",
-  "icon": "logo.png",
+  "icon": "source/logo.png",
   "main": "./out/extension.js",
   "repository": {
     "type": "git",

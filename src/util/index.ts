@@ -114,7 +114,12 @@ function initPageInfo(context: vscode.ExtensionContext) {
   }
 }
 
-export function publish(context: vscode.ExtensionContext, params: IParams) {
+export function publish(
+  context: vscode.ExtensionContext,
+  params: IParams,
+  /** 检测分支是否匹配 */
+  checkVersion = true
+) {
   const res = context.workspaceState.get<IConfig>("projectConfig");
   if (!res) {
     return vscode.window.showErrorMessage("发布失败，无法读取项目config.json配置");
@@ -137,8 +142,26 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
     jsEntry: params.page.reduce((pre, cur) => ((pre[cur] = rmVersion(`./${cur}.js`)), pre), {} as any),
   };
 
-  console.log("\n发布信息\n", JSON.stringify(data));
+  const gitBranch = getCurrentBranck();
+  console.log(`\n当前分支：\n${gitBranch}`);
 
+  // config.json中分支信息和当前分支不匹配
+  if (checkVersion && version !== gitBranch) {
+    vscode.window
+      .showWarningMessage(
+        `当前Git分支(${gitBranch})和配置文件分支(${version})不匹配，是否继续发布`,
+        "继续发布",
+        "稍后发布"
+      )
+      .then((res) => {
+        if (res === "继续发布") {
+          publish(context, params, false);
+        }
+      });
+    return false;
+  }
+
+  console.log("\n发布信息\n", JSON.stringify(data));
   // return false;
 
   axios.post(URL_PUBLISH_CODE, data, { headers: { "content-type": "application/json" } }).then((res) => {
@@ -156,4 +179,27 @@ export function publish(context: vscode.ExtensionContext, params: IParams) {
       vscode.window.showErrorMessage("发布失败，请到 https://tools.shurongdai.cn 查看失败原因");
     }
   });
+}
+
+/** 读取当前工作目录的git文件，获取当前分支，注意这个和git的版本耦合，如果git的文件目录改变，可能会出问题 */
+function getCurrentBranck() {
+  const gitRoot = path.join(workFolder![0].uri.fsPath, ".git");
+  if (fs.statSync(gitRoot).isDirectory()) {
+    const refFile = path.join(gitRoot, "HEAD");
+    if (fs.existsSync(refFile) && fs.statSync(refFile).isFile()) {
+      const data = fs.readFileSync(refFile, "utf8");
+      const reg = /ref: refs\/heads\/([^\s]*)/;
+      const res = reg.exec(data.trimEnd());
+
+      if (res && res[1]) {
+        const reg = /\w*\/(.*)/;
+        const _res = reg.exec(res[1]);
+
+        // 日常分支/master
+        return _res && _res[1] ? _res[1] : res[1];
+      }
+    }
+  }
+  vscode.window.showErrorMessage("读取当前分支错误，请切换分支后重试");
+  return "";
 }

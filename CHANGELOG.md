@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.0.7
+
+添加新特新，发布之前检查分支是否匹配，点击继续发布后强制发布，点击稍后发布则取消发布
+
 ## 0.0.6
 
 添加新特新，页面选择中添加过滤器，允许过滤显示部分页面，操作更高效

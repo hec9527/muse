@@ -4,6 +4,12 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.0.8
+
+微调环境选择 label 的宽度，修复因页面高度变化导致宽度变化，页面元素跳动的问题。
+
+fix: 因为超出高度之后出现滚动条，导致页面宽度减少 17px，滚动条消失后增加 17px，宽度改变后居中元素位置会改变
+
 ## 0.0.7
 
 添加新特新，发布之前检查分支是否匹配，点击继续发布后强制发布，点击稍后发布则取消发布

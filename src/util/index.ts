@@ -157,7 +157,7 @@ export function publish(
         if (res === "继续发布") {
           publish(context, params, false);
         }
-      });
+      }, console.error);
     return false;
   }
 

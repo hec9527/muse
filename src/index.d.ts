@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+
 export type IMessage =
   | {
       cmd: "updateUserInfo";
@@ -49,15 +50,15 @@ export interface IPublish {
         htmlHost: { ip: string; path: string }[];
         name: string;
       };
-  /* ./src/p/about/.... */
+  /** [ './src/p/xxxx/....' ] */
   htmlEntry: string[];
   /** { 'src/p/xxxx': './src/p/xxxx'} */
   jsEntry: { [key: string]: string };
-  /** src/p/xxxxx */
+  /** [ 'src/p/xxxxx' ] */
   selectedEntry: string[];
 }
 
-/** 发布时 前端传递给webivew的参数 */
+/** 发布时 webview发送给扩展的参数 */
 export interface IParams {
   name: string;
   passwd: string;

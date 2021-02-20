@@ -14,12 +14,15 @@
 
 muse 项目依赖中已经添加了 vsce，使用如下方式即可一键安装最新版本 muse 插件到本机
 
+***特别注意：***
+>本项目采用yarn管理依赖，安装依赖请使用 `yarn install`，如果使用 `npm` 安装依赖，打包后将无法运行
+
 ```zsh
 # 安装依赖
-npm i
+yarn install
 
 # 一键安装最新版本
-npm run vsix
+yarn run vsix
 ```
 
 ## vscode 插件安装过程

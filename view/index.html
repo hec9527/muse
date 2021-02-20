@@ -18,6 +18,7 @@
       body {
         width: 100%;
         padding: 0 !important;
+        overflow-y: overlay;
       }
       #root {
         display: flex;
@@ -28,12 +29,12 @@
         width: 85%;
         min-width: 360px;
         margin-bottom: 64px;
-        overflow-y: overlay;
       }
       .page-title {
-        position: sticky;
+        position: fixed;
         width: 100vw;
         top: 0;
+        left: 0;
         background: #3a3f4d;
       }
       .page-title > .section-title {

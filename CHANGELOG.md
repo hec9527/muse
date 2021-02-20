@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.0.9
+
+解决一些布局上的小问题
+
 ## 0.0.8
 
 微调环境选择 label 的宽度，修复因页面高度变化导致宽度变化，页面元素跳动的问题。

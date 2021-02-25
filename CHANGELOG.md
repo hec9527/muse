@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.0
+
+fix: 重构页面查找逻辑，修复 rongshuweb 项目中部分页面未展示的问题
+
 ## 0.0.9
 
 解决一些布局上的小问题

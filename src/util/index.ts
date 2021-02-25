@@ -89,27 +89,32 @@ function initPageInfo(context: vscode.ExtensionContext) {
     const { version } = config || {};
     const pages: string[] = [];
 
-    const traverseFolder = (root: string, prefix = "src/p") => {
+    // 递归查找项目src/p目录
+    const searchDir = (root: string) => {
       try {
-        const dirs = fs.readdirSync(root);
-        dirs.forEach((str) => {
-          const fPath = path.join(root, str, "index.html");
-          if (fs.existsSync(fPath) && fs.statSync(fPath).isFile()) {
-            pages.push(`${prefix}/${str}/${version}/index`);
-          } else {
-            const subDir = path.join(root, str);
-            fs.statSync(subDir).isDirectory() && traverseFolder(subDir, prefix + `/${str}`);
+        fs.readdirSync(root).forEach((fileOrDir) => {
+          const subPath = path.join(root, fileOrDir);
+          const state = fs.statSync(subPath);
+          if (state.isDirectory()) {
+            return searchDir(subPath);
+          } else if (state.isFile() && /\.html$/.test(fileOrDir)) {
+            const relativeDir = /\/(src\/p.*)\/.*?\.html$/.exec(subPath);
+            if (relativeDir && relativeDir[1]) {
+              pages.push(`${relativeDir[1]}/${version}/index`);
+            }
           }
         });
       } catch (error) {
         vscode.window.showErrorMessage(error);
       }
     };
-    traverseFolder(pageRoot);
+
+    console.log(`\n\npageRoot: ${pageRoot}\n`);
+    searchDir(pageRoot);
 
     vscode.commands.executeCommand("muse.postInfo", {
       cmd: "updatePagesInfo",
-      data: pages,
+      data: pages.sort(),
     });
   }
 }

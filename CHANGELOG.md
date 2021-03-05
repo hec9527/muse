@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.1
+
+新增配置项 `autoOpenLog`，代码发布成功后，自动打开浏览器查看日志
+
 ## 0.1.0
 
 fix: 重构页面查找逻辑，修复 rongshuweb 项目中部分页面未展示的问题

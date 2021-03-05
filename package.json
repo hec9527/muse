@@ -2,7 +2,7 @@
   "name": "muse",
   "displayName": "Muse",
   "description": "muse is publish tool for bid",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.53.0"
   },
@@ -36,7 +36,17 @@
         "mac": "ctrl+p ctrl+p",
         "command": "muse.start"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Muse",
+      "properties": {
+        "muse.autoOpenLog": {
+          "type": "boolean",
+          "default": false,
+          "description": "发布成功后自动在浏览器中打开日志"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",

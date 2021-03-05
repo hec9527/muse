@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import * as vscode from "vscode";
 
 export type IMessage =
   | {
@@ -68,3 +69,7 @@ export interface IParams {
   };
   page: string[];
 }
+
+export type IExtensionConfig = vscode.WorkspaceConfiguration & {
+  autoOpenLog: boolean;
+};

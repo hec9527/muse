@@ -2,7 +2,7 @@
   "name": "muse",
   "displayName": "Muse",
   "description": "muse is publish tool for bid",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.53.0"
   },
@@ -44,6 +44,11 @@
           "type": "boolean",
           "default": false,
           "description": "发布成功后自动在浏览器中打开日志"
+        },
+        "muse.hideDisabledFilter": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "### 隐藏被禁用的过滤器\n页面选择的过滤器是按照页面首字母编排的，如果某个首字母的页面不存在，该字母将会被禁用，隐藏没用的过滤器可以减少不必要内容，在小窗模式或者放大模式下不至于超出屏幕边界"
         }
       }
     }

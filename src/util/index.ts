@@ -83,6 +83,7 @@ async function initEnvrionmentInfo() {
 function initPageInfo(context: vscode.ExtensionContext) {
   // 如果不是在目录中打开的则不处理
   if (workFolder) {
+    const extensionConfig = vscode.workspace.getConfiguration("muse") as IExtensionConfig;
     // 读取初始化项目信息的时候保存的version
     const config = context.workspaceState.get<IConfig>("projectConfig");
     const pageRoot = path.join(workFolder[0].uri.fsPath, "src/p");
@@ -114,7 +115,10 @@ function initPageInfo(context: vscode.ExtensionContext) {
 
     vscode.commands.executeCommand("muse.postInfo", {
       cmd: "updatePagesInfo",
-      data: pages.sort(),
+      data: {
+        pages: pages.sort(),
+        hideDisabledFilter: extensionConfig.hideDisabledFilter,
+      },
     });
   }
 }

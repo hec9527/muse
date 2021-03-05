@@ -72,4 +72,5 @@ export interface IParams {
 
 export type IExtensionConfig = vscode.WorkspaceConfiguration & {
   autoOpenLog: boolean;
+  hideDisabledFilter: boolean;
 };

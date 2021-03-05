@@ -419,7 +419,7 @@
         el_modalBody.appendChild(renderGroup("发布环境", state.env.name));
         el_modalBody.appendChild(renderGroup("发布页面", ...state.page));
       }
-      function renderPageFilter(pages = []) {
+      function renderPageFilter({ pages = [], hideDisabledFilter = false }) {
         if (el_pageFilter.innerHTML !== "") {
           return;
         }
@@ -440,6 +440,7 @@
           const char = String.fromCharCode(i);
           const disabled = filter.indexOf(char) === -1;
           console.log(`render:${char}, disabled:${disabled}`);
+          if (disabled && hideDisabledFilter) continue;
           el_pageFilter.innerHTML += `<label for="filter${i}" title='${char}'
                                       ${!disabled && `onclick="handleFilterClick(\'${char}\')"`}
                                       class="filter-char ${disabled && "disabled"}">
@@ -613,7 +614,7 @@
             updateEnvInfo(data);
             break;
           case "updatePagesInfo":
-            renderPagesInfo(data);
+            renderPagesInfo(data.pages);
             renderPageFilter(data);
             handleFilterClick(false);
             break;

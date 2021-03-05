@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.2
+
+新增配置项 `hideDisabledFilter`, 允许隐藏被禁用的过滤器
+
 ## 0.1.1
 
 新增配置项 `autoOpenLog`，代码发布成功后，自动打开浏览器查看日志

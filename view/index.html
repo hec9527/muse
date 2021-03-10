@@ -394,6 +394,8 @@
       }
       function renderPagesInfo(pages = []) {
         const formatNum = (num) => (num < 10 ? `&nbsp;${num}` : num);
+        el_checkAll.checked = false;
+        el_checkOppo.checked = false;
         el_pageWrap.innerHTML = "";
         pages.forEach((str, index) => {
           el_pageWrap.innerHTML += `<label for="page${index}" class="checkbox-list" title='${str}'>

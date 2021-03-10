@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.3
+
+fix: 修复当页面全选之后，更改分支刷新页面，全选标识还在，但是页面没有全选
+
 ## 0.1.2
 
 新增配置项 `hideDisabledFilter`, 允许隐藏被禁用的过滤器

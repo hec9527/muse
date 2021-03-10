@@ -5,11 +5,11 @@ import axios from "axios";
 import { IMessage, IPublish, IConfig, IParams, IExtensionConfig } from "../index.d";
 
 let isInitedProjectInfo = false;
+const HOST = "https://tools.shurongdai.cn";
 const workFolder = vscode.workspace.workspaceFolders;
-const URL_ENVRIONMENT_INFO = "https://tools.shurongdai.cn/api/awp/getDeployServerInfo.do";
-const URL_PUBLISH_CODE = "https://tools.shurongdai.cn/api/awp/publishNoTag.do";
-const URL_SHOW_LOG = (appName: string, publishKey: string) =>
-  `https://tools.shurongdai.cn/awp/logmonitor?f=${appName}/${publishKey}.log`;
+const URL_ENVRIONMENT_INFO = `${HOST}/api/awp/getDeployServerInfo.do`;
+const URL_PUBLISH_CODE = `${HOST}/api/awp/publishNoTag.do`;
+const URL_SHOW_LOG = (appName: string, publishKey: string) => `${HOST}/awp/logmonitor?f=${appName}/${publishKey}.log`;
 
 export function checkWorkspace() {
   if (!workFolder) {

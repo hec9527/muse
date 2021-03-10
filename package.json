@@ -60,7 +60,7 @@
     "pretest": "yarn run compile && yarn run lint",
     "vsix": "vsce package -o muse.vsix && code --install-extension muse.vsix",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "pub": "vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",

@@ -16,6 +16,10 @@ export type IMessage =
   | {
       cmd: "publish";
       data: IParams;
+    }
+  | {
+      cmd: "queryBranch";
+      data: Pick<IParams, "env" | "page">;
     };
 
 export interface IConfig {

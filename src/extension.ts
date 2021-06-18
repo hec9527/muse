@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { checkWorkspace, getWebViewContent, initWebviewDate, publish } from "./util/";
+import { checkWorkspace, getCodeBranchFromRemote, getWebViewContent, initWebviewDate, publish } from "./util/";
 import path from "path";
 import { IMessage } from "./index.d";
 
@@ -44,6 +44,9 @@ export function activate(context: vscode.ExtensionContext) {
             break;
           case "publish":
             publish(context, msg.data);
+            break;
+          case "queryBranch":
+            getCodeBranchFromRemote(msg.data);
             break;
           default:
             vscode.window.showWarningMessage(`未知的cmd类型:${(msg as any).cmd}`);

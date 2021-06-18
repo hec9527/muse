@@ -217,3 +217,37 @@ function getCurrentBranck() {
   vscode.window.showErrorMessage("读取当前分支错误，请切换分支后重试");
   return "";
 }
+
+/** 从线上html代码中获取js版本号 */
+export function getCodeBranchFromRemote({ env, page }: Pick<IParams, "env" | "page">) {
+  const res = fs.readFileSync(path.join(workFolder![0].uri.fsPath, "config.json"), { encoding: "utf-8" });
+  const { appName, websiteHost } = JSON.parse(res) as IConfig;
+  const isGray = /灰度/.test(env.name);
+  const isDaily = /日常/.test(env.name);
+  let uri = "https:";
+  console.log({ env, page, appName, websiteHost });
+
+  uri += isDaily ? `//${env.value.host}` : websiteHost;
+  uri += `/${appName}/`;
+
+  page = page.map((p) => p.replace(/(.*?\/)[\d\.]+\/index/, `${uri}$1index.html`));
+
+  Promise.all(page.map((p) => parseHTML(p))).then((res) => {
+    console.log(res);
+    vscode.commands.executeCommand("muse.postInfo", { cmd: "showQueryResult", data: res });
+  });
+}
+
+function parseHTML(url: string) {
+  const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
+  return new Promise<string>((resolve, reject) => {
+    axios.get(url).then((response) => {
+      const res = /\/([\d\.]+)\/index\.js/gi.exec(response.data);
+      if (res && res[1]) {
+        resolve(`${page?.[1] || ""}|${res[1]}`);
+      } else {
+        reject(`${page?.[1] || ""}|null`);
+      }
+    });
+  });
+}

@@ -36,7 +36,7 @@
         width: 100vw;
         top: 0;
         left: 0;
-        background: #3a3f4d;
+        background: rgba(58, 63, 77, 0.89);
       }
       .page-title > .section-title {
         margin: 0;
@@ -97,6 +97,7 @@
       .env-list > input {
         margin-right: 4px;
       }
+      .modal-body table tr:not(:first-of-type):hover,
       .checkbox-list:hover,
       .env-list:hover {
         background: #567;
@@ -107,6 +108,13 @@
         font-size: 14px;
       }
       /* btn */
+      .btn-wrap {
+        position: absolute;
+        top: 14px;
+        right: 24px;
+        display: flex;
+        gap: 8px;
+      }
       .btn {
         padding: 2px 7px;
         border-radius: 4px;
@@ -123,11 +131,6 @@
       }
       .btn-text:hover {
         background: none !important;
-      }
-      .publish-btn {
-        position: absolute;
-        top: 14px;
-        right: 24px;
       }
 
       /* modal 弹窗 */
@@ -173,6 +176,22 @@
       .modal-footer > .btn {
         margin-right: 8px;
       }
+      .modal-body table {
+        width: 100%;
+        margin: 0 auto;
+        border-collapse: collapse;
+      }
+
+      .modal-body table th,
+      .modal-body table td {
+        text-align: left;
+        padding: 8px 0 8px 16px;
+      }
+
+      .modal-body table tr:not(:last-of-type) {
+        border-bottom: 1px solid #acc3;
+      }
+
       /* page filter */
       #page-filter {
         display: flex;
@@ -275,8 +294,16 @@
           <span id="current-branch"></span>
         </div>
       </div>
-      <div class="">
-        <div class="btn publish-btn" id="publish-btn" onclick="validate()">发 布</div>
+      <div class="btn-wrap">
+        <div
+          class="btn checkBranck-btn"
+          id="checkBranch-btn"
+          title="检查日常、灰度、线上代码分支"
+          onclick="showCodeBranchModal()"
+        >
+          分支检查
+        </div>
+        <div class="btn publish-btn" id="publish-btn" onclick="showConfirmModal()">发 布</div>
       </div>
     </div>
 
@@ -336,13 +363,23 @@
       </div>
     </div>
 
-    <div class="modal hide center" id="modal">
+    <div class="modal hide center" id="confirm-modal">
       <div class="modal-content">
         <div class="modal-title center">请确认发布信息!</div>
-        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-body" id="confirm-modal-body"></div>
         <div class="modal-footer">
           <div class="btn btn-text" onclick="unPublish()">取 消</div>
           <div class="btn" onclick="publish()">确 认</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal hide center" id="branch-modal">
+      <div class="modal-content">
+        <div class="modal-title center">代码分支</div>
+        <div class="modal-body" id="branch-modal-body"></div>
+        <div class="modal-footer">
+          <div class="btn" onclick="handleCloseQueryModalClick()">关 闭</div>
         </div>
       </div>
     </div>
@@ -366,8 +403,9 @@
       const el_checkAll = document.getElementById("check-all");
       const el_checkOppo = document.getElementById("check-opposite");
       const el_publishBtn = document.getElementById("publish-btn");
-      const el_modalWrap = document.getElementById("modal");
-      const el_modalBody = document.getElementById("modal-body");
+      const el_modalWrap = document.getElementById("confirm-modal");
+      const el_modalBody = document.getElementById("confirm-modal-body");
+      const el_branchModalWrap = document.getElementById("branch-modal");
 
       // render dom
       function renderEnvList(envName, key, list = []) {
@@ -404,7 +442,7 @@
                                     </label>`;
         });
       }
-      function renderModal() {
+      function renderConfirmModal() {
         const renderGroup = (title, ...content) => {
           const el = document.createElement("div");
           el.setAttribute("class", "info-group");
@@ -452,6 +490,24 @@
                                       </label>`;
         }
         el_pageFilter.innerHTML += `<span class='filter-clear' id='filter-clear' title='清除过滤器' onclick="handleFilterClick(${false})" >X</span>`;
+      }
+      function renderQueryResultModal(arr = []) {
+        console.log(arr);
+        const mBody = el_branchModalWrap.getElementsByClassName("modal-body")[0];
+        let html = `<div class="info-group">
+                      <div class="info-title"><b>查询环境</b></div>
+                      <div class="info-message">${state.env.name}</div>
+                    </div>
+                    <div class="info-group">
+                      <div class="info-title"><b>代码分支</b></div>
+                      <table><tr><th>页面</th><th>分支</th></tr>`;
+        arr.forEach((str) => {
+          _arr = str.split("|");
+          html += `<tr><td>${_arr[0]}</td><td>${_arr[1]}</td></tr>`;
+        });
+        html += "</table></div>";
+        mBody.innerHTML = html;
+        el_branchModalWrap.classList.remove("hide");
       }
 
       // add eventlistener
@@ -542,10 +598,12 @@
           }
         });
       }
+      function handleCloseQueryModalClick() {
+        el_branchModalWrap.classList.add("hide");
+      }
 
-      // validate
-      function validate() {
-        // 用户信息
+      // validateInfo
+      function validateUserInfo() {
         const name = el_userName.getAttribute("value");
         const passwd = el_userPasswd.getAttribute("value");
         if (!name || !passwd) {
@@ -554,7 +612,10 @@
             data: "请输入用户名和密码",
           });
         }
-        // 获取选择的环境
+        state = { ...state, name, passwd };
+        return true;
+      }
+      function validateEnvInfo() {
         const envs = Array.from(el_envWrap.getElementsByClassName("envs"));
         let env = envs.filter((item) => item.checked);
         if (env.length <= 0 || !env[0].dataset.name) {
@@ -567,7 +628,10 @@
           name: env[0].dataset.name,
           value: JSON.parse(env[0].dataset.value),
         };
-        // 获取选择的页面
+        state = { ...state, env };
+        return true;
+      }
+      function validatePageInfo() {
         const pages = Array.from(el_pageWrap.getElementsByClassName("pages"));
         let page = pages.filter((item) => item.checked);
         if (page.length <= 0) {
@@ -577,8 +641,23 @@
           });
         }
         page = page.map((item) => item.getAttribute("value"));
-        state = { name, passwd, env, page };
-        renderModal();
+        state = { ...state, page };
+        return true;
+      }
+      function showConfirmModal() {
+        state = {};
+        if (validateUserInfo() && validateEnvInfo() && validatePageInfo()) {
+          renderConfirmModal();
+        }
+      }
+      function showCodeBranchModal() {
+        state = {};
+        if (validateEnvInfo() && validatePageInfo()) {
+          vscode.postMessage({
+            cmd: "queryBranch",
+            data: state,
+          });
+        }
       }
 
       // handle message recive from webview
@@ -601,7 +680,7 @@
       }
 
       // add event listener
-      window.addEventListener("keydown", (e) => e.key === "Enter" && validate());
+      window.addEventListener("keydown", (e) => e.key === "Enter" && showConfirmModal());
       window.addEventListener("message", (e) => {
         console.log("HTML recive message:", JSON.stringify(e.data));
         const { cmd, data } = e.data;
@@ -619,6 +698,9 @@
             renderPagesInfo(data.pages);
             renderPageFilter(data);
             handleFilterClick(false);
+            break;
+          case "showQueryResult":
+            renderQueryResultModal(data);
             break;
           default:
             console.warn("未知CMD类型");

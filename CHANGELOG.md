@@ -4,6 +4,10 @@ All notable changes to the "muse" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.1.4
+
+add: 新增在线代码分支查询功能。选择查询环境以及查询页面之后点击分支检查即可查询指定页面在线代码分支
+
 ## 0.1.3
 
 fix: 修复当页面全选之后，更改分支刷新页面，全选标识还在，但是页面没有全选

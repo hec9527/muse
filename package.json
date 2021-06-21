@@ -2,7 +2,7 @@
   "name": "muse",
   "displayName": "Muse",
   "description": "muse is publish tool for bid",
-  "version": "0.1.4",
+  "version": "0.2.1",
   "engines": {
     "vscode": "^1.53.0"
   },
@@ -54,13 +54,14 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
+    "vscode:prepublish": "yarn run clear & yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "vsix": "vsce package -o muse.vsix && code --install-extension muse.vsix",
     "lint": "eslint src --ext ts",
-    "pub": "vsce publish"
+    "pub": "vsce publish",
+    "clear": "rm -rf out"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",

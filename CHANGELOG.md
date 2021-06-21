@@ -1,8 +1,8 @@
 # Change Log
 
-All notable changes to the "muse" extension will be documented in this file.
+## 0.2.0
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+breakChange: 版本号使用主要版本.次要版本.补丁版本的方式命名方便 bug 修复后的发布
 
 ## 0.1.4
 

@@ -4,7 +4,7 @@
 
 ## 插件截图
 
-![shortcat.png](https://img.shurongdai.cn/group1/M00/00/27/wKgX2GDQUJuAUg6wAAZh7T-Bij0010.png)
+![shortcat.png](https://img.shurongdai.cn/group1/M00/00/27/wKgX2GDdXEGAdD2UAAOaNljqWj4358.png)
 
 ## 插件使用
 

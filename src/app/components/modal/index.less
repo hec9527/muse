@@ -25,8 +25,38 @@
 
   &-main {
     width: 540px;
-    min-height: 360px;
+    height: auto;
     background: #fff;
-    border-radius: 12px;
+    border-radius: 8px;
+  }
+
+  &-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    font-size: 20px;
+    border-bottom: 1px solid #f8f8f8;
+    user-select: none;
+  }
+
+  &-body {
+    min-height: 120px;
+    max-height: calc(100vh - 300px);
+    padding: 24px 32px;
+    overflow: overlay;
+  }
+
+  &-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 46px;
+    padding-right: 16px;
+    border-top: 1px solid #f8f8f8;
+
+    & > * {
+      margin-left: 8px;
+    }
   }
 }

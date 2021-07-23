@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import './index.less';
 
-interface ButtonProps {
+export interface ButtonProps {
   type?: 'primary' | 'text' | 'dashed' | 'danger';
   onClick?: () => void;
   disable?: boolean;

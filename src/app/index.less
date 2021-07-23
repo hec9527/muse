@@ -1,12 +1,41 @@
 html,
 body,
 #app {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 #muse-container {
-  background: #abf;
-  min-width: 940px;
   min-height: 100vh;
+
+  .muse-body {
+    width: 100%;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    padding: 0 7.5%;
+    overflow: overlay;
+  }
+}
+
+.section-title {
+  margin: 16px 0 8px;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.list-item {
+  min-width: 220px;
+  max-width: 300px;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: #567;
+  }
+}
+
+input[type='checkbox']:checked ~ *,
+input[type='radio']:checked ~ * {
+  color: #5ca9f8;
 }

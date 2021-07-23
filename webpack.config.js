@@ -41,12 +41,12 @@ const config = {
   },
 
   resolve: {
-    extensions: ['.tx', '.tsx', '.js', '.less'],
+    extensions: ['.ts', '.tsx', '.js', '.less'],
   },
 
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './1.html'),
+      template: path.resolve(__dirname, './src/app/template/index.html'),
     }),
   ],
 };

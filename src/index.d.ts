@@ -1,25 +1,30 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import * as vscode from "vscode";
+import * as vscode from 'vscode';
+
+export type IUserInfo = {
+  userName: string;
+  passwd: string;
+};
 
 export type IMessage =
   | {
-      cmd: "updateUserInfo";
+      cmd: 'updateUserInfo';
       data: {
         name: string;
         passwd: string;
       };
     }
   | {
-      cmd: "showInfo";
+      cmd: 'showInfo';
       data: string;
     }
   | {
-      cmd: "publish";
+      cmd: 'publish';
       data: IParams;
     }
   | {
-      cmd: "queryBranch";
-      data: Pick<IParams, "env" | "page">;
+      cmd: 'queryBranch';
+      data: Pick<IParams, 'env' | 'page'>;
     };
 
 export interface IConfig {
@@ -69,7 +74,7 @@ export interface IParams {
   passwd: string;
   env: {
     name: string;
-    value: IPublish["publish"];
+    value: IPublish['publish'];
   };
   page: string[];
 }

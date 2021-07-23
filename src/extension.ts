@@ -1,68 +1,62 @@
-import * as vscode from "vscode";
-import { checkWorkspace, getCodeBranchFromRemote, getWebViewContent, initWebviewDate, publish } from "./util/";
-import path from "path";
-import { IMessage } from "./index.d";
+import * as vscode from 'vscode';
+import { checkWorkspace, getCodeBranchFromRemote, getWebViewContent, initWebviewDate, publish } from './util/';
+import path from 'path';
+import { IMessage } from './index.d';
+import StatusBarItem from './status-bar-item';
+import getWebview from './webview';
 
 export function activate(context: vscode.ExtensionContext) {
-  let panel: vscode.WebviewPanel | undefined = undefined;
-  console.log("muse is active!");
+  let view: vscode.WebviewPanel | undefined = undefined;
+  console.log('muse is active!');
 
   if (!checkWorkspace()) {
     return false;
   }
 
+  // vscode.window.setStatusBarMessage('今天也要快乐鸭！~',3000);
+
   // 注册statusbar
-  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
-  statusBarItem.text = "$(squirrel) Muse";
-  statusBarItem.command = "muse.start";
-  statusBarItem.tooltip = "publish code with muse";
-  statusBarItem.show();
-  context.subscriptions.push(statusBarItem);
+  new StatusBarItem(context);
+
   // 注册命令
   context.subscriptions.push(
-    vscode.commands.registerCommand("muse.start", () => {
-      if (panel) {
-        return panel.reveal(vscode.ViewColumn.One);
-      }
-      panel = vscode.window.createWebviewPanel("musePanel", "muse", vscode.ViewColumn.One, {
-        enableScripts: true,
-        retainContextWhenHidden: true,
-      });
-
-      panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "logo.png"));
-      panel.onDidDispose(() => (panel = undefined), null, context.subscriptions);
-      panel.webview.html = getWebViewContent(context, "view/index.html");
-      panel.webview.onDidReceiveMessage((msg: IMessage) => {
-        console.log("webview recive msg:", JSON.stringify(msg));
-        switch (msg.cmd) {
-          case "updateUserInfo":
-            context.globalState.update("userInfo", msg.data);
-            vscode.commands.executeCommand("muse.postInfo", { cmd: "updateUserInfo", data: msg.data });
-            break;
-          case "showInfo":
-            vscode.window.showErrorMessage(msg.data);
-            break;
-          case "publish":
-            publish(context, msg.data);
-            break;
-          case "queryBranch":
-            getCodeBranchFromRemote(msg.data);
-            break;
-          default:
-            vscode.window.showWarningMessage(`未知的cmd类型:${(msg as any).cmd}`);
-            break;
-        }
-      });
-      initWebviewDate(context);
+    // 启动webview
+    vscode.commands.registerCommand('muse.webview', () => {
+      view = getWebview(context);
+    }),
+    // 登录账号
+    vscode.commands.registerCommand('muse.login', () => {
+      //
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("muse.postInfo", (info) => {
-      console.log("executeCommand command muse.postInfo", JSON.stringify(info));
-      if (panel) {
-        panel.webview.postMessage(info);
+    vscode.commands.registerCommand('muse.postInfo', (info) => {
+      if (view) {
+        view.webview.postMessage(info);
       }
     })
   );
+
+  // 注册命令
+  // console.log("webview recive msg:", JSON.stringify(msg));
+  // switch (msg.cmd) {
+  //   case "updateUserInfo":
+  //     context.globalState.update("userInfo", msg.data);
+  //     vscode.commands.executeCommand("muse.postInfo", { cmd: "updateUserInfo", data: msg.data });
+  //     break;
+  //   case "showInfo":
+  //     vscode.window.showErrorMessage(msg.data);
+  //     break;
+  //   case "publish":
+  //     publish(context, msg.data);
+  //     break;
+  //   case "queryBranch":
+  //     getCodeBranchFromRemote(msg.data);
+  //     break;
+  //   default:
+  //     vscode.window.showWarningMessage(`未知的cmd类型:${(msg as any).cmd}`);
+  //     break;
+  // }
+  // initWebviewDate(context);
 }

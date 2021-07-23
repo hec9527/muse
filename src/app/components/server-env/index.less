@@ -1,0 +1,29 @@
+.server-env-container {
+  margin-top: 32px;
+
+  .server-env-warp {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px 26px;
+
+    .env-title {
+      margin: 8px 0;
+      font-weight: 500;
+      font-size: 18px;
+    }
+
+    .env-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .env-items {
+      display: flex;
+      flex: 1 0;
+
+      & > span {
+        margin-left: 4px;
+      }
+    }
+  }
+}

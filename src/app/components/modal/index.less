@@ -1,0 +1,32 @@
+.muse-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+
+  &-mask,
+  &-content {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  &-mask {
+    background: #0008;
+    // backdrop-filter: blur(8px);
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-main {
+    width: 540px;
+    min-height: 360px;
+    background: #fff;
+    border-radius: 12px;
+  }
+}

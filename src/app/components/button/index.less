@@ -1,0 +1,56 @@
+.muse-button {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: color background 50ms linear;
+
+  // &:active {
+  //   transform: translate(1px, 0.4px);
+  //   transition: transform 50ms ease-out;
+  // }
+
+  &-text {
+    &.muse-button-disable,
+    &:hover {
+      background: #fafafa;
+    }
+  }
+
+  &-dashed {
+    border: 1.5px dashed #d9d9d9;
+
+    &.muse-button-disable,
+    &:hover {
+      border-color: #4190f7;
+      background: #fafafa;
+    }
+  }
+
+  &-primary {
+    color: #fff;
+    background: #4190f7;
+
+    &.muse-button-disable,
+    &:hover {
+      background: #5ca8f8;
+    }
+  }
+
+  &-danger {
+    color: #fff;
+    background: #ec5f5a;
+
+    &.muse-button-disable,
+    &:hover {
+      background: #ee8079;
+    }
+  }
+
+  &-disable {
+    cursor: not-allowed;
+  }
+}

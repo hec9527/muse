@@ -26,6 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
       panel = vscode.window.createWebviewPanel("musePanel", "muse", vscode.ViewColumn.One, {
         enableScripts: true,
+        enableFindWidget: true,
         retainContextWhenHidden: true,
       });
 

@@ -241,13 +241,18 @@ export function getCodeBranchFromRemote({ env, page }: Pick<IParams, "env" | "pa
 function parseHTML(url: string) {
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
   return new Promise<string>((resolve, reject) => {
-    axios.get(url).then((response) => {
-      const res = /\/([\d\.]+)\/index\.js/gi.exec(response.data);
-      if (res && res[1]) {
-        resolve(`${page?.[1] || ""}|${res[1]}`);
-      } else {
-        reject(`${page?.[1] || ""}|null`);
-      }
-    });
+    return axios
+      .get(url)
+      .then((response) => {
+        const res = /\/([\d\.]+)\/index\.js/gi.exec(response.data);
+        if (res && res[1]) {
+          resolve(`${page?.[1] || ""}|${res[1]}`);
+        } else {
+          reject(`${page?.[1] || ""}|null`);
+        }
+      })
+      .catch(() => {
+        resolve(`${page?.[1] || url}| null`);
+      });
   });
 }

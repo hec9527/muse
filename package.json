@@ -2,7 +2,7 @@
   "name": "muse",
   "displayName": "Muse",
   "description": "muse is publish tool for bid",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "engines": {
     "vscode": "^1.53.0"
   },

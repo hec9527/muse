@@ -37,9 +37,9 @@ const ServerEnv: React.FC = ({}) => {
   ];
 
   return (
-    <div className='server-env-container'>
+    <div className='muse-env-container'>
       <div className='section-title'>环境选择</div>
-      <div className='server-env-warp'>
+      <div className='section-wrap muse-env-warp'>
         {envInfo.map((e) => (
           <div key={e.title} className='env-group'>
             <div className='env-title'>{e.title}</div>

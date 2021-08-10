@@ -4,9 +4,10 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import Header from './components/header';
 import Modal from './components/modal';
-import ServerEnv from './components/server-env';
+import Header from './components/header';
+import EnvContainer from './components/env-container';
+import PageContainer from './components/page-container';
 
 import { reducer } from './store/reducer';
 import './index.less';
@@ -18,7 +19,8 @@ const App: React.FC = () => {
     <Provider store={store}>
       <Header />
       <div className='muse-body'>
-        <ServerEnv />
+        <EnvContainer />
+        <PageContainer />
       </div>
     </Provider>
   );

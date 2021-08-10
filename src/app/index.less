@@ -4,15 +4,17 @@ body,
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  user-select: none;
 }
 
-#app {
-  .muse-body {
-    height: calc(100vh - 60px);
-    margin-top: 60px;
-    padding: 0 7.5%;
-    overflow: overlay;
-  }
+.muse-body {
+  height: calc(100vh - 60px);
+  margin-top: 60px;
+  padding: 0 7.5%;
+  overflow: overlay;
+  // TODO 删除
+  background: #23272e;
 }
 
 .section-title {
@@ -37,4 +39,8 @@ body,
 input[type='checkbox']:checked ~ *,
 input[type='radio']:checked ~ * {
   color: #5ca9f8;
+}
+
+.hide {
+  display: none;
 }

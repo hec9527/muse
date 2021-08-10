@@ -16,11 +16,9 @@ const store = createStore(reducer, applyMiddleware(thunk));
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <div id='muse-container'>
-        <Header />
-        <div className='muse-body'>
-          <ServerEnv />
-        </div>
+      <Header />
+      <div className='muse-body'>
+        <ServerEnv />
       </div>
     </Provider>
   );

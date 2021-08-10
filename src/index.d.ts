@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode';
 
+export type IProjectInfo = {
+  project: string;
+  branck: string;
+};
+
 export type IUserInfo = {
   userName: string;
   passwd: string;

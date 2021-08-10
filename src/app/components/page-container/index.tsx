@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState, AppDispatch } from '../../store/reducer';
 import './index.less';
-
-const list: string[] = [];
-
-for (let i = 0; i < 50; i++) {
-  list.push(`src/p/${String.fromCharCode(Math.floor(Math.random() * 26) + 97)}age${i}/4.5.6/index`);
-}
 
 const f = (n: number) => `${n < 10 ? 0 : ''}${n}`;
 
 const PageContainer: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
   const checkAllRef = React.createRef<HTMLInputElement>();
-  const [pageList, setPageList] = useState(list);
+  const pageList = useSelector((state: AppState) => state.pageList);
+  const checkList = useSelector((state: AppState) => state.checkList);
+
   const [checkAll, setCheckAll] = useState(false);
-  const [checkList, setCheckList] = useState<string[]>([]);
   const [checkOpposite, setCheckOpposite] = useState(false);
   const [filter, setFilter] = useState('');
   const [filterChars, setFilterChars] = useState<string[]>([]);
+
+  const setCheckList = (payload: string[]) => {
+    dispatch({ type: 'UPDATE_SELECTED_PAGE', payload });
+  };
 
   const handleCheckAllClick = () => {
     if (pageList.length === checkList.length) {
@@ -33,7 +35,7 @@ const PageContainer: React.FC = () => {
 
   const handlePageItemClick = (page: string) => {
     if (checkList.includes(page)) {
-      setCheckList((l) => l.filter((p) => p !== page));
+      setCheckList(checkList.filter((p) => p !== page));
     } else {
       setCheckList([...checkList, page]);
     }
@@ -59,6 +61,7 @@ const PageContainer: React.FC = () => {
             id={`filter-${char}`}
             value={char}
             disabled={disable}
+            checked={char === filter}
           />
           <span>{char}</span>
         </label>
@@ -78,6 +81,12 @@ const PageContainer: React.FC = () => {
       checkAllRef.current!.indeterminate = true;
     } else {
       checkAllRef.current!.indeterminate = false;
+    }
+    if (checkList.length === pageList.length) {
+      setCheckAll(true);
+      setCheckOpposite(false);
+    } else {
+      setCheckAll(false);
     }
   }, [checkList]);
 
@@ -103,7 +112,8 @@ const PageContainer: React.FC = () => {
             type='checkbox'
             name='check-all'
             id='check-all'
-            onClick={handleCheckAllClick}
+            onChange={handleCheckAllClick}
+            checked={checkAll}
           />
           <span>全选</span>
         </label>

@@ -27,12 +27,6 @@ export function checkWorkspace() {
   return true;
 }
 
-/** 以string方式，读取html的内容 */
-export function getWebViewContent(context: vscode.ExtensionContext, templatePath: string) {
-  const resourcePath = path.join(context.extensionPath, templatePath);
-  return fs.readFileSync(resourcePath, 'utf-8');
-}
-
 export function initWebviewDate(context: vscode.ExtensionContext) {
   initUserInfo(context);
   initEnvrionmentInfo();

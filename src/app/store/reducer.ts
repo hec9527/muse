@@ -20,6 +20,10 @@ export type AppDispatch = (action: AppAction) => void;
 const initState = {
   pageList: [],
   checkList: [],
+  projectInfo: {
+    project: 'rongshu',
+    branch: '6.3.0',
+  },
 } as any as AppState;
 
 // TODO 删除

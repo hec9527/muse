@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { IProjectInfo } from '../../..';
+import { AppState } from '../../store/reducer';
 import Button from '../button';
 import './index.less';
 
-const title = 'rongshu';
-const branch = '6.3.0';
-
 const Header: React.FC = () => {
+  const { project, branch }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);
+
   const handleCheckBranchClick = () => {
     console.log('check branch');
   };
@@ -27,7 +29,7 @@ const Header: React.FC = () => {
   return (
     <div className='header-container'>
       <div className='project-title'>
-        <span>{title.toUpperCase()}</span>
+        <span>{project.toUpperCase()}</span>
         <span className='divider'>/</span>
         <span>{branch}</span>
       </div>

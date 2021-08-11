@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState, AppDispatch } from '../../store/reducer';
+import classNames from 'classnames';
 import './index.less';
 
 const f = (n: number) => `${n < 10 ? 0 : ''}${n}`;
@@ -48,7 +49,7 @@ const PageContainer: React.FC = () => {
       const disable = !filterChars.includes(char);
       const el = (
         <label
-          className={`filter-char ${disable ? 'disabled' : ''}`}
+          className={classNames(`filter-char`, { disable })}
           htmlFor={`filter-${char}`}
           title={char}
           key={char}
@@ -134,10 +135,10 @@ const PageContainer: React.FC = () => {
       <div className='section-wrap muse-page-wrap'>
         {pageList.map((p, i) => (
           <label
-            className={`page-item list-item ${
-              new RegExp(`^src\/p\/${filter}.*$`, 'i').test(p) ? '' : 'hide'
-            }`}
-            htmlFor={`page${i}`}
+            className={classNames(`page-item list-item`, {
+              hide: !new RegExp(`^src\/p\/${filter}.*$`, 'i').test(p),
+            })}
+            htmlFor={`page-${i}`}
             title={p}
             key={p}
           >
@@ -145,7 +146,7 @@ const PageContainer: React.FC = () => {
               type='checkbox'
               className='pages'
               name='pages'
-              id={`page${i}`}
+              id={`page-${i}`}
               value={p}
               checked={checkList.includes(p)}
               onChange={handlePageItemClick.bind(undefined, p)}

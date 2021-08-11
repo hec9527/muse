@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 
 export type IProjectInfo = {
   project: string;
-  branck: string;
+  branch: string;
 };
 
 export type IUserInfo = {

@@ -246,22 +246,28 @@ export function getCodeBranchFromRemote({ env, page }: Pick<IParams, 'env' | 'pa
 
   page = page.map((p) => p.replace(/(.*?\/)[\d\.]+\/index/, `${uri}$1index.html`));
 
-  Promise.all(page.map((p) => parseHTML(p))).then((res) => {
+  Promise.all(page.map((p) => parseHTML(p, isGray))).then((res) => {
     console.log(res);
     vscode.commands.executeCommand('muse.postInfo', { cmd: 'showQueryResult', data: res });
   });
 }
 
-function parseHTML(url: string) {
+function parseHTML(url: string, isGray: boolean) {
+  const config = isGray ? { headers: { uid: 6593329 } } : {};
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
   return new Promise<string>((resolve, reject) => {
-    axios.get(url).then((response) => {
-      const res = /\/([\d\.]+)\/index\.js/gi.exec(response.data);
-      if (res && res[1]) {
-        resolve(`${page?.[1] || ''}|${res[1]}`);
-      } else {
-        reject(`${page?.[1] || ''}|null`);
-      }
-    });
+    return axios
+      .get(url, config)
+      .then((response) => {
+        const res = /\/([\d\.]+)\/index\.js/gi.exec(response.data);
+        if (res && res[1]) {
+          resolve(`${page?.[1] || ''}|${res[1]}`);
+        } else {
+          reject(`${page?.[1] || ''}|null`);
+        }
+      })
+      .catch(() => {
+        resolve(`${page?.[1] || url}| null`);
+      });
   });
 }

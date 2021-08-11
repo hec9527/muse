@@ -29,9 +29,12 @@
     "lint": "eslint src --ext ts",
     "pub": "yarn lint && vsce publish",
     "clear": "rm -rf dist",
-    "dev": "npm run dev:webview & npm run dev:extension & exit 0",
-    "dev:webview": "webpack --watch",
-    "dev:extension": "tsc --module commonjs -p ./"
+    "dev": "npm run dev:webview & npm run dev:extension",
+    "dev:webview": "webpack -w",
+    "dev:extension": "tsc -w --module commonjs -p ./",
+    "build": "npm run build:webview & npm run build:extension",
+    "build:webview": "webpack --mode production",
+    "build:extension": "tsc --module commonjs -p ./"
   },
   "contributes": {
     "commands": [

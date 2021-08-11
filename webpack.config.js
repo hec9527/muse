@@ -45,9 +45,9 @@ const config = {
   },
 
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   template: path.resolve(__dirname, './src/app/template/index.html'),
-    // }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './src/app/template/index.html'),
+    }),
   ],
 };
 

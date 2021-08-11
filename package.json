@@ -17,10 +17,21 @@
   "publisher": "hec9527",
   "license": "MIT",
   "icon": "logo.png",
-  "main": "./dist/extension.js",
+  "main": "./dist/src/extension.js",
   "repository": {
     "type": "git",
     "url": "http://gitlab.100credit.cn/fed/muse.git"
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "yarn run clear && tsc -p ./",
+    "vsix": "vsce package -o muse.vsix && code --install-extension muse.vsix",
+    "lint": "eslint src --ext ts",
+    "pub": "yarn lint && vsce publish",
+    "clear": "rm -rf dist",
+    "dev": "npm run dev:webview & npm run dev:extension & exit 0",
+    "dev:webview": "webpack --watch",
+    "dev:extension": "tsc --module commonjs -p ./"
   },
   "contributes": {
     "commands": [
@@ -34,7 +45,7 @@
       {
         "key": "ctrl+p ctrl+p",
         "mac": "ctrl+p ctrl+p",
-        "command": "muse.start"
+        "command": "muse.webview"
       }
     ],
     "configuration": {
@@ -52,17 +63,6 @@
         }
       }
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "yarn run clear && tsc -p ./",
-    "vsix": "vsce package -o muse.vsix && code --install-extension muse.vsix",
-    "lint": "eslint src --ext ts",
-    "pub": "yarn lint && vsce publish",
-    "clear": "rm -rf dist",
-    "dev": "npm run dev:webview & npm run dev:extension",
-    "dev:webview": "webpack --watch",
-    "dev:extension": "tsc -watch -p ./"
   },
   "devDependencies": {
     "@babel/core": "^7.14.8",

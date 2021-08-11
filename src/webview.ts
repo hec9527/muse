@@ -31,7 +31,7 @@ export default function getWebview(context: vscode.ExtensionContext): vscode.Web
 }
 
 function getWebviewHtml(context: vscode.ExtensionContext) {
-  const resourcePath = path.join(context.extensionPath, 'dist/main.js');
+  const resourcePath = path.join(context.extensionPath, 'dist/webview/main.js');
   const resourceUrl = vscode.Uri.file(resourcePath).with({ scheme: 'vscode-resource' }).toString();
 
   const html = `

@@ -19,7 +19,7 @@ const config = {
   target: 'node',
 
   output: {
-    path: path.resolve(__dirname, './dist/'),
+    path: path.resolve(__dirname, './dist/webview'),
     filename: 'main.js',
   },
 
@@ -45,9 +45,9 @@ const config = {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './src/app/template/index.html'),
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: path.resolve(__dirname, './src/app/template/index.html'),
+    // }),
   ],
 };
 

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { checkWorkspace, getCodeBranchFromRemote, getWebViewContent, initWebviewDate, publish } from './util/';
+import * as Tools from './util/';
 import path from 'path';
 import { IMessage } from './index.d';
 import StatusBarItem from './status-bar-item';
@@ -9,11 +9,9 @@ export function activate(context: vscode.ExtensionContext) {
   let view: vscode.WebviewPanel | undefined = undefined;
   console.log('muse is active!');
 
-  if (!checkWorkspace()) {
+  if (!Tools.checkWorkspace()) {
     return false;
   }
-
-  // vscode.window.setStatusBarMessage('今天也要快乐鸭！~',3000);
 
   // 注册statusbar
   new StatusBarItem(context);
@@ -27,15 +25,15 @@ export function activate(context: vscode.ExtensionContext) {
     // 登录账号
     vscode.commands.registerCommand('muse.login', () => {
       //
-    })
-  );
-
-  context.subscriptions.push(
+    }),
+    // 发送信息到webview
     vscode.commands.registerCommand('muse.postInfo', (info) => {
       if (view) {
         view.webview.postMessage(info);
       }
     })
+
+    // vscode.window.setStatusBarMessage('今天也要快乐鸭！~', 3000)
   );
 
   // 注册命令

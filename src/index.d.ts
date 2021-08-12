@@ -2,8 +2,8 @@
 import * as vscode from 'vscode';
 
 export type IProjectInfo = {
-  project: string;
-  branch: string;
+  appName: string;
+  version: string;
 };
 
 export type IUserInfo = {
@@ -11,14 +11,31 @@ export type IUserInfo = {
   passwd: string;
 };
 
-export type IMessage =
+/** 扩展发送到webview的消息类型 */
+export type IExtensionMessage =
   | {
-      cmd: 'updateUserInfo';
+      cmd: 'UPDATE_ENV_INFO';
       data: {
-        name: string;
-        passwd: string;
+        envFilter: { name: string; key: string }[];
+        data: any;
       };
     }
+  | {
+      cmd: 'UPDATE_PROJECT_INFO';
+      data: {
+        appName: string;
+        version: string;
+      };
+    }
+  | {
+      cmd: 'UPDATE_PAGE_INFO';
+      data: {
+        pages: string[];
+        hideDisabledFilter: boolean;
+      };
+    };
+
+export type IMessage =
   | {
       cmd: 'showInfo';
       data: string;

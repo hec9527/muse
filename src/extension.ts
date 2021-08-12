@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as Tools from './util/';
 import * as User from './util/user';
+import * as Project from './util/project';
 import path from 'path';
 import { IMessage } from './index.d';
 import StatusBarItem from './status-bar-item';
@@ -13,6 +14,10 @@ export function activate(context: vscode.ExtensionContext) {
   if (!Tools.checkWorkspace()) {
     return false;
   }
+
+  // 初始化
+  Project.initEnvrionmentInfo();
+  Project.initProjectInfo(context);
 
   // 注册statusbar
   new StatusBarItem(context);

@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
+import * as Types from '../index.d';
 import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
-import { IMessage, IPublish, IConfig, IParams, IExtensionConfig } from '../index.d';
 
 let isInitedProjectInfo = false;
 const HOST = 'https://tools.shurongdai.cn';
@@ -34,7 +34,7 @@ export function initWebviewDate(context: vscode.ExtensionContext) {
 }
 
 function initUserInfo(context: vscode.ExtensionContext) {
-  const info = context.globalState.get<IMessage['data']>('userInfo');
+  const info = context.globalState.get<Types.IMessage['data']>('userInfo');
   console.log('\n读取缓存信息, userInfo:\n', JSON.stringify(info));
   vscode.commands.executeCommand('muse.postInfo', { cmd: 'updateUserInfo', data: info });
 }
@@ -45,7 +45,7 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
   console.log('\n当前workspace信息:\n', JSON.stringify(workFolder![0]));
   const uri = workFolder![0].uri;
   const res = fs.readFileSync(path.join(uri.fsPath, 'config.json'), { encoding: 'utf-8' });
-  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as IConfig;
+  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as Types.IConfig;
   console.log('\n读取config.json:\n', res);
   vscode.commands.executeCommand('muse.postInfo', {
     cmd: 'updateProjectInfo',
@@ -88,9 +88,9 @@ async function initEnvrionmentInfo() {
 function initPageInfo(context: vscode.ExtensionContext) {
   // 如果不是在目录中打开的则不处理
   if (workFolder) {
-    const extensionConfig = vscode.workspace.getConfiguration('muse') as IExtensionConfig;
+    const extensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
     // 读取初始化项目信息的时候保存的version
-    const config = context.workspaceState.get<IConfig>('projectConfig');
+    const config = context.workspaceState.get<Types.IConfig>('projectConfig');
     const pageRoot = path.join(workFolder[0].uri.fsPath, 'src/p');
     const { version } = config || {};
     const pages: string[] = [];
@@ -130,18 +130,18 @@ function initPageInfo(context: vscode.ExtensionContext) {
 
 export function publish(
   context: vscode.ExtensionContext,
-  params: IParams,
+  params: Types.IParams,
   /** 检测分支是否匹配 */
   checkVersion = true
 ) {
-  const res = context.workspaceState.get<IConfig>('projectConfig');
+  const res = context.workspaceState.get<Types.IConfig>('projectConfig');
   if (!res) {
     return vscode.window.showErrorMessage('发布失败，无法读取项目config.json配置');
   }
   const { version, appName, cdnhost, websiteHost, remotes } = res;
   const rmVersion = (str: string) => str.replace(`\/${version}`, '');
 
-  const data: IPublish = {
+  const data: Types.IPublish = {
     appName,
     cdnhost,
     version,
@@ -192,7 +192,7 @@ export function publish(
         vscode.window.showErrorMessage('权限不足，请检查用户名和密码');
       } else if (res.data.code === 200) {
         const url = URL_SHOW_LOG(res.data.data.appName, res.data.data.publishKey);
-        const config = vscode.workspace.getConfiguration('muse') as IExtensionConfig;
+        const config = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
         const open = () => vscode.env.openExternal(vscode.Uri.parse(url));
         if (config.autoOpenLog) {
           open();
@@ -231,11 +231,11 @@ function getCurrentBranck() {
 }
 
 /** 从线上html代码中获取js版本号 */
-export function getCodeBranchFromRemote({ env, page }: Pick<IParams, 'env' | 'page'>) {
+export function getCodeBranchFromRemote({ env, page }: Pick<Types.IParams, 'env' | 'page'>) {
   const res = fs.readFileSync(path.join(workFolder![0].uri.fsPath, 'config.json'), {
     encoding: 'utf-8',
   });
-  const { appName, websiteHost } = JSON.parse(res) as IConfig;
+  const { appName, websiteHost } = JSON.parse(res) as Types.IConfig;
   const isGray = /灰度/.test(env.name);
   const isDaily = /日常/.test(env.name);
   let uri = 'https:';

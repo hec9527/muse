@@ -8,6 +8,7 @@ import Modal from './components/modal';
 import Header from './components/header';
 import EnvContainer from './components/env-container';
 import PageContainer from './components/page-container';
+import MessageHandler from './components/message-handler';
 
 import { reducer } from './store/reducer';
 import './index.less';
@@ -17,6 +18,7 @@ const store = createStore(reducer, applyMiddleware(thunk));
 const App: React.FC = () => {
   return (
     <Provider store={store}>
+      <MessageHandler />
       <Header />
       <div className='muse-body'>
         <EnvContainer />

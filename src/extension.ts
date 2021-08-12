@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as Tools from './util/';
+import * as User from './util/user';
 import path from 'path';
 import { IMessage } from './index.d';
 import StatusBarItem from './status-bar-item';
@@ -24,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
     }),
     // 登录账号
     vscode.commands.registerCommand('muse.login', () => {
-      //
+      User.login(context);
     }),
     // 发送信息到webview
     vscode.commands.registerCommand('muse.postInfo', (info) => {
@@ -35,26 +36,4 @@ export function activate(context: vscode.ExtensionContext) {
 
     // vscode.window.setStatusBarMessage('今天也要快乐鸭！~', 3000)
   );
-
-  // 注册命令
-  // console.log("webview recive msg:", JSON.stringify(msg));
-  // switch (msg.cmd) {
-  //   case "updateUserInfo":
-  //     context.globalState.update("userInfo", msg.data);
-  //     vscode.commands.executeCommand("muse.postInfo", { cmd: "updateUserInfo", data: msg.data });
-  //     break;
-  //   case "showInfo":
-  //     vscode.window.showErrorMessage(msg.data);
-  //     break;
-  //   case "publish":
-  //     publish(context, msg.data);
-  //     break;
-  //   case "queryBranch":
-  //     getCodeBranchFromRemote(msg.data);
-  //     break;
-  //   default:
-  //     vscode.window.showWarningMessage(`未知的cmd类型:${(msg as any).cmd}`);
-  //     break;
-  // }
-  // initWebviewDate(context);
 }

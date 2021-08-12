@@ -1,4 +1,8 @@
+# dir
 node_modules
 out
+dist
+src/crypto
+
 package-lock.json
 yarn.lock

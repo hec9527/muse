@@ -42,6 +42,11 @@
         "command": "muse.webview",
         "title": "webview",
         "category": "Muse"
+      },
+      {
+        "command": "muse.login",
+        "title": "login",
+        "category": "Muse"
       }
     ],
     "keybindings": [
@@ -77,6 +82,7 @@
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
+    "@types/request": "^2.48.7",
     "@types/vscode": "^1.53.0",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
@@ -105,11 +111,14 @@
   "dependencies": {
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
+    "md5": "^2.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "request": "^2.88.2",
+    "sha256": "^0.2.0"
   }
 }

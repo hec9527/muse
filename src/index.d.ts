@@ -7,7 +7,7 @@ export type IProjectInfo = {
 };
 
 export type IUserInfo = {
-  userName: string;
+  name: string;
   passwd: string;
 };
 

@@ -51,7 +51,7 @@ export type IExtensionMessage =
     }
   | {
       cmd: 'UPDATE_PROJECT_INFO';
-      data: IProjectConfig;
+      data: IProjectInfo;
     }
   | {
       cmd: 'UPDATE_PAGE_INFO';
@@ -62,18 +62,9 @@ export type IExtensionMessage =
     };
 
 export type IMessage =
-  | {
-      cmd: 'showInfo';
-      data: string;
-    }
-  | {
-      cmd: 'publish';
-      data: IParams;
-    }
-  | {
-      cmd: 'queryBranch';
-      data: Pick<IParams, 'env' | 'page'>;
-    };
+  | { cmd: 'showInfo'; data: string }
+  | { cmd: 'publish'; data: IParams }
+  | { cmd: 'queryBranch'; data: Pick<IParams, 'env' | 'page'> };
 
 export interface IPublish {
   username: string;

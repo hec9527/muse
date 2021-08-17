@@ -28,9 +28,9 @@ export async function getUserInfo(context: vscode.ExtensionContext) {
 
   if (!info) {
     const _info = await inputUserInfo();
-    if (!_info.name) {
+    if (!_info.username) {
       vscode.window.showErrorMessage('输入的用户名为空');
-    } else if (!_info.passwd) {
+    } else if (!_info.password) {
       vscode.window.showErrorMessage('输入的密码为空');
     } else {
       context.globalState.update(USERINFO_STORAGE_KEY, info);
@@ -42,32 +42,32 @@ export async function getUserInfo(context: vscode.ExtensionContext) {
 }
 
 async function inputUserInfo(): Promise<Partial<IUserInfo>> {
-  const name = await vscode.window.showInputBox({
+  const username = await vscode.window.showInputBox({
     password: false,
     ignoreFocusOut: false,
     placeHolder: '请输入用户名',
     prompt: '1/2: 输入tools系统用户名，发布和查看日志需要登录',
   });
 
-  const passwd = await vscode.window.showInputBox({
+  const password = await vscode.window.showInputBox({
     password: true,
     ignoreFocusOut: true,
     placeHolder: '请输入密码',
     prompt: '2/2: 用户名、密码自动保存在vscode插件中，只需登录一次',
   });
-  return { name, passwd };
+  return { username, password };
 }
 
 export async function login(context: vscode.ExtensionContext) {
   const info = await getUserInfo(context)!;
   // console.log({ name: info?.name, passwd: cryptoPassword(info!.passwd!) });
 
-  if (!info || !info.passwd || !info.name) return;
+  if (!info || !info.password || !info.username) return;
 
   // fuck  垃圾axios，请求头添加一个 Content-Type 就尼玛这么难
 
   const data = {
-    name: info.name,
-    password: cryptoPassword(info.passwd),
+    name: info.username,
+    password: cryptoPassword(info.password),
   };
 }

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import Modal from './components/modal';
+// import Modal from './components/modal';
 import Header from './components/header';
 import EnvContainer from './components/env-container';
 import PageContainer from './components/page-container';

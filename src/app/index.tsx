@@ -10,10 +10,11 @@ import EnvContainer from './components/env-container';
 import PageContainer from './components/page-container';
 import MessageHandler from './components/message-handler';
 
+import logger from './utils/redux-logger';
 import { reducer } from './store/reducer';
 import './index.less';
 
-const store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(reducer, applyMiddleware(logger, thunk));
 
 const App: React.FC = () => {
   return (

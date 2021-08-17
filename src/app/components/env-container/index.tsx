@@ -1,18 +1,18 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { AppState } from '../../store/reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, AppState } from '../../store/reducer';
 import * as Types from '../../../index.d';
 import './index.less';
 
-type keys = keyof Types.IEnvInfo;
-
-type EnvInfo = Types.IEnvInfo[keys][number];
-
 const ServerEnv: React.FC = ({}) => {
-  const envInfo = useSelector((state: AppState) => state.serverInfo);
+  const dispatch = useDispatch<AppDispatch>();
+  const { envInfo, selectedEnv } = useSelector((state: AppState) => ({
+    envInfo: state.serverInfo,
+    selectedEnv: state.selectedEnv,
+  }));
 
-  const handleEnvClick = (env: EnvInfo) => {
-    console.log(env);
+  const handleEnvClick = (env: Types.IEnvConfig) => {
+    dispatch({ type: 'UPDATE_SELECTED_ENV', payload: env });
   };
 
   return envInfo ? (
@@ -23,13 +23,14 @@ const ServerEnv: React.FC = ({}) => {
           <div key={f.key} className='env-group'>
             <div className='env-title'>{f.name}</div>
             <div className='env-list'>
-              {envInfo.data[f.key].map((i: EnvInfo) => (
+              {envInfo.data[f.key].map((i: Types.IEnvConfig) => (
                 <label key={i.name} htmlFor={i.name} className='env-items list-item' title={i.name}>
                   <input
                     name='env'
                     type='radio'
                     className='envs'
                     id={i.name}
+                    defaultChecked={selectedEnv?.name === i.name}
                     onClick={handleEnvClick.bind(undefined, i)}
                   />
                   <span>{i.name}</span>

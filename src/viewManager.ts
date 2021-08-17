@@ -123,6 +123,21 @@ export default class ViewManager implements vscode.Disposable {
         case 'GET_PROJECT_INFO':
           this.postProjectInfo();
           break;
+        case 'SHOW_MESSAGE':
+          if (typeof msg.data === 'string') {
+            this.showMessage(msg.data);
+          } else {
+            this.showMessage(msg.data.message, msg.data.type);
+          }
+          break;
+        case 'SHOW_CACHE_LIST':
+          break;
+        case 'SAVE_CACHE_INFO':
+          break;
+        case 'QUERY_ONLINE_CODE_BRANCH':
+          break;
+        case 'PUBLISH_CODE':
+          break;
         default:
           console.log('未知的消息类型');
       }
@@ -167,6 +182,15 @@ export default class ViewManager implements vscode.Disposable {
         version,
       },
     });
+  }
+
+  private showMessage(message: string, type: Types.INoticeType = 'info') {
+    const types = {
+      error: 'showErrorMessage',
+      info: 'showInformationMessage',
+      warning: 'showWarningMessage',
+    } as const;
+    vscode.window[types[type]](message);
   }
 
   private getWebview() {

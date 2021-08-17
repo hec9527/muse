@@ -10,35 +10,35 @@ const PageContainer: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const checkAllRef = React.createRef<HTMLInputElement>();
   const pageList = useSelector((state: AppState) => state.pageList);
-  const checkList = useSelector((state: AppState) => state.checkList);
+  const selectedPages = useSelector((state: AppState) => state.selectedPages);
 
   const [checkAll, setCheckAll] = useState(false);
   const [checkOpposite, setCheckOpposite] = useState(false);
   const [filter, setFilter] = useState('');
   const [filterChars, setFilterChars] = useState<string[]>([]);
 
-  const setCheckList = (payload: string[]) => {
+  const setSelectedPages = (payload: string[]) => {
     dispatch({ type: 'UPDATE_SELECTED_PAGE', payload });
   };
 
   const handleCheckAllClick = () => {
-    if (pageList.length === checkList.length) {
-      setCheckList([]);
+    if (pageList.length === selectedPages.length) {
+      setSelectedPages([]);
     } else {
-      setCheckList(pageList);
+      setSelectedPages(pageList);
     }
   };
 
   const handleCheckOppositeClick = () => {
     setCheckOpposite((c) => !c);
-    setCheckList(pageList.filter((p) => !checkList.includes(p)));
+    setSelectedPages(pageList.filter((p) => !selectedPages.includes(p)));
   };
 
   const handlePageItemClick = (page: string) => {
-    if (checkList.includes(page)) {
-      setCheckList(checkList.filter((p) => p !== page));
+    if (selectedPages.includes(page)) {
+      setSelectedPages(selectedPages.filter((p) => p !== page));
     } else {
-      setCheckList([...checkList, page]);
+      setSelectedPages([...selectedPages, page]);
     }
   };
 
@@ -78,18 +78,18 @@ const PageContainer: React.FC = () => {
   };
 
   useEffect(() => {
-    if (checkList.length && checkList.length !== pageList.length) {
+    if (selectedPages.length && selectedPages.length !== pageList.length) {
       checkAllRef.current!.indeterminate = true;
     } else {
       checkAllRef.current!.indeterminate = false;
     }
-    if (checkList.length === pageList.length) {
+    if (selectedPages.length === pageList.length) {
       setCheckAll(true);
       setCheckOpposite(false);
     } else {
       setCheckAll(false);
     }
-  }, [checkList, pageList]);
+  }, [selectedPages, pageList]);
 
   useEffect(() => {
     const set = new Set<string>();
@@ -148,7 +148,7 @@ const PageContainer: React.FC = () => {
               name='pages'
               id={`page-${i}`}
               value={p}
-              checked={checkList.includes(p)}
+              checked={selectedPages.includes(p)}
               onChange={handlePageItemClick.bind(undefined, p)}
             />
             <span>{`${f(i + 1)}.${p}`}</span>

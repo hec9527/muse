@@ -11,9 +11,10 @@ export type ServerInfo = (Types.IExtensionMessage & { cmd: 'UPDATE_ENV_INFO' })[
 export interface AppState {
   serverInfo?: ServerInfo;
   pageList: string[];
-  checkList: string[];
   projectInfo: Types.IProjectInfo;
   hideDisabledFilter: boolean;
+  selectedPages: string[];
+  selectedEnv: Types.IEnvConfig;
 }
 
 export type AppAction =
@@ -23,22 +24,18 @@ export type AppAction =
   | { type: 'UPDATE_PAGE_INFO'; payload: { pages: string[]; hideDisabledFilter: boolean } }
   | { type: 'UPDATE_QUERY_CODE_VERSION'; payload: any }
   | { type: 'UPDATE_SELECTED_PAGE'; payload: string[] }
-  | { type: 'UPDATE_SELECTED_ENV'; payload: any };
+  | { type: 'UPDATE_SELECTED_ENV'; payload: Types.IEnvConfig };
 
 export type AppDispatch = (action: AppAction) => void;
 
 const initState: AppState = {
   pageList: [],
-  checkList: [],
+  selectedPages: [],
   projectInfo: {},
   serverInfo: {} as ServerInfo,
   hideDisabledFilter: false,
+  selectedEnv: {} as Types.IEnvConfig,
 };
-
-// TODO 删除
-// for (let i = 0; i < 50; i++) {
-//   initState.pageList.push(`src/p/${String.fromCharCode(Math.floor(Math.random() * 26) + 97)}age${i}/4.5.6/index`);
-// }
 
 export function reducer(state: AppState = initState, action: AppAction): AppState {
   switch (action.type) {
@@ -55,8 +52,10 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
         pageList: action.payload.pages,
         hideDisabledFilter: action.payload.hideDisabledFilter,
       };
+    case 'UPDATE_SELECTED_ENV':
+      return { ...state, selectedEnv: action.payload };
     case 'UPDATE_SELECTED_PAGE':
-      return { ...state, checkList: action.payload };
+      return { ...state, selectedPages: action.payload };
     default:
       return { ...state };
   }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import * as Types from '../../../index.d';
 import { AppDispatch } from '../../store/reducer';
+import * as Types from '../../../index.d';
 
 // 空组件， 使用hooks 接受并且处理来自插件的消息
 const MessageHandler: React.FC = () => {

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode';
 
+export type INoticeType = 'error' | 'warning' | 'info';
+
 export type IProjectInfo = {
   appName?: string;
   version?: string;
@@ -19,26 +21,32 @@ export type IProjectConfig = {
   websiteHost: string;
 };
 
+export type IEnvConfig = {
+  name: string;
+  value: {
+    env: K;
+    group_id: number;
+    host: boolean | string;
+    name: string;
+  } & {
+    [S in 'cdnHost' | 'htmlHost' | 'server']?: { ip: string; path: string }[];
+  };
+};
+
+export type IEnvInfo = {
+  [K in 'daily' | 'gray' | 'productionNoTag']: IEnvConfig[];
+};
+
+/** webview发送给扩展的消息类型 */
 export type IWebviewMessage =
   | { cmd: 'GET_PAGE_INFO' }
   | { cmd: 'GET_ENV_INFO' }
   | { cmd: 'GET_PROJECT_INFO' }
   | { cmd: 'SHOW_CACHE_LIST' }
-  | { cmd: 'SAVE_CACHE_INFO'; data: any };
-
-type IEnvInfo = {
-  [K in 'daily' | 'gray' | 'productionNoTag']: {
-    name: string;
-    value: {
-      env: K;
-      group_id: number;
-      host: boolean | string;
-      name: string;
-    } & {
-      [S in 'cdnHost' | 'htmlHost' | 'server']?: { ip: string; path: string }[];
-    };
-  }[];
-};
+  | { cmd: 'SAVE_CACHE_INFO'; data: any }
+  | { cmd: 'SHOW_MESSAGE'; data: string | { message: string; type: INoticeType } }
+  | { cmd: 'PUBLISH_CODE'; data: any }
+  | { cmd: 'QUERY_ONLINE_CODE_BRANCH'; data: any };
 
 /** 扩展发送到webview的消息类型 */
 export type IExtensionMessage =
@@ -61,11 +69,6 @@ export type IExtensionMessage =
       };
     };
 
-export type IMessage =
-  | { cmd: 'showInfo'; data: string }
-  | { cmd: 'publish'; data: IParams }
-  | { cmd: 'queryBranch'; data: Pick<IParams, 'env' | 'page'> };
-
 export interface IPublish {
   username: string;
   password: string;
@@ -75,22 +78,7 @@ export interface IPublish {
   websiteHost: string;
   cdnhost: string;
   env: string;
-  publish:
-    | {
-        env: string;
-        group_id: number;
-        host: string;
-        name: string;
-        server: { ip: string; path: string }[];
-      }
-    | {
-        cdnHost: { ip: string; path: string }[];
-        env: string;
-        group_id: number;
-        host: boolean;
-        htmlHost: { ip: string; path: string }[];
-        name: string;
-      };
+  publish: IEnvConfig;
   /** [ './src/p/xxxx/....' ] */
   htmlEntry: string[];
   /** { 'src/p/xxxx': './src/p/xxxx'} */

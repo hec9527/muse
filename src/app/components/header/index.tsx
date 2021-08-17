@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { IProjectInfo } from '../../..';
-import { AppState } from '../../store/reducer';
+import { IProjectInfo } from '../../../index.d';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, AppState } from '../../store/reducer';
 import Button from '../button';
 import './index.less';
 
 const Header: React.FC = () => {
   const { appName, version }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleCheckBranchClick = () => {
     console.log('check branch');

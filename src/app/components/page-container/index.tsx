@@ -46,14 +46,14 @@ const PageContainer: React.FC = () => {
     const list: JSX.Element[] = [];
     for (let i = 65; i <= 90; i++) {
       const char = String.fromCharCode(i);
-      const disable = !filterChars.includes(char);
+      const disabled = !filterChars.includes(char);
       const el = (
         <label
-          className={classNames(`filter-char`, { disable })}
+          className={classNames(`filter-char`, { disabled })}
           htmlFor={`filter-${char}`}
           title={char}
           key={char}
-          onClick={() => !disable && setFilter(char)}
+          onClick={() => !disabled && setFilter(char)}
         >
           <input
             className='filter-radio hide'
@@ -61,7 +61,7 @@ const PageContainer: React.FC = () => {
             name='filter'
             id={`filter-${char}`}
             value={char}
-            disabled={disable}
+            disabled={disabled}
             checked={char === filter}
           />
           <span>{char}</span>

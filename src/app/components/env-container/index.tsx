@@ -15,8 +15,6 @@ const ServerEnv: React.FC = ({}) => {
     console.log(env);
   };
 
-  console.log(envInfo);
-
   return envInfo ? (
     <div className='muse-env-container'>
       <div className='section-title'>环境选择</div>

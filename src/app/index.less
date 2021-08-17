@@ -15,25 +15,32 @@ body,
 .muse-body {
   height: calc(100vh - 60px);
   margin-top: 60px;
-  padding: 0 7.5%;
+  padding: 0 8%;
   overflow: overlay;
-  // TODO 删除
-  background: #23272e;
 }
 
 .section-title {
-  margin: 16px 0 8px;
+  margin: 16px -20px 8px;
   font-weight: 700;
   font-size: 24px;
 }
 
 // 所有的列表项目公共样式
 .list-item {
-  min-width: 220px;
+  display: flex;
+  align-items: center;
+  min-width: 200px;
   max-width: 300px;
+  margin-left: -4px;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
+
+  & > span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
   &:hover {
     background: #567;

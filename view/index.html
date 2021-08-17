@@ -64,9 +64,6 @@
       }
       .env-item {
         flex: 1 0 220px;
-        flex-grow: 1;
-        flex-shrink: 0;
-        flex-basis: 220px;
       }
       .env-title {
         font-size: 18px;
@@ -261,8 +258,8 @@
       .inline-box {
         display: inline-block;
       }
-      input[type="text"],
-      input[type="password"] {
+      input[type='text'],
+      input[type='password'] {
         margin-right: 16px;
         width: 120px;
         font-size: 14px;
@@ -270,12 +267,12 @@
         color: #fff;
         border-bottom: 1px solid transparent;
       }
-      input[type="text"]:focus,
-      input[type="password"]:focus {
+      input[type='text']:focus,
+      input[type='password']:focus {
         border-bottom: 1px solid #567;
       }
-      input[type="checkbox"]:checked ~ *,
-      input[type="radio"]:checked ~ * {
+      input[type='checkbox']:checked ~ *,
+      input[type='radio']:checked ~ * {
         color: #5ca9f8;
       }
       input::placeholder {
@@ -339,7 +336,13 @@
           <div class="section-title">
             <span>页面选择</span>
             <label for="check-all" class="check-wrap">
-              <input type="checkbox" name="check-all" id="check-all" indeterminate="true" onclick="handleCheckAll()" />
+              <input
+                type="checkbox"
+                name="check-all"
+                id="check-all"
+                indeterminate="true"
+                onclick="handleCheckAll()"
+              />
               <span>全选</span>
             </label>
             <label for="check-opposite" class="check-wrap">
@@ -389,32 +392,32 @@
       let state = {};
       // 过滤器
       let filter = [];
-      let filter_cahr = "";
+      let filter_cahr = '';
 
       // cache element
       const vscode = acquireVsCodeApi();
-      const el_proName = document.getElementById("project-name");
-      const el_proBranch = document.getElementById("current-branch");
-      const el_userName = document.getElementById("user-name");
-      const el_userPasswd = document.getElementById("user-passwd");
-      const el_envWrap = document.getElementById("env-container");
-      const el_pageWrap = document.getElementById("page-container");
-      const el_pageFilter = document.getElementById("page-filter");
-      const el_checkAll = document.getElementById("check-all");
-      const el_checkOppo = document.getElementById("check-opposite");
-      const el_publishBtn = document.getElementById("publish-btn");
-      const el_modalWrap = document.getElementById("confirm-modal");
-      const el_modalBody = document.getElementById("confirm-modal-body");
-      const el_branchModalWrap = document.getElementById("branch-modal");
+      const el_proName = document.getElementById('project-name');
+      const el_proBranch = document.getElementById('current-branch');
+      const el_userName = document.getElementById('user-name');
+      const el_userPasswd = document.getElementById('user-passwd');
+      const el_envWrap = document.getElementById('env-container');
+      const el_pageWrap = document.getElementById('page-container');
+      const el_pageFilter = document.getElementById('page-filter');
+      const el_checkAll = document.getElementById('check-all');
+      const el_checkOppo = document.getElementById('check-opposite');
+      const el_publishBtn = document.getElementById('publish-btn');
+      const el_modalWrap = document.getElementById('confirm-modal');
+      const el_modalBody = document.getElementById('confirm-modal-body');
+      const el_branchModalWrap = document.getElementById('branch-modal');
 
       // render dom
       function renderEnvList(envName, key, list = []) {
-        const wrap = document.createElement("div");
-        const body = document.createElement("div");
-        const title = document.createElement("div");
-        wrap.setAttribute("class", "env-item");
-        body.setAttribute("class", "env-body");
-        title.setAttribute("class", "env-title");
+        const wrap = document.createElement('div');
+        const body = document.createElement('div');
+        const title = document.createElement('div');
+        wrap.setAttribute('class', 'env-item');
+        body.setAttribute('class', 'env-body');
+        title.setAttribute('class', 'env-title');
         title.innerHTML = envName;
         list.forEach((item, index) => {
           body.innerHTML += `<label for="${key}${index}" title='${item.name}' class="env-list">
@@ -434,7 +437,7 @@
         const formatNum = (num) => (num < 10 ? `&nbsp;${num}` : num);
         el_checkAll.checked = false;
         el_checkOppo.checked = false;
-        el_pageWrap.innerHTML = "";
+        el_pageWrap.innerHTML = '';
         pages.forEach((str, index) => {
           el_pageWrap.innerHTML += `<label for="page${index}" class="checkbox-list" title='${str}'>
                                       <input type="checkbox" class="pages" name="pages" id="page${index}" value="${str}" onclick="handleCheckBoxClick()" />
@@ -444,23 +447,23 @@
       }
       function renderConfirmModal() {
         const renderGroup = (title, ...content) => {
-          const el = document.createElement("div");
-          el.setAttribute("class", "info-group");
+          const el = document.createElement('div');
+          el.setAttribute('class', 'info-group');
           el.innerHTML = `<div class="info-title"><b>${title}${
-            title === "发布页面" && content.length > 1 ? "（共" + content.length + "个页面）" : ""
+            title === '发布页面' && content.length > 1 ? '（共' + content.length + '个页面）' : ''
           }</b></div>`;
           content.forEach((str) => {
             el.innerHTML += `<div class='info-message'>${str}</div>`;
           });
           return el;
         };
-        el_modalWrap.classList.remove("hide");
-        el_modalBody.innerHTML = "";
-        el_modalBody.appendChild(renderGroup("发布环境", state.env.name));
-        el_modalBody.appendChild(renderGroup("发布页面", ...state.page));
+        el_modalWrap.classList.remove('hide');
+        el_modalBody.innerHTML = '';
+        el_modalBody.appendChild(renderGroup('发布环境', state.env.name));
+        el_modalBody.appendChild(renderGroup('发布页面', ...state.page));
       }
       function renderPageFilter({ pages = [], hideDisabledFilter = false }) {
-        if (el_pageFilter.innerHTML !== "") {
+        if (el_pageFilter.innerHTML !== '') {
           return;
         }
         // 初始化过滤器
@@ -483,9 +486,9 @@
           if (disabled && hideDisabledFilter) continue;
           el_pageFilter.innerHTML += `<label for="filter${i}" title='${char}'
                                       ${!disabled && `onclick="handleFilterClick(\'${char}\')"`}
-                                      class="filter-char ${disabled && "disabled"}">
+                                      class="filter-char ${disabled && 'disabled'}">
                                         <input type="radio" class="filter-radio hide" name="filter"
-                                        id="filter${i}" value="${char}" ${disabled && "disabled"} />
+                                        id="filter${i}" value="${char}" ${disabled && 'disabled'} />
                                         <span>${char}</span>
                                       </label>`;
         }
@@ -493,7 +496,7 @@
       }
       function renderQueryResultModal(arr = []) {
         console.log(arr);
-        const mBody = el_branchModalWrap.getElementsByClassName("modal-body")[0];
+        const mBody = el_branchModalWrap.getElementsByClassName('modal-body')[0];
         let html = `<div class="info-group">
                       <div class="info-title"><b>查询环境</b></div>
                       <div class="info-message">${state.env.name}</div>
@@ -502,12 +505,12 @@
                       <div class="info-title"><b>代码分支</b></div>
                       <table><tr><th>页面</th><th>分支</th></tr>`;
         arr.forEach((str) => {
-          _arr = str.split("|");
+          _arr = str.split('|');
           html += `<tr><td>${_arr[0]}</td><td>${_arr[1]}</td></tr>`;
         });
-        html += "</table></div>";
+        html += '</table></div>';
         mBody.innerHTML = html;
-        el_branchModalWrap.classList.remove("hide");
+        el_branchModalWrap.classList.remove('hide');
       }
 
       // add eventlistener
@@ -517,7 +520,7 @@
       // post message to webivew and catch
       function postUserInfo({ name, passwd }) {
         vscode.postMessage({
-          cmd: "updateUserInfo",
+          cmd: 'updateUserInfo',
           data: {
             name: name || el_userName.value,
             passwd: passwd || el_userPasswd.value,
@@ -527,7 +530,7 @@
 
       // handle dom event
       function handleCheckBoxClick() {
-        const list = Array.from(el_pageWrap.getElementsByTagName("input"));
+        const list = Array.from(el_pageWrap.getElementsByTagName('input'));
         const selected = list.filter((item) => item.checked);
 
         if (selected.length === list.length) {
@@ -542,7 +545,7 @@
         }
       }
       function handleCheckAll() {
-        const list = Array.from(el_pageWrap.getElementsByTagName("input"));
+        const list = Array.from(el_pageWrap.getElementsByTagName('input'));
         el_checkAll.indeterminate = false;
 
         if (!el_checkAll.checked) {
@@ -554,74 +557,74 @@
         }
       }
       function handleCheckOppo() {
-        const list = Array.from(el_pageWrap.getElementsByTagName("input"));
+        const list = Array.from(el_pageWrap.getElementsByTagName('input'));
         list.forEach((item) => (item.checked = !item.checked));
         handleCheckBoxClick();
       }
       function unPublish() {
-        el_modalWrap.classList.add("hide");
+        el_modalWrap.classList.add('hide');
         state = {};
       }
       function publish() {
-        el_modalWrap.classList.add("hide");
+        el_modalWrap.classList.add('hide');
         if (Object.keys(state).length) {
           vscode.postMessage({
-            cmd: "publish",
+            cmd: 'publish',
             data: state,
           });
         } else {
-          console.log("数据验证失败：", JSON.stringify(state));
+          console.log('数据验证失败：', JSON.stringify(state));
         }
       }
-      function handleFilterClick(char = "") {
+      function handleFilterClick(char = '') {
         if (filter_cahr === char) return;
         filter_cahr = char;
         console.log(`当前过滤的key: ${char}`);
-        const reg = new RegExp(`^src\/p\/${char}.*$`, "i");
-        const list = el_pageWrap.getElementsByClassName("checkbox-list");
+        const reg = new RegExp(`^src\/p\/${char}.*$`, 'i');
+        const list = el_pageWrap.getElementsByClassName('checkbox-list');
         if (!char) {
-          const els = el_pageFilter.getElementsByClassName("filter-radio");
+          const els = el_pageFilter.getElementsByClassName('filter-radio');
           Array.from(els).forEach((el) => {
             el.checked = false;
           });
         }
         Array.from(list).forEach((el) => {
           if (!char) {
-            el.classList.remove("hide");
+            el.classList.remove('hide');
           } else {
-            const value = el.getAttribute("title");
+            const value = el.getAttribute('title');
             if (reg.test(value)) {
-              el.classList.remove("hide");
+              el.classList.remove('hide');
             } else {
-              el.classList.add("hide");
+              el.classList.add('hide');
             }
           }
         });
       }
       function handleCloseQueryModalClick() {
-        el_branchModalWrap.classList.add("hide");
+        el_branchModalWrap.classList.add('hide');
       }
 
       // validateInfo
       function validateUserInfo() {
-        const name = el_userName.getAttribute("value");
-        const passwd = el_userPasswd.getAttribute("value");
+        const name = el_userName.getAttribute('value');
+        const passwd = el_userPasswd.getAttribute('value');
         if (!name || !passwd) {
           return vscode.postMessage({
-            cmd: "showInfo",
-            data: "请输入用户名和密码",
+            cmd: 'showInfo',
+            data: '请输入用户名和密码',
           });
         }
         state = { ...state, name, passwd };
         return true;
       }
       function validateEnvInfo() {
-        const envs = Array.from(el_envWrap.getElementsByClassName("envs"));
+        const envs = Array.from(el_envWrap.getElementsByClassName('envs'));
         let env = envs.filter((item) => item.checked);
         if (env.length <= 0 || !env[0].dataset.name) {
           return vscode.postMessage({
-            cmd: "showInfo",
-            data: "请选择发布环境",
+            cmd: 'showInfo',
+            data: '请选择发布环境',
           });
         }
         env = {
@@ -632,15 +635,15 @@
         return true;
       }
       function validatePageInfo() {
-        const pages = Array.from(el_pageWrap.getElementsByClassName("pages"));
+        const pages = Array.from(el_pageWrap.getElementsByClassName('pages'));
         let page = pages.filter((item) => item.checked);
         if (page.length <= 0) {
           return vscode.postMessage({
-            cmd: "showInfo",
-            data: "请选择发布页面",
+            cmd: 'showInfo',
+            data: '请选择发布页面',
           });
         }
-        page = page.map((item) => item.getAttribute("value"));
+        page = page.map((item) => item.getAttribute('value'));
         state = { ...state, page };
         return true;
       }
@@ -654,7 +657,7 @@
         state = {};
         if (validateEnvInfo() && validatePageInfo()) {
           vscode.postMessage({
-            cmd: "queryBranch",
+            cmd: 'queryBranch',
             data: state,
           });
         }
@@ -662,8 +665,8 @@
 
       // handle message recive from webview
       function updateUserInfo({ name, passwd }) {
-        el_userName.setAttribute("value", name);
-        el_userPasswd.setAttribute("value", passwd);
+        el_userName.setAttribute('value', name);
+        el_userPasswd.setAttribute('value', passwd);
       }
       function updateProjectInfo({ appName, version }) {
         el_proName.innerHTML = String(appName).toUpperCase();
@@ -680,30 +683,30 @@
       }
 
       // add event listener
-      window.addEventListener("keydown", (e) => e.key === "Enter" && showConfirmModal());
-      window.addEventListener("message", (e) => {
-        console.log("HTML recive message:", JSON.stringify(e.data));
+      window.addEventListener('keydown', (e) => e.key === 'Enter' && showConfirmModal());
+      window.addEventListener('message', (e) => {
+        console.log('HTML recive message:', JSON.stringify(e.data));
         const { cmd, data } = e.data;
         switch (cmd) {
-          case "updateUserInfo":
+          case 'updateUserInfo':
             updateUserInfo(data);
             break;
-          case "updateProjectInfo":
+          case 'updateProjectInfo':
             updateProjectInfo(data);
             break;
-          case "updateEnvInfo":
+          case 'updateEnvInfo':
             updateEnvInfo(data);
             break;
-          case "updatePagesInfo":
+          case 'updatePagesInfo':
             renderPagesInfo(data.pages);
             renderPageFilter(data);
             handleFilterClick(false);
             break;
-          case "showQueryResult":
+          case 'showQueryResult':
             renderQueryResultModal(data);
             break;
           default:
-            console.warn("未知CMD类型");
+            console.warn('未知CMD类型');
             break;
         }
       });

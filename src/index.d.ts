@@ -2,13 +2,42 @@
 import * as vscode from 'vscode';
 
 export type IProjectInfo = {
-  appName: string;
-  version: string;
+  appName?: string;
+  version?: string;
 };
 
 export type IUserInfo = {
-  name: string;
-  passwd: string;
+  username: string;
+  password: string;
+};
+
+export type IProjectConfig = {
+  appName: string;
+  version: string;
+  remotes: string;
+  cdnhost: string;
+  websiteHost: string;
+};
+
+export type IWebviewMessage =
+  | { cmd: 'GET_PAGE_INFO' }
+  | { cmd: 'GET_ENV_INFO' }
+  | { cmd: 'GET_PROJECT_INFO' }
+  | { cmd: 'SHOW_CACHE_LIST' }
+  | { cmd: 'SAVE_CACHE_INFO'; data: any };
+
+type IEnvInfo = {
+  [K in 'daily' | 'gray' | 'productionNoTag']: {
+    name: string;
+    value: {
+      env: K;
+      group_id: number;
+      host: boolean | string;
+      name: string;
+    } & {
+      [S in 'cdnHost' | 'htmlHost' | 'server']?: { ip: string; path: string }[];
+    };
+  }[];
 };
 
 /** 扩展发送到webview的消息类型 */
@@ -16,16 +45,13 @@ export type IExtensionMessage =
   | {
       cmd: 'UPDATE_ENV_INFO';
       data: {
-        envFilter: { name: string; key: string }[];
-        data: any;
+        envFilter: { name: string; key: 'daily' | 'gray' | 'productionNoTag' }[];
+        data: IEnvInfo;
       };
     }
   | {
       cmd: 'UPDATE_PROJECT_INFO';
-      data: {
-        appName: string;
-        version: string;
-      };
+      data: IProjectConfig;
     }
   | {
       cmd: 'UPDATE_PAGE_INFO';
@@ -48,14 +74,6 @@ export type IMessage =
       cmd: 'queryBranch';
       data: Pick<IParams, 'env' | 'page'>;
     };
-
-export interface IConfig {
-  appName: string;
-  version: string;
-  remotes: string;
-  cdnhost: string;
-  websiteHost: string;
-}
 
 export interface IPublish {
   username: string;

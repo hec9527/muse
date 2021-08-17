@@ -6,7 +6,7 @@ import Button from '../button';
 import './index.less';
 
 const Header: React.FC = () => {
-  const { project, branch }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);
+  const { appName, version }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);
 
   const handleCheckBranchClick = () => {
     console.log('check branch');
@@ -29,9 +29,9 @@ const Header: React.FC = () => {
   return (
     <div className='header-container'>
       <div className='project-title'>
-        <span>{project.toUpperCase()}</span>
+        <span>{appName?.toUpperCase()}</span>
         <span className='divider'>/</span>
-        <span>{branch}</span>
+        <span>{version}</span>
       </div>
 
       <div className='muse-btn-group'>

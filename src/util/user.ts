@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as Types from '../index.d';
 import SHA256 from 'sha256';
 import hex_md5 from 'md5';
-// import Api from './api';
 import { IUserInfo } from '..';
 
 const USERINFO_STORAGE_KEY = 'userInfo';

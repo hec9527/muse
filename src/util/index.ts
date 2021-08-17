@@ -45,7 +45,7 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
   console.log('\n当前workspace信息:\n', JSON.stringify(workFolder![0]));
   const uri = workFolder![0].uri;
   const res = fs.readFileSync(path.join(uri.fsPath, 'config.json'), { encoding: 'utf-8' });
-  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as Types.IConfig;
+  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as Types.IExtensionConfig;
   console.log('\n读取config.json:\n', res);
   vscode.commands.executeCommand('muse.postInfo', {
     cmd: 'updateProjectInfo',
@@ -90,7 +90,7 @@ function initPageInfo(context: vscode.ExtensionContext) {
   if (workFolder) {
     const extensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
     // 读取初始化项目信息的时候保存的version
-    const config = context.workspaceState.get<Types.IConfig>('projectConfig');
+    const config = context.workspaceState.get<Types.IProjectConfig>('projectConfig');
     const pageRoot = path.join(workFolder[0].uri.fsPath, 'src/p');
     const { version } = config || {};
     const pages: string[] = [];
@@ -134,7 +134,7 @@ export function publish(
   /** 检测分支是否匹配 */
   checkVersion = true
 ) {
-  const res = context.workspaceState.get<Types.IConfig>('projectConfig');
+  const res = context.workspaceState.get<Types.IProjectConfig>('projectConfig');
   if (!res) {
     return vscode.window.showErrorMessage('发布失败，无法读取项目config.json配置');
   }
@@ -153,10 +153,7 @@ export function publish(
     password: params.passwd,
     selectedEntry: params.page,
     htmlEntry: params.page.map((str) => rmVersion(`./${str}.html`)),
-    jsEntry: params.page.reduce(
-      (pre, cur) => ((pre[cur] = rmVersion(`./${cur}.js`)), pre),
-      {} as any
-    ),
+    jsEntry: params.page.reduce((pre, cur) => ((pre[cur] = rmVersion(`./${cur}.js`)), pre), {} as any),
   };
 
   const gitBranch = getCurrentBranck();
@@ -182,29 +179,25 @@ export function publish(
 
   // return false;
 
-  axios
-    .post(URL_PUBLISH_CODE, data, { headers: { 'content-type': 'application/json' } })
-    .then((res) => {
-      console.log('---------------发布结果----------------');
-      console.log(res);
+  axios.post(URL_PUBLISH_CODE, data, { headers: { 'content-type': 'application/json' } }).then((res) => {
+    console.log('---------------发布结果----------------');
+    console.log(res);
 
-      if (res.data.code === 403) {
-        vscode.window.showErrorMessage('权限不足，请检查用户名和密码');
-      } else if (res.data.code === 200) {
-        const url = URL_SHOW_LOG(res.data.data.appName, res.data.data.publishKey);
-        const config = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
-        const open = () => vscode.env.openExternal(vscode.Uri.parse(url));
-        if (config.autoOpenLog) {
-          open();
-        } else {
-          vscode.window
-            .showInformationMessage('发布成功，是否查看发布日志?', '立即查看')
-            .then(open);
-        }
+    if (res.data.code === 403) {
+      vscode.window.showErrorMessage('权限不足，请检查用户名和密码');
+    } else if (res.data.code === 200) {
+      const url = URL_SHOW_LOG(res.data.data.appName, res.data.data.publishKey);
+      const config = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+      const open = () => vscode.env.openExternal(vscode.Uri.parse(url));
+      if (config.autoOpenLog) {
+        open();
       } else {
-        vscode.window.showErrorMessage('发布失败，请到 https://tools.shurongdai.cn 查看失败原因');
+        vscode.window.showInformationMessage('发布成功，是否查看发布日志?', '立即查看').then(open);
       }
-    });
+    } else {
+      vscode.window.showErrorMessage('发布失败，请到 https://tools.shurongdai.cn 查看失败原因');
+    }
+  });
 }
 
 /** 读取当前工作目录的git文件，获取当前分支，注意这个和git的版本耦合，如果git的文件目录改变，可能会出问题 */
@@ -235,7 +228,7 @@ export function getCodeBranchFromRemote({ env, page }: Pick<Types.IParams, 'env'
   const res = fs.readFileSync(path.join(workFolder![0].uri.fsPath, 'config.json'), {
     encoding: 'utf-8',
   });
-  const { appName, websiteHost } = JSON.parse(res) as Types.IConfig;
+  const { appName, websiteHost } = JSON.parse(res) as Types.IProjectConfig;
   const isGray = /灰度/.test(env.name);
   const isDaily = /日常/.test(env.name);
   let uri = 'https:';

@@ -151,9 +151,7 @@ const PageContainer: React.FC = () => {
               checked={checkList.includes(p)}
               onChange={handlePageItemClick.bind(undefined, p)}
             />
-            <span>
-              {f(i + 1)}.{p}
-            </span>
+            <span>{`${f(i + 1)}.${p}`}</span>
           </label>
         ))}
       </div>

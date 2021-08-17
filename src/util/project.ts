@@ -1,3 +1,10 @@
+/**
+ *  插件加载时，初始化并且缓存项目信息，当webview启动之后，发送消息给插件，插件收到消息后再发送这些信息给webview
+ *    - 项目配置信息（config.js）
+ *    - 发布环境信息
+ *    - 发布页面信息
+ */
+
 import * as vscode from 'vscode';
 import * as Types from '../index.d';
 import Api from './api';
@@ -7,7 +14,7 @@ import path from 'path';
 let isInitedProjectInfo = false;
 const workFolder = vscode.workspace.workspaceFolders;
 
-export async function initEnvrionmentInfo() {
+export function initEnvrionmentInfo(context: vscode.ExtensionContext) {
   Api.axios.post(Api.URL.getEnvInfo).then((res) => {
     console.log('\n环境信息:\n', res);
     if (res.status !== 200 || res.data.code !== 0) {
@@ -20,25 +27,18 @@ export async function initEnvrionmentInfo() {
       { name: '灰度环境', key: 'gray' },
       { name: '线上环境', key: 'productionNoTag' },
     ];
-    vscode.commands.executeCommand('muse.postInfo', {
-      cmd: 'UPDATE_ENV_INFO',
-      data: { envFilter, data: res.data.data },
-    });
+    context.workspaceState.update('envInfo', { envFilter, data: res.data.data });
   });
 }
 
 // 初始化项目之前需要先 checkWorkspace， 在非bid工具构建的项目中不能使用
-export async function initProjectInfo(context: vscode.ExtensionContext) {
+export function initProjectInfo(context: vscode.ExtensionContext) {
   // 这里只使用第一个，同时打开多个workspace的情况暂时不处理
   console.log('\n当前workspace信息:\n', JSON.stringify(workFolder![0]));
   const uri = workFolder![0].uri;
   const res = fs.readFileSync(path.join(uri.fsPath, 'config.json'), { encoding: 'utf-8' });
-  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as Types.IConfig;
+  const { appName, version, remotes, cdnhost, websiteHost } = JSON.parse(res) as Types.IProjectConfig;
   console.log('\n读取config.json:\n', res);
-  vscode.commands.executeCommand('muse.postInfo', {
-    cmd: 'UPDATE_PROJECT_INFO',
-    data: { appName, version },
-  });
   context.workspaceState.update('projectConfig', {
     appName,
     version,
@@ -47,6 +47,7 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
     websiteHost,
   });
   initPageInfo(context);
+  // 切换分支的时候需要重新读取config.js，重新渲染页面信息
   if (!isInitedProjectInfo) {
     isInitedProjectInfo = true;
     fs.watchFile(path.join(uri.fsPath, 'config.json'), () => initProjectInfo(context));
@@ -56,9 +57,7 @@ export async function initProjectInfo(context: vscode.ExtensionContext) {
 function initPageInfo(context: vscode.ExtensionContext) {
   // 如果不是在目录中打开的则不处理
   if (!workFolder) return;
-  const extensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
-  // 读取初始化项目信息的时候保存的version
-  const config = context.workspaceState.get<Types.IConfig>('projectConfig');
+  const config = context.workspaceState.get<Types.IProjectConfig>('projectConfig');
   const pageRoot = path.join(workFolder[0].uri.fsPath, 'src/p');
   const { version } = config || {};
   const pages: string[] = [];
@@ -86,11 +85,9 @@ function initPageInfo(context: vscode.ExtensionContext) {
   console.log(`\n\npageRoot: ${pageRoot}\n`);
   searchDir(pageRoot);
 
-  vscode.commands.executeCommand('muse.postInfo', {
-    cmd: 'UPDATE_PAGE_INFO',
-    data: {
-      pages: pages.sort(),
-      hideDisabledFilter: extensionConfig.hideDisabledFilter,
-    },
+  context.workspaceState.update('pageInfo', {
+    pages: pages.sort(),
   });
+
+  // TODO 主动发送信息给webview
 }

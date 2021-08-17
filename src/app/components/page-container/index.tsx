@@ -89,7 +89,7 @@ const PageContainer: React.FC = () => {
     } else {
       setCheckAll(false);
     }
-  }, [checkList]);
+  }, [checkList, pageList]);
 
   useEffect(() => {
     const set = new Set<string>();

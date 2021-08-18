@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { IProjectInfo } from '../../../index.d';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
+import { faCodeBranch, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '../button';
 import Modal from '../modal';
 import './index.less';
@@ -105,8 +107,14 @@ const Header: React.FC = () => {
       </div>
 
       <div className='muse-btn-group'>
-        <Button onClick={handleCheckBranchClick}>分支</Button>
-        <Button onClick={handlePublishClick}>发布</Button>
+        <Button onClick={handleCheckBranchClick}>
+          <FontAwesomeIcon icon={faCodeBranch} />
+          分支
+        </Button>
+        <Button onClick={handlePublishClick}>
+          <FontAwesomeIcon icon={faPaperPlane} />
+          发布
+        </Button>
       </div>
     </div>
   );

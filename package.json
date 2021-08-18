@@ -109,6 +109,9 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "axios": "^0.21.1",
     "classnames": "^2.3.1",
     "md5": "^2.3.0",

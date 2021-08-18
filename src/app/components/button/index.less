@@ -1,17 +1,16 @@
 .muse-button {
   display: inline-block;
   box-sizing: border-box;
-  padding: 2px 12px;
+  padding: 4px 10px;
   border-radius: 4px;
   outline: none;
   cursor: pointer;
   transition: color background 50ms linear;
   user-select: none;
 
-  // &:active {
-  //   transform: translate(1px, 0.4px);
-  //   transition: transform 50ms ease-out;
-  // }
+  & > svg {
+    margin-right: 4px;
+  }
 
   &-text {
     &.muse-button-disable,

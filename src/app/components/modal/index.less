@@ -14,17 +14,18 @@
 
   &-mask {
     background: #0008;
-    // backdrop-filter: blur(8px);
+    animation: fadeIn 275ms ease-out;
   }
 
   &-content {
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: slideIn 275ms ease-in-out;
   }
 
   &-main {
-    width: 540px;
+    width: 560px;
     height: auto;
     background: #fff;
     border-radius: 8px;
@@ -57,5 +58,39 @@
     & > * {
       margin-left: 8px;
     }
+  }
+}
+
+.modal-section {
+  &-title {
+    //
+  }
+  &-body {
+    text-indent: 2rem;
+
+    .list-item:hover {
+      background: unset;
+      cursor: default;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(24px);
+    opacity: 0.1;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

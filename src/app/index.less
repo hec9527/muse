@@ -55,3 +55,21 @@ input[type='radio']:checked ~ * {
 .hide {
   display: none;
 }
+
+.better-scrollbar {
+  overflow: overlay;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #3b414d;
+    border-radius: 2px;
+  }
+}

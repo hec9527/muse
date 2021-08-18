@@ -43,10 +43,10 @@ export type IWebviewMessage =
   | { cmd: 'GET_ENV_INFO' }
   | { cmd: 'GET_PROJECT_INFO' }
   | { cmd: 'SHOW_CACHE_LIST' }
-  | { cmd: 'SAVE_CACHE_INFO'; data: any }
+  | { cmd: 'SAVE_CACHE_INFO'; data: { env: IEnvConfig; pages: string[] } }
   | { cmd: 'SHOW_MESSAGE'; data: string | { message: string; type: INoticeType } }
-  | { cmd: 'PUBLISH_CODE'; data: any }
-  | { cmd: 'QUERY_ONLINE_CODE_BRANCH'; data: any };
+  | { cmd: 'PUBLISH_CODE'; data: { env: IEnvConfig; pages: string[] } }
+  | { cmd: 'QUERY_ONLINE_CODE_BRANCH'; data: { env: IEnvConfig; pages: string[] } };
 
 /** 扩展发送到webview的消息类型 */
 export type IExtensionMessage =

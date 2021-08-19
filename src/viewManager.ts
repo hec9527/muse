@@ -1,9 +1,16 @@
 import * as vscode from 'vscode';
 import * as Types from './index.d';
 import * as path from 'path';
+import * as util from './util';
 import * as cmd from './commands';
 import * as fs from 'fs';
 import api from './api';
+
+type CacheItem = {
+  title: string;
+  env: Types.IEnvConfig;
+  pages: string[];
+};
 
 export default class ViewManager implements vscode.Disposable {
   private viewType = 'Muse';
@@ -113,6 +120,8 @@ export default class ViewManager implements vscode.Disposable {
 
   private bindWebviewReceiveMessage() {
     this.webview!.webview.onDidReceiveMessage((msg: Types.IWebviewMessage) => {
+      console.log('来自webview的消息:', msg);
+
       switch (msg.cmd) {
         case 'GET_ENV_INFO':
           this.postEnvInfo();
@@ -131,10 +140,13 @@ export default class ViewManager implements vscode.Disposable {
           }
           break;
         case 'SHOW_CACHE_LIST':
+          this.showCashList();
           break;
         case 'SAVE_CACHE_INFO':
+          this.saveCacheList(msg.data);
           break;
         case 'QUERY_ONLINE_CODE_BRANCH':
+          this.queryOnlineCodeBranch();
           break;
         case 'PUBLISH_CODE':
           break;
@@ -163,7 +175,7 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private postPageInfo() {
-    const hideDisabledFilter = this.context.workspaceState.get<boolean>('hideDisabledFilter') || false;
+    const hideDisabledFilter = this.context.globalState.get<boolean>('hideDisabledFilter') || false;
     this.postInfo({
       cmd: 'UPDATE_PAGE_INFO',
       data: {
@@ -182,6 +194,68 @@ export default class ViewManager implements vscode.Disposable {
         version,
       },
     });
+  }
+
+  private queryOnlineCodeBranch() {
+    //
+  }
+
+  private async saveCacheList(data: Pick<CacheItem, 'env' | 'pages'>) {
+    const placeholder = util.formatDate('yyyy/MM/dd hh:mm:ss ') + data.env.name;
+    const title = await vscode.window.showInputBox({
+      value: placeholder,
+      ignoreFocusOut: true,
+      placeHolder: '请输入保存数据的标题',
+      prompt: '给保存的数据起一个名字吧~~ ',
+    });
+    if (title) {
+      const CacheItem = this.context.globalState.get<{ [K in string]: CacheItem[] }>('cacheData') || {};
+      const appName = this.projectConfig?.appName;
+      if (!appName) {
+        return this.showMessage('未知的项目名称，请检查项目中的config.json文件', 'error');
+      }
+      this.context.globalState
+        .update('cacheData', {
+          ...CacheItem,
+          [appName]: [...(CacheItem[appName] || []), { title, ...data }],
+        })
+        .then(() => {
+          this.showMessage('保存成功', 'info');
+        });
+    }
+  }
+
+  private async showCashList() {
+    const appName = this.projectConfig?.appName;
+    if (!appName) {
+      return this.showMessage('未知的项目名称，请检查项目中的config.json文件', 'error');
+    }
+
+    const cacheData = this.context.globalState.get<{ [K in string]: CacheItem[] }>('cacheData') || {};
+    const cacheList = cacheData[appName] || [];
+
+    console.log('cacheData', cacheData);
+
+    if (!cacheList.length) {
+      return this.showMessage('没有找到保存的发布数据~', 'warning');
+    }
+    const title = await vscode.window.showQuickPick(
+      cacheList.map((c) => c.title),
+      {
+        placeHolder: '请选择将要发布的缓存数据',
+        ignoreFocusOut: true,
+        canPickMany: false,
+      }
+    );
+    if (title) {
+      const item = cacheList.find((c) => c.title === title);
+      if (item) {
+        this.postInfo({
+          cmd: 'QUICK_PUBLISH',
+          data: item,
+        });
+      }
+    }
   }
 
   private showMessage(message: string, type: Types.INoticeType = 'info') {

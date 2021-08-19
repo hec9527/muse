@@ -21,7 +21,7 @@ const PageContainer: React.FC = () => {
     dispatch({ type: 'UPDATE_SELECTED_PAGE', payload });
   };
 
-  const handleCheckAllClick = () => {
+  const handleCheckAll = () => {
     if (pageList.length === selectedPages.length) {
       setSelectedPages([]);
     } else {
@@ -29,7 +29,7 @@ const PageContainer: React.FC = () => {
     }
   };
 
-  const handleCheckOppositeClick = () => {
+  const handleCheckOpposite = () => {
     setCheckOpposite((c) => !c);
     setSelectedPages(pageList.filter((p) => !selectedPages.includes(p)));
   };
@@ -103,6 +103,18 @@ const PageContainer: React.FC = () => {
     setFilterChars(Array.from(set));
   }, [pageList]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'a') {
+        handleCheckAll();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleCheckAll]);
+
   return (
     <div className='muse-page-container'>
       <div className='section-title'>
@@ -113,7 +125,7 @@ const PageContainer: React.FC = () => {
             type='checkbox'
             name='check-all'
             id='check-all'
-            onChange={handleCheckAllClick}
+            onChange={handleCheckAll}
             checked={checkAll}
           />
           <span>全选</span>
@@ -124,7 +136,7 @@ const PageContainer: React.FC = () => {
             name='check-opposite'
             id='check-opposite'
             checked={checkOpposite}
-            onChange={handleCheckOppositeClick}
+            onChange={handleCheckOpposite}
           />
           <span>反选</span>
         </label>

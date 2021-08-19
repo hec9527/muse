@@ -30,8 +30,8 @@ const ServerEnv: React.FC = ({}) => {
                     type='radio'
                     className='envs'
                     id={i.name}
-                    defaultChecked={selectedEnv?.name === i.name}
-                    onClick={handleEnvClick.bind(undefined, i)}
+                    checked={selectedEnv?.name === i.name}
+                    onChange={handleEnvClick.bind(undefined, i)}
                   />
                   <span>{i.name}</span>
                 </label>

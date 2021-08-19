@@ -145,6 +145,9 @@ export default class ViewManager implements vscode.Disposable {
         case 'SAVE_CACHE_INFO':
           this.saveCacheList(msg.data);
           break;
+        case 'DELETE_CACHE_INFO':
+          this.deleteCacheList();
+          break;
         case 'QUERY_ONLINE_CODE_BRANCH':
           this.queryOnlineCodeBranch();
           break;
@@ -200,6 +203,17 @@ export default class ViewManager implements vscode.Disposable {
     //
   }
 
+  private getCacheData() {
+    const CacheData = this.context.globalState.get<{ [K in string]: CacheItem[] }>('cacheData') || {};
+    const appName = this.projectConfig?.appName;
+    if (!appName) {
+      throw '未知的项目名称，请检查项目中的config.json文件';
+    }
+    console.log('缓存数据', { CacheData, appName });
+
+    return [CacheData || {}, appName] as const;
+  }
+
   private async saveCacheList(data: Pick<CacheItem, 'env' | 'pages'>) {
     const placeholder = util.formatDate('yyyy/MM/dd hh:mm:ss ') + data.env.name;
     const title = await vscode.window.showInputBox({
@@ -209,52 +223,80 @@ export default class ViewManager implements vscode.Disposable {
       prompt: '给保存的数据起一个名字吧~~ ',
     });
     if (title) {
-      const CacheItem = this.context.globalState.get<{ [K in string]: CacheItem[] }>('cacheData') || {};
-      const appName = this.projectConfig?.appName;
-      if (!appName) {
-        return this.showMessage('未知的项目名称，请检查项目中的config.json文件', 'error');
+      try {
+        const [CacheItem, appName] = this.getCacheData();
+        this.context.globalState
+          .update('cacheData', {
+            ...CacheItem,
+            [appName]: [...(CacheItem[appName] || []), { title, ...data }],
+          })
+          .then(() => {
+            this.showMessage('保存成功', 'info');
+          });
+      } catch (error) {
+        return this.showMessage(error, 'error');
       }
-      this.context.globalState
-        .update('cacheData', {
-          ...CacheItem,
-          [appName]: [...(CacheItem[appName] || []), { title, ...data }],
-        })
-        .then(() => {
-          this.showMessage('保存成功', 'info');
-        });
     }
   }
 
   private async showCashList() {
-    const appName = this.projectConfig?.appName;
-    if (!appName) {
-      return this.showMessage('未知的项目名称，请检查项目中的config.json文件', 'error');
-    }
-
-    const cacheData = this.context.globalState.get<{ [K in string]: CacheItem[] }>('cacheData') || {};
-    const cacheList = cacheData[appName] || [];
-
-    console.log('cacheData', cacheData);
-
-    if (!cacheList.length) {
-      return this.showMessage('没有找到保存的发布数据~', 'warning');
-    }
-    const title = await vscode.window.showQuickPick(
-      cacheList.map((c) => c.title),
-      {
-        placeHolder: '请选择将要发布的缓存数据',
-        ignoreFocusOut: false,
-        canPickMany: false,
+    try {
+      const [cacheData, appName] = this.getCacheData();
+      const cacheList = cacheData[appName] || [];
+      if (!cacheList.length) {
+        return this.showMessage('没有找到保存的发布数据~', 'warning');
       }
-    );
-    if (title) {
-      const item = cacheList.find((c) => c.title === title);
-      if (item) {
-        this.postInfo({
-          cmd: 'QUICK_PUBLISH',
-          data: item,
-        });
+      const title = await vscode.window.showQuickPick(
+        cacheList.map((c) => c.title),
+        {
+          placeHolder: '请选择将要发布的缓存数据',
+          ignoreFocusOut: false,
+          canPickMany: false,
+        }
+      );
+      if (title) {
+        const item = cacheList.find((c) => c.title === title);
+        if (item) {
+          this.postInfo({
+            cmd: 'QUICK_PUBLISH',
+            data: item,
+          });
+        }
       }
+    } catch (error) {
+      this.showMessage(error, 'error');
+    }
+  }
+
+  private async deleteCacheList() {
+    try {
+      const [CacheDate, appName] = this.getCacheData();
+      const CacheList = CacheDate[appName] || [];
+
+      if (!CacheList.length) {
+        return this.showMessage('没有找到可以删除的发布记录', 'warning');
+      }
+
+      const titles = await vscode.window.showQuickPick(
+        CacheList.map((c) => c.title),
+        {
+          placeHolder: '请选择要删除的发布记录',
+          canPickMany: true,
+          ignoreFocusOut: false,
+        }
+      );
+      if (titles?.length) {
+        this.context.globalState
+          .update('cacheData', {
+            ...CacheDate,
+            [appName]: CacheList.filter((c) => !titles.includes(c.title)),
+          })
+          .then(() => {
+            this.showMessage('删除成功', 'info');
+          });
+      }
+    } catch (error) {
+      return this.showMessage(error, 'error');
     }
   }
 

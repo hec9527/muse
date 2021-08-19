@@ -75,3 +75,29 @@ function parseHTML(url: string, isGray: boolean) {
       });
   });
 }
+
+export function getCurrentBranck(gitPath: string) {
+  return new Promise<string>((resove, reject) => {
+    if (fs.statSync(gitPath).isDirectory()) {
+      const refFile = path.join(gitPath, 'HEAD');
+      if (fs.existsSync(refFile) && fs.statSync(refFile).isFile()) {
+        const data = fs.readFileSync(refFile, 'utf8');
+        const reg = /^ref: refs\/heads.*\/([^\s]*)$/;
+        const res = reg.exec(data.trimEnd());
+
+        if (res?.[1]) {
+          return resove(res[1]);
+        }
+        reject('读取本地git分支出错，请检查git仓库');
+      }
+    }
+    reject('在当前目录中未找到git仓库，请检查git信息');
+  });
+}
+
+/**
+ * 发布代码
+ */
+function publishCode(data: { env: Types.IEnvConfig; pages: string[] }) {
+  //
+}

@@ -47,17 +47,21 @@ export default class ViewManager implements vscode.Disposable {
 
   private init() {
     this.bindCommand();
-    this.watchProjectConfig();
+    this.initGitInfo();
+    this.watchFile();
     this.initEnvInfo();
     this.initProjectInfo();
     this.initPageInfo();
   }
 
-  private watchProjectConfig() {
+  private watchFile() {
     fs.watchFile(path.join(this.workFolder.uri.fsPath, 'config.json'), () => {
       this.initProjectInfo();
       this.initPageInfo();
       this.postPageInfo();
+    });
+    fs.watchFile(path.join(this.workFolder.uri.fsPath, '.git/HEAD'), () => {
+      this.initGitInfo();
     });
   }
 
@@ -77,6 +81,10 @@ export default class ViewManager implements vscode.Disposable {
 
   private initProjectInfo() {
     const option = { encoding: 'utf-8' };
+    const fpath = path.join(this.workFolder.uri.fsPath, 'config.json');
+    if (!fs.existsSync(fpath) || !fs.statSync(fpath).isFile) {
+      return this.showMessage('项目中未找到config.json');
+    }
     const file = fs.readFileSync(path.join(this.workFolder.uri.fsPath, 'config.json'), option);
     console.log('config.json', JSON.parse(file));
     this.projectConfig = JSON.parse(file);
@@ -110,6 +118,19 @@ export default class ViewManager implements vscode.Disposable {
     searchDir(pageRoot);
 
     this.pageInfo = pages.sort();
+  }
+
+  private initGitInfo() {
+    util
+      .getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'))
+      .then((branch) => {
+        console.log('git分支:', branch);
+
+        this.branch = branch;
+      })
+      .catch((error) => {
+        this.showMessage(error, 'error');
+      });
   }
 
   private bindCommand() {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { IProjectInfo } from '../../../index.d';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
-import { faCodeBranch, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, spinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '../button';
 import Modal from '../modal';
@@ -13,26 +13,43 @@ const Header: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const state = useSelector((state: AppState) => state);
 
-  const checkData = () => {
+  const checkData = (action: string) => {
+    let message;
     if (!state.selectedEnv.name) {
-      return (action: string) => `请选择${action}环境`;
+      message = `请选择${action}环境`;
     } else if (!state.selectedPages.length) {
-      return (action: string) => `请选择${action}页面`;
+      message = `请选择${action}页面`;
+    }
+    if (message) {
+      dispatch({
+        type: 'POST_MESSAGE_TO_EXTENSION',
+        payload: { cmd: 'SHOW_MESSAGE', data: { type: 'error', message } },
+      });
+      return true;
     }
     return false;
   };
 
-  const handleCheckBranchClick = () => {
-    const res = checkData();
-    if (res) {
-      return dispatch({
-        type: 'POST_MESSAGE_TO_EXTENSION',
-        payload: {
-          cmd: 'SHOW_MESSAGE',
-          data: { type: 'error', message: res('查询') },
+  const handleQuickPublish = () => {
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'SHOW_CACHE_LIST' } });
+  };
+
+  const handleSaveData = () => {
+    if (checkData('发布')) return;
+    dispatch({
+      type: 'POST_MESSAGE_TO_EXTENSION',
+      payload: {
+        cmd: 'SAVE_CACHE_INFO',
+        data: {
+          env: state.selectedEnv,
+          pages: state.selectedPages,
         },
-      });
-    }
+      },
+    });
+  };
+
+  const handleCheckBranch = () => {
+    if (checkData('查询')) return;
     dispatch({
       type: 'POST_MESSAGE_TO_EXTENSION',
       payload: {
@@ -45,58 +62,33 @@ const Header: React.FC = () => {
     });
   };
 
-  const handlePublishClick = () => {
-    const res = checkData();
-    if (res) {
-      return dispatch({
-        type: 'POST_MESSAGE_TO_EXTENSION',
-        payload: {
-          cmd: 'SHOW_MESSAGE',
-          data: { type: 'error', message: res('发布') },
-        },
-      });
-    }
-    const modalInstance = Modal.show({
-      visible: true,
-      children: (
-        <>
-          <h3 className='modal-section-title'>发布环境</h3>
-          <div className='modal-section-body'>{state.selectedEnv.name}</div>
-          <h3 className='modal-section-title'>发布页面（共发布{state.selectedPages.length}个页面）</h3>
-          <div className='modal-section-body'>
-            {state.selectedPages.map((p) => (
-              <div key={p} className='list-item'>
-                {p}
-              </div>
-            ))}
-          </div>
-        </>
-      ),
-      onOk: () => {
-        modalInstance.close();
-        dispatch({
-          type: 'POST_MESSAGE_TO_EXTENSION',
-          payload: {
-            cmd: 'PUBLISH_CODE',
-            data: {
-              env: state.selectedEnv,
-              pages: state.selectedPages,
-            },
-          },
-        });
-      },
-    });
+  const handleClearSaveDate = () => {
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'DELETE_CACHE_INFO' } });
+  };
+
+  const handlePublish = () => {
+    if (checkData('发布')) return;
+    dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: true });
   };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'Enter') {
+        return handleQuickPublish();
+      }
+      if (e.metaKey && e.key === 's') {
+        return handleSaveData();
+      }
+      if (e.metaKey && e.key === 'e') {
+        return handleCheckBranch();
+      }
       if (e.key === 'Enter') {
-        handlePublishClick();
+        return handlePublish();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handlePublishClick]);
+  }, [handleQuickPublish, handlePublish, handleSaveData, handleCheckBranch]);
 
   return (
     <div className='header-container'>
@@ -107,13 +99,25 @@ const Header: React.FC = () => {
       </div>
 
       <div className='muse-btn-group'>
-        <Button onClick={handleCheckBranchClick}>
-          <FontAwesomeIcon icon={faCodeBranch} />
-          分支
+        <Button title='快捷键（cmd+）查看历史发布信息，并选择删除' onClick={handleClearSaveDate} type='danger'>
+          <FontAwesomeIcon icon={faTrashAlt} />
+          清除记录
         </Button>
-        <Button onClick={handlePublishClick}>
+        <Button title='快捷键（cmd+Enter）读取保存的历史发布信息，快速发布' onClick={handleQuickPublish}>
+          <FontAwesomeIcon icon={faBolt} />
+          快速发布
+        </Button>
+        <Button title='快捷键（cmd+S）保存当前发布信息，后续快速发布' onClick={handleSaveData}>
+          <FontAwesomeIcon icon={faSave} />
+          保存记录
+        </Button>
+        <Button title='快捷键（cmd+E）查看在线代码分支' onClick={handleCheckBranch}>
+          <FontAwesomeIcon icon={faCodeBranch} />
+          分支查询
+        </Button>
+        <Button title='快捷键（Enter）发布代码' onClick={handlePublish}>
           <FontAwesomeIcon icon={faPaperPlane} />
-          发布
+          发布代码
         </Button>
       </div>
     </div>

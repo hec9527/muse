@@ -3,6 +3,8 @@ import * as vscode from 'vscode';
 
 export type INoticeType = 'error' | 'warning' | 'info';
 
+export type IEnvType = 'daily' | 'gray' | 'productionNoTag';
+
 export type IProjectInfo = {
   appName?: string;
   version?: string;
@@ -34,7 +36,7 @@ export type IEnvConfig = {
 };
 
 export type IEnvInfo = {
-  [K in 'daily' | 'gray' | 'productionNoTag']: IEnvConfig[];
+  [K in IEnvType]: IEnvConfig[];
 };
 
 /** webview发送给扩展的消息类型 */
@@ -42,6 +44,7 @@ export type IWebviewMessage =
   | { cmd: 'GET_PAGE_INFO' }
   | { cmd: 'GET_ENV_INFO' }
   | { cmd: 'GET_PROJECT_INFO' }
+  | { cmd: 'DELETE_CACHE_INFO' }
   | { cmd: 'SHOW_CACHE_LIST' }
   | { cmd: 'SAVE_CACHE_INFO'; data: { env: IEnvConfig; pages: string[] } }
   | { cmd: 'SHOW_MESSAGE'; data: string | { message: string; type: INoticeType } }
@@ -52,10 +55,7 @@ export type IWebviewMessage =
 export type IExtensionMessage =
   | {
       cmd: 'UPDATE_ENV_INFO';
-      data: {
-        envFilter: { name: string; key: 'daily' | 'gray' | 'productionNoTag' }[];
-        data: IEnvInfo;
-      };
+      data: { envFilter: { name: string; key: IEnvType }[]; data: IEnvInfo };
     }
   | {
       cmd: 'UPDATE_PROJECT_INFO';
@@ -63,10 +63,11 @@ export type IExtensionMessage =
     }
   | {
       cmd: 'UPDATE_PAGE_INFO';
-      data: {
-        pages: string[];
-        hideDisabledFilter: boolean;
-      };
+      data: { pages: string[]; hideDisabledFilter: boolean };
+    }
+  | {
+      cmd: 'QUICK_PUBLISH';
+      data: { env: IEnvConfig; pages: string[] };
     };
 
 export interface IPublish {

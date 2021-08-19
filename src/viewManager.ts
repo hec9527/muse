@@ -151,7 +151,7 @@ export default class ViewManager implements vscode.Disposable {
         case 'PUBLISH_CODE':
           break;
         default:
-          console.log('未知的消息类型');
+          console.error('未知的消息类型');
       }
     });
   }

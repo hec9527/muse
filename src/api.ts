@@ -19,20 +19,13 @@ const Api = {
 };
 
 function request<T extends any = any>(config: AxiosRequestConfig) {
-  return _axios
-    .request(config)
-    .then((res) => {
-      if (res.status >= 200 && res.status < 300) {
-        return res.data;
-      } else if (res.status === 302) {
-        return { code: 0, message: 'login' };
-      }
-      vscode.window.showErrorMessage(`请求错误：${config.url}`);
-    })
-    .catch((error) => {
-      console.error(error);
-      vscode.window.showErrorMessage(`请求错误：${config.url}`);
-    }) as unknown as Promise<T & { code: number; message: string }>;
+  return _axios.request(config).then((res) => {
+    if (res.status >= 200 && res.status < 300) {
+      return res.data;
+    } else if (res.status === 302) {
+      return { code: 0, message: 'login' };
+    }
+  }) as unknown as Promise<T & { code: number; message: string }>;
 }
 
 export default Api;

@@ -25,6 +25,10 @@ const MessageHandler: React.FC = () => {
           dispatch({ type: 'UPDATE_SELECTED_PAGE', payload: data.data.pages });
           dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: true });
           break;
+        case 'UPDATE_QUERY_CODE_BRANCH_RESULT':
+          dispatch({ type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT', payload: data.data });
+          dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE', payload: true });
+          break;
         default:
           console.log('未知的消息类型');
       }

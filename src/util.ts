@@ -60,14 +60,14 @@ export function getOnlineCodeBranch(
 function parseHTML(url: string, isGray: boolean) {
   const config = isGray ? { headers: { uid: 6593329 } } : {};
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
-  return new Promise<string>((resolve, reject) => {
-    return Api.request({ url, ...config })
-      .then((response) => {
-        const res = /\/([\d\.]+)\/index\.js/gi.exec(response.data);
+  return new Promise<string>((resolve) => {
+    return Api.request({ url, ...config, timeout: 10 * 1000 })
+      .then((response: string) => {
+        const res = /\/([\d*\.?]+)\/index\.js/gi.exec(response);
         if (res && res[1]) {
           resolve(`${page?.[1] || ''}|${res[1]}`);
         } else {
-          reject(`${page?.[1] || ''}| null`);
+          resolve(`${page?.[1] || ''}| null`);
         }
       })
       .catch(() => {

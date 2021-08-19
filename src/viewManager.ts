@@ -149,7 +149,7 @@ export default class ViewManager implements vscode.Disposable {
           this.deleteCacheList();
           break;
         case 'QUERY_ONLINE_CODE_BRANCH':
-          this.queryOnlineCodeBranch();
+          this.queryOnlineCodeBranch(msg.data);
           break;
         case 'PUBLISH_CODE':
           break;
@@ -199,8 +199,14 @@ export default class ViewManager implements vscode.Disposable {
     });
   }
 
-  private queryOnlineCodeBranch() {
-    //
+  private async queryOnlineCodeBranch(queryInfo: { env: Types.IEnvConfig; pages: string[] }) {
+    if (!this.projectConfig) return Promise.resolve([]);
+    const branchs = await util.getOnlineCodeBranch(queryInfo, this.projectConfig);
+    console.log('查询结果', branchs);
+    this.postInfo({
+      cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT',
+      data: branchs,
+    });
   }
 
   private getCacheData() {

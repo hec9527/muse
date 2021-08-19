@@ -68,6 +68,10 @@ export type IExtensionMessage =
   | {
       cmd: 'QUICK_PUBLISH';
       data: { env: IEnvConfig; pages: string[] };
+    }
+  | {
+      cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT';
+      data: string[];
     };
 
 export interface IPublish {

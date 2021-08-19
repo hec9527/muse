@@ -4,12 +4,14 @@ import './index.less';
 
 export interface ButtonProps {
   type?: 'primary' | 'text' | 'dashed' | 'danger';
+  size?: 'larg' | 'middle' | 'small';
+  title?: string;
   onClick?: () => void;
   disable?: boolean;
   style?: React.CSSProperties;
 }
 
-const Button: React.FC<ButtonProps> = ({ type, onClick, children, disable, style }) => {
+const Button: React.FC<ButtonProps> = ({ type, size, onClick, children, disable, style, title }) => {
   const handleClick: React.MouseEventHandler<HTMLDivElement> = () => {
     if (disable) {
       return false;
@@ -20,7 +22,10 @@ const Button: React.FC<ButtonProps> = ({ type, onClick, children, disable, style
   return (
     <div
       style={style}
-      className={classNames('muse-button', `muse-button-${type}`, { 'muse-button-disable': disable })}
+      title={title}
+      className={classNames('muse-button', `muse-button-${type}`, `muse-button-${size}`, {
+        'muse-button-disable': disable,
+      })}
       onClick={handleClick}
     >
       {children}
@@ -30,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({ type, onClick, children, disable, style
 
 Button.defaultProps = {
   type: 'primary',
+  size: 'middle',
 };
 
 export default Button;

@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
 import * as Types from '../../../index.d';
 
+// 拉取发布信息失败，重试次数
+let times = 0;
+
 // 空组件， 使用 hooks 接收并且处理来自插件的消息
 const MessageHandler: React.FC = () => {
   const state = useSelector((state: AppState) => state);
@@ -13,7 +16,21 @@ const MessageHandler: React.FC = () => {
       const data = e.data;
       switch (data.cmd) {
         case 'UPDATE_ENV_INFO':
-          dispatch({ type: 'UPDATE_SERVER_INFO', payload: data.data });
+          if (data.data.data) {
+            dispatch({ type: 'UPDATE_SERVER_INFO', payload: data.data });
+          }
+          // 如果启动webview时，插件还未获取到发布服务器信息，2000ms后重试
+          else {
+            if (times < 3) {
+              times++;
+              setTimeout(() => dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO' } }), 2000);
+            } else {
+              dispatch({
+                type: 'POST_MESSAGE_TO_EXTENSION',
+                payload: { cmd: 'SHOW_MESSAGE', data: { message: '拉取环境信息失败，请检查网络连接', type: 'error' } },
+              });
+            }
+          }
           break;
         case 'UPDATE_PROJECT_INFO':
           dispatch({ type: 'UPDATE_PROJECT_INFO', payload: data.data });

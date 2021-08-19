@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+// import * as vscode from 'vscode';
 import axios, { AxiosRequestConfig } from 'axios';
 
 const _axios = axios.create();

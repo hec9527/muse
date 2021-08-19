@@ -62,12 +62,17 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private initEnvInfo() {
-    api.request<{ data: Types.IEnvInfo }>({ url: api.URL.getEnvInfo, method: 'post' }).then((res) => {
-      console.log('环境信息：', res);
-      if (res) {
-        this.envData = res.data;
-      }
-    });
+    return api
+      .request<{ data: Types.IEnvInfo }>({ url: api.URL.getEnvInfo, method: 'post' })
+      .then((res) => {
+        console.log('环境信息：', res);
+        if (res) {
+          this.envData = res.data;
+        }
+      })
+      .catch(() => {
+        console.error(`获取数据失败:${api.URL.getEnvInfo}`);
+      });
   }
 
   private initProjectInfo() {
@@ -163,7 +168,10 @@ export default class ViewManager implements vscode.Disposable {
     return vscode.commands.executeCommand(cmd.postInfo, info);
   }
 
-  private postEnvInfo() {
+  private async postEnvInfo() {
+    if (!this.envData) {
+      await this.initEnvInfo();
+    }
     this.postInfo({
       cmd: 'UPDATE_ENV_INFO',
       data: {

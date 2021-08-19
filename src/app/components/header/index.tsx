@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
 import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from '../button';
-import Modal from '../modal';
-import './index.less';
 import classNames from 'classnames';
+import Button from '../button';
+import './index.less';
 
 const Header: React.FC = () => {
   const { appName, version }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);

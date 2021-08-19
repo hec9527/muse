@@ -20,6 +20,11 @@ const MessageHandler: React.FC = () => {
         case 'UPDATE_PAGE_INFO':
           dispatch({ type: 'UPDATE_PAGE_INFO', payload: data.data });
           break;
+        case 'QUICK_PUBLISH':
+          dispatch({ type: 'UPDATE_SELECTED_ENV', payload: data.data.env });
+          dispatch({ type: 'UPDATE_SELECTED_PAGE', payload: data.data.pages });
+          dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: true });
+          break;
         default:
           console.log('未知的消息类型');
       }

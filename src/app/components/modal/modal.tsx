@@ -4,6 +4,7 @@ import './index.less';
 
 export interface ModalProps {
   visible: boolean;
+  size?: 'small' | 'middle' | 'larg';
   title?: string;
   okButtonType?: ButtonProps['type'];
   okButtonText?: string;
@@ -19,6 +20,7 @@ export interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({
   visible,
+  size,
   title,
   onOk,
   onCancel,
@@ -35,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({
     <div className='muse-modal'>
       <div className='muse-modal-mask' />
       <div className='muse-modal-content'>
-        <div className='muse-modal-main'>
+        <div className={`muse-modal-main muse-modal-${size}`}>
           <div className='muse-modal-title'>{title}</div>
           <div className='muse-modal-body better-scrollbar'>{children}</div>
           <div className='muse-modal-footer'>
@@ -59,6 +61,7 @@ const Modal: React.FC<ModalProps> = ({
 
 Modal.defaultProps = {
   title: '确认发布',
+  size: 'middle',
   okButtonText: '确认',
   okButtonType: 'primary',
   cancelButtonText: '取消',

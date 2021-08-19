@@ -1,0 +1,20 @@
+.code-branch-wrap {
+  table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+
+    & tr {
+      & > * {
+        padding: 8px 0 8px 16px;
+        text-align: left;
+      }
+      &:not(:last-of-type) {
+        border-bottom: 1px solid #acc3;
+      }
+      &:hover:not(:first-of-type) {
+        background: #456;
+      }
+    }
+  }
+}

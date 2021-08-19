@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
 import Modal from '../modal/';
+import './index.less';
 
 const PublishCodeModal: React.FC = () => {
   const state = useSelector((state: AppState) => state);
@@ -13,6 +14,7 @@ const PublishCodeModal: React.FC = () => {
 
   return (
     <Modal
+      size='small'
       visible={state.publishModalVisible}
       onCancel={handleOnCancel}
       onOk={() => {

@@ -26,11 +26,23 @@
     align-items: center;
     justify-self: flex-start;
     margin-bottom: 4px;
-    // height: 60px;
 
     & > *:not(:last-child) {
       margin-right: 8px;
     }
+
+    .rotate {
+      animation: rotate 1500ms linear infinite;
+    }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

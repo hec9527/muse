@@ -18,6 +18,7 @@ export interface AppState {
   searchCodeBranchModakVisible: boolean;
   publishModalVisible: boolean;
   codeBranch: string[];
+  queryCodeBranchLoading: boolean;
 }
 
 export type AppAction =
@@ -30,7 +31,8 @@ export type AppAction =
   | { type: 'UPDATE_SELECTED_ENV'; payload: Types.IEnvConfig }
   | { type: 'UPDATE_PUBLISH_MODAL_VISIBLE'; payload: boolean }
   | { type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE'; payload: boolean }
-  | { type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT'; payload: string[] };
+  | { type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT'; payload: string[] }
+  | { type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING'; payload: boolean };
 
 export type AppDispatch = (action: AppAction) => void;
 
@@ -43,6 +45,7 @@ const initState: AppState = {
   selectedEnv: {} as Types.IEnvConfig,
   publishModalVisible: false,
   searchCodeBranchModakVisible: false,
+  queryCodeBranchLoading: false,
   codeBranch: [],
 };
 
@@ -71,6 +74,8 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
       return { ...state, searchCodeBranchModakVisible: action.payload };
     case 'UPDATE_SEARCH_CODE_BRAMCH_RESULT':
       return { ...state, codeBranch: action.payload };
+    case 'UPDATE_SEARCH_CODE_BRANCH_LOADING':
+      return { ...state, queryCodeBranchLoading: action.payload };
     default:
       return { ...state };
   }

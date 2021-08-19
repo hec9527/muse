@@ -2,11 +2,12 @@ import React, { useEffect } from 'react';
 import { IProjectInfo } from '../../../index.d';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
-import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, spinner } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '../button';
 import Modal from '../modal';
 import './index.less';
+import classNames from 'classnames';
 
 const Header: React.FC = () => {
   const { appName, version }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);
@@ -50,6 +51,7 @@ const Header: React.FC = () => {
 
   const handleCheckBranch = () => {
     if (checkData('查询')) return;
+    dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: true });
     dispatch({
       type: 'POST_MESSAGE_TO_EXTENSION',
       payload: {
@@ -60,6 +62,7 @@ const Header: React.FC = () => {
         },
       },
     });
+    setTimeout(() => dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: false }), 10 * 1000);
   };
 
   const handleClearSaveDate = () => {
@@ -111,8 +114,15 @@ const Header: React.FC = () => {
           <FontAwesomeIcon icon={faSave} />
           保存记录
         </Button>
-        <Button title='快捷键（cmd+E）查看在线代码分支' onClick={handleCheckBranch}>
-          <FontAwesomeIcon icon={faCodeBranch} />
+        <Button
+          title='快捷键（cmd+E）查看在线代码分支'
+          onClick={handleCheckBranch}
+          disable={state.queryCodeBranchLoading}
+        >
+          <FontAwesomeIcon
+            icon={state.queryCodeBranchLoading ? faSpinner : faCodeBranch}
+            className={classNames({ rotate: state.queryCodeBranchLoading })}
+          />
           分支查询
         </Button>
         <Button title='快捷键（Enter）发布代码' onClick={handlePublish}>

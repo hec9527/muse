@@ -28,6 +28,7 @@ const MessageHandler: React.FC = () => {
         case 'UPDATE_QUERY_CODE_BRANCH_RESULT':
           dispatch({ type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT', payload: data.data });
           dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE', payload: true });
+          dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: false });
           break;
         default:
           console.log('未知的消息类型');

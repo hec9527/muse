@@ -30,10 +30,10 @@
     "pub": "yarn lint && vsce publish",
     "clear": "rm -rf dist",
     "dev": "npm run dev:webview & npm run dev:extension",
-    "dev:webview": "webpack -w",
+    "dev:webview": "cross-env NODE_ENV=development webpack -w",
     "dev:extension": "tsc -w --module commonjs -p ./",
-    "build": "npm run build:webview & npm run build:extension",
-    "build:webview": "webpack --mode production",
+    "build": "npm run build:webview && npm run build:extension",
+    "build:webview": "cross-env NODE_ENV=production webpack --mode production",
     "build:extension": "tsc --module commonjs -p ./"
   },
   "contributes": {
@@ -81,12 +81,11 @@
     "@types/node": "^12.11.7",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.9",
-    "@types/react-router-dom": "^5.1.8",
-    "@types/request": "^2.48.7",
     "@types/vscode": "^1.53.0",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "babel-loader": "^8.2.2",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.2.0",
     "eslint": "^7.15.0",
     "eslint-plugin-react": "^7.24.0",
@@ -118,10 +117,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0",
     "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0",
-    "request": "^2.88.2",
     "sha256": "^0.2.0"
   }
 }

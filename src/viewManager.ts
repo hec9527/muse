@@ -204,7 +204,7 @@ export default class ViewManager implements vscode.Disposable {
     const placeholder = util.formatDate('yyyy/MM/dd hh:mm:ss ') + data.env.name;
     const title = await vscode.window.showInputBox({
       value: placeholder,
-      ignoreFocusOut: true,
+      ignoreFocusOut: false,
       placeHolder: '请输入保存数据的标题',
       prompt: '给保存的数据起一个名字吧~~ ',
     });
@@ -243,7 +243,7 @@ export default class ViewManager implements vscode.Disposable {
       cacheList.map((c) => c.title),
       {
         placeHolder: '请选择将要发布的缓存数据',
-        ignoreFocusOut: true,
+        ignoreFocusOut: false,
         canPickMany: false,
       }
     );

@@ -83,7 +83,7 @@ export interface IPublish {
   websiteHost: string;
   cdnhost: string;
   env: string;
-  publish: IEnvConfig;
+  publish: IEnvConfig['value'];
   /** [ './src/p/xxxx/....' ] */
   htmlEntry: string[];
   /** { 'src/p/xxxx': './src/p/xxxx'} */

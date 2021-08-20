@@ -1,4 +1,6 @@
 import * as Types from './index.d';
+import * as path from 'path';
+import * as fs from 'fs';
 import Api from './api';
 
 /**
@@ -98,6 +100,28 @@ export function getCurrentBranck(gitPath: string) {
 /**
  * 发布代码
  */
-function publishCode(data: { env: Types.IEnvConfig; pages: string[] }) {
-  //
+export function publishCode(
+  { env, pages }: { env: Types.IEnvConfig; pages: string[] },
+  config: Types.IProjectConfig,
+  user: Types.IUserInfo
+) {
+  const { appName, version, websiteHost, cdnhost, remotes } = config;
+  const removeVersion = (str: string) => str.replace(`\/${version}`, '');
+
+  const data: Types.IPublish = {
+    appName,
+    cdnhost,
+    version,
+    websiteHost,
+    remotes,
+    publish: env.value,
+    env: env.value.env,
+    username: user.username,
+    password: user.password,
+    selectedEntry: pages,
+    htmlEntry: pages.map((p) => removeVersion(`./${p}.html`)),
+    jsEntry: pages.reduce((pre, cur) => ((pre[cur] = removeVersion(`./${cur}.js`)), pre), {} as any),
+  };
+
+  console.log('发布信息', data);
 }

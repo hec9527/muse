@@ -22,6 +22,8 @@ export default class ViewManager implements vscode.Disposable {
   private envData: Types.IEnvInfo | undefined;
   private projectConfig: Types.IProjectConfig | undefined;
   private pageInfo: string[] = [];
+  // 本地git分支
+  private branch: string | undefined;
 
   constructor(private context: vscode.ExtensionContext) {
     const res = this.checkWorkSpace();
@@ -159,11 +161,7 @@ export default class ViewManager implements vscode.Disposable {
           this.postProjectInfo();
           break;
         case 'SHOW_MESSAGE':
-          if (typeof msg.data === 'string') {
-            this.showMessage(msg.data);
-          } else {
-            this.showMessage(msg.data.message, msg.data.type);
-          }
+          this.showMessage(msg.data);
           break;
         case 'SHOW_CACHE_LIST':
           this.showCashList();
@@ -178,6 +176,7 @@ export default class ViewManager implements vscode.Disposable {
           this.queryOnlineCodeBranch(msg.data);
           break;
         case 'PUBLISH_CODE':
+          this.publishCode(msg.data);
           break;
         default:
           console.error('未知的消息类型');
@@ -335,13 +334,50 @@ export default class ViewManager implements vscode.Disposable {
     }
   }
 
-  private showMessage(message: string, type: Types.INoticeType = 'info') {
+  private async publishCode(data: { env: Types.IEnvConfig; pages: string[] }) {
+    if (!this.branch) {
+      this.branch = await util.getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'));
+    }
+    if (this.branch !== this.projectConfig?.version) {
+      const res = await this.showConfirmMessage(
+        '当前git所在分支和config.json分支不一致，是否继续发布（采用config.json分支）',
+        '继续发布',
+        '取消发布'
+      );
+      if (res === '取消发布') {
+        return;
+      }
+    }
+    util.publishCode(data, this.projectConfig!, { username: 'chun.he', password: '1222' });
+  }
+
+  private showMessage(message: string): void;
+  private showMessage(message: string, type: Types.INoticeType): void;
+  private showMessage(data: { message: string; type: Types.INoticeType }): void;
+  private showMessage(data: string | { message: string; type: Types.INoticeType }): void;
+  private showMessage(message: string | { message: string; type: Types.INoticeType }, type?: Types.INoticeType) {
+    if (typeof message === 'object') {
+      type = message.type;
+      message = message.message;
+    }
+    if (typeof type === 'undefined') {
+      type = 'info';
+    }
     const types = {
       error: 'showErrorMessage',
       info: 'showInformationMessage',
       warning: 'showWarningMessage',
     } as const;
     vscode.window[types[type]](message);
+  }
+
+  private async showConfirmMessage(message: string, ...items: string[]) {
+    return new Promise<string | undefined>((resolve) => {
+      // 考虑添加系统弹窗，用户可配置使用系统弹窗还是vscode弹窗
+      vscode.window.showInformationMessage(message, ...items).then((res) => {
+        resolve(res);
+      });
+    });
   }
 
   private getWebview() {

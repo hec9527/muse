@@ -12,6 +12,13 @@ const MessageHandler: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    // 初始化
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO' } });
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PAGE_INFO' } });
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PROJECT_INFO' } });
+  }, []);
+
+  useEffect(() => {
     const handlerMessage = (e: { data: Types.IExtensionMessage }) => {
       const data = e.data;
       switch (data.cmd) {
@@ -59,11 +66,6 @@ const MessageHandler: React.FC = () => {
         dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE', payload: false });
       }
     };
-
-    // 初始化
-    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO' } });
-    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PAGE_INFO' } });
-    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PROJECT_INFO' } });
 
     window.addEventListener('message', handlerMessage);
     window.addEventListener('keydown', handleKeyDown);

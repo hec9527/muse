@@ -41,23 +41,6 @@ export async function getUserInfo(context: vscode.ExtensionContext) {
   return info;
 }
 
-async function inputUserInfo(): Promise<Partial<IUserInfo>> {
-  const username = await vscode.window.showInputBox({
-    password: false,
-    ignoreFocusOut: false,
-    placeHolder: '请输入用户名',
-    prompt: '1/2: 输入tools系统用户名，发布和查看日志需要登录',
-  });
-
-  const password = await vscode.window.showInputBox({
-    password: true,
-    ignoreFocusOut: true,
-    placeHolder: '请输入密码',
-    prompt: '2/2: 用户名、密码自动保存在vscode插件中，只需登录一次',
-  });
-  return { username, password };
-}
-
 export async function login(context: vscode.ExtensionContext) {
   const info = await getUserInfo(context)!;
   // console.log({ name: info?.name, passwd: cryptoPassword(info!.passwd!) });

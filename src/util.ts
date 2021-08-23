@@ -1,7 +1,35 @@
+import * as vscode from 'vscode';
 import * as Types from './index.d';
 import * as path from 'path';
 import * as fs from 'fs';
 import Api from './api';
+
+/**
+ * 检查用户名和密码
+ */
+export function checkUserInfo(info?: Partial<Types.IUserInfo>): info is Types.IUserInfo {
+  return Boolean(info && info.username && info.password);
+}
+
+/**
+ * 调用vscode控件输入用户名和密码
+ */
+export async function inputUserInfo(): Promise<Partial<Types.IUserInfo>> {
+  const username = await vscode.window.showInputBox({
+    password: false,
+    ignoreFocusOut: true,
+    placeHolder: '请输入用户名',
+    prompt: '1/2: 输入tools系统用户名，发布和查看日志需要登录',
+  });
+
+  const password = await vscode.window.showInputBox({
+    password: true,
+    ignoreFocusOut: true,
+    placeHolder: '请输入密码',
+    prompt: '2/2: 用户名、密码自动保存在vscode插件中，只需登录一次',
+  });
+  return { username, password };
+}
 
 /**
  * 按照指定格式格式化时间
@@ -63,7 +91,7 @@ function parseHTML(url: string, isGray: boolean) {
   const config = isGray ? { headers: { uid: 6593329 } } : {};
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
   return new Promise<string>((resolve) => {
-    return Api.request({ url, ...config, timeout: 10 * 1000 })
+    return Api.request<string>({ url, ...config, timeout: 10 * 1000 })
       .then((response: string) => {
         const res = /\/([\d*\.?]+)\/index\.js/gi.exec(response);
         if (res && res[1]) {
@@ -78,6 +106,9 @@ function parseHTML(url: string, isGray: boolean) {
   });
 }
 
+/**
+ * 从本地git文件中读取当前分支
+ */
 export function getCurrentBranck(gitPath: string) {
   return new Promise<string>((resove, reject) => {
     if (fs.statSync(gitPath).isDirectory()) {
@@ -124,4 +155,23 @@ export function publishCode(
   };
 
   console.log('发布信息', data);
+
+  return new Promise<string>((resolve, reject) => {
+    Api.request<Types.IPublishResponse>({
+      url: Api.URL.publish,
+      data,
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+    }).then((res) => {
+      console.log('发布结果', res);
+
+      if (res.code === 403) {
+        reject(403);
+      } else if (res.code === 200) {
+        resolve(Api.URL.publishLog(res.data.appName, res.data.publishKey));
+      } else {
+        reject(`发布失败，请到 ${Api.HOST} 查看发布日志`);
+      }
+    });
+  });
 }

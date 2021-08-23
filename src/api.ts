@@ -14,16 +14,20 @@ const Api = {
     getEnvInfo: `${HOST}/api/awp/getDeployServerInfo.do`,
     /** 发布，提交代码 */
     publish: `${HOST}/api/awp/publishNoTag.do`,
+    /** 发布日志地址 */
+    publishLog: (appName: string, publishKey: string) => `${HOST}/awp/logmonitor?f=${appName}/${publishKey}.log`,
   },
   request,
 };
 
-function request<T extends any = any>(config: AxiosRequestConfig) {
+function request<T extends {} = {}>(config: AxiosRequestConfig) {
   return _axios.request(config).then((res) => {
-    if (res.status >= 200 && res.status < 300) {
-      return res.data;
-    } else if (res.status === 302) {
+    console.log('请求结果', res);
+
+    if (res.status === 302) {
       return { code: 0, message: 'login' };
+    } else {
+      return res.data;
     }
   }) as unknown as Promise<T & { code: number; message: string }>;
 }

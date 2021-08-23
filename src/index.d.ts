@@ -92,18 +92,16 @@ export interface IPublish {
   selectedEntry: string[];
 }
 
-/** 发布时 webview发送给扩展的参数 */
-export interface IParams {
-  name: string;
-  passwd: string;
-  env: {
-    name: string;
-    value: IPublish['publish'];
-  };
-  page: string[];
-}
-
 export type IExtensionConfig = vscode.WorkspaceConfiguration & {
   autoOpenLog: boolean;
   hideDisabledFilter: boolean;
+};
+
+export type IPublishResponse = {
+  data: {
+    appName: string;
+    publishKey: string;
+    timestamp: number;
+    uid: number;
+  };
 };

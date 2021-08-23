@@ -127,7 +127,6 @@ export default class ViewManager implements vscode.Disposable {
       .getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'))
       .then((branch) => {
         console.log('git分支:', branch);
-
         this.branch = branch;
       })
       .catch((error) => {
@@ -237,6 +236,18 @@ export default class ViewManager implements vscode.Disposable {
     });
   }
 
+  private inputUserInfo() {
+    return new Promise<Types.IUserInfo>(async (resolve, reject) => {
+      const info = await util.inputUserInfo();
+      if (!util.checkUserInfo(info)) {
+        this.showMessage('输入错误，稍后请重新输入');
+        reject();
+      } else {
+        this.context.globalState.update('userInfo', info).then(() => resolve(info));
+      }
+    });
+  }
+
   private getCacheData() {
     const CacheData = this.context.globalState.get<{ [K in string]: CacheItem[] }>('cacheData') || {};
     const appName = this.projectConfig?.appName;
@@ -335,6 +346,8 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private async publishCode(data: { env: Types.IEnvConfig; pages: string[] }) {
+    let userInfo = this.context.globalState.get<Types.IUserInfo>('userInfo');
+
     if (!this.branch) {
       this.branch = await util.getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'));
     }
@@ -348,7 +361,30 @@ export default class ViewManager implements vscode.Disposable {
         return;
       }
     }
-    util.publishCode(data, this.projectConfig!, { username: 'chun.he', password: '1222' });
+
+    if (!util.checkUserInfo(userInfo)) {
+      userInfo = await this.inputUserInfo();
+      if (!util.checkUserInfo(userInfo)) {
+        return;
+      }
+    }
+
+    util.publishCode(data, this.projectConfig!, userInfo).then(
+      (res) => {
+        // 发布成功  res  日志地址
+        console.log(res);
+      },
+      (reason) => {
+        console.log({ reason });
+        if (typeof reason === 'number' && reason === 403) {
+          // 输入成功后重新发布
+          this.showMessage('权限不足，请重新输入用户名和密码', 'error');
+          this.inputUserInfo().then(() => this.publishCode(data));
+        } else if (typeof reason === 'string') {
+          this.showMessage(reason, 'error');
+        }
+      }
+    );
   }
 
   private showMessage(message: string): void;

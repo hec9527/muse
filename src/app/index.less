@@ -1,3 +1,11 @@
+body.vscode-dark {
+  --list-item-color: var(--vscode-editor-foreground);
+}
+
+body.vscode-light {
+  --list-item-color: var(--vscode-editor-background);
+}
+
 * {
   outline: none !important;
   user-select: none;
@@ -43,7 +51,8 @@ body,
   }
 
   &:hover {
-    background: #567;
+    color: var(--list-item-color);
+    background: var(--vscode-button-secondaryHoverBackground);
   }
 }
 

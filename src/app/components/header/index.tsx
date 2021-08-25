@@ -129,12 +129,6 @@ const Header: React.FC = () => {
           <FontAwesomeIcon icon={faPaperPlane} />
           发布代码
         </Button>
-
-        <Button type='dashed'>dashed</Button>
-        <Button type='text'>文字</Button>
-        <Button type='text' disable>
-          禁用
-        </Button>
       </div>
     </div>
   );

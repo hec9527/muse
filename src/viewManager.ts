@@ -369,7 +369,7 @@ export default class ViewManager implements vscode.Disposable {
         '继续发布',
         '取消发布'
       );
-      if (res === '取消发布') {
+      if (res !== '继续发布') {
         return;
       }
     }
@@ -383,8 +383,16 @@ export default class ViewManager implements vscode.Disposable {
 
     util.publishCode(data, this.projectConfig!, userInfo).then(
       (res) => {
-        // 发布成功  res  日志地址
-        console.log(res);
+        const openInBrowser = () => vscode.env.openExternal(vscode.Uri.parse(res));
+        if (this.extensionConfig.autoOpenLog) {
+          openInBrowser();
+        } else {
+          this.showConfirmMessage('发布成功是否立即查看日志？', '查看日志').then((res) => {
+            if (res === '查看日志') {
+              openInBrowser();
+            }
+          });
+        }
       },
       (reason) => {
         console.log({ reason });

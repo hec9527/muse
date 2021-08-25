@@ -39,11 +39,12 @@
 
   &-dashed {
     box-sizing: border-box;
-    border: 1.5px dashed #d9d9d9;
+    color: var(--vscode-button-background);
+    border: 1.5px dashed var(--vscode-button-background);
 
     &.muse-button-disable,
     &:hover {
-      color: var(--vscode-button-background);
+      color: var(--vscode-button-hoverBackground);
       border-color: var(--vscode-button-hoverBackground);
     }
   }
@@ -67,6 +68,10 @@
   }
 
   &-disable {
+    color: var(--vscode-debugIcon-breakpointDisabledForeground) !important;
     cursor: not-allowed;
+    &:not(&.muse-button-text) {
+      background: var(--vscode-button-secondaryBackground) !important;
+    }
   }
 }

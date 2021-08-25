@@ -8,14 +8,14 @@ const f = (n: number) => `${n < 10 ? 0 : ''}${n}`;
 
 const PageContainer: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const checkAllRef = React.createRef<HTMLInputElement>();
-  const pageList = useSelector((state: AppState) => state.pageList);
-  const selectedPages = useSelector((state: AppState) => state.selectedPages);
-
+  const [filter, setFilter] = useState('');
   const [checkAll, setCheckAll] = useState(false);
   const [checkOpposite, setCheckOpposite] = useState(false);
-  const [filter, setFilter] = useState('');
   const [filterChars, setFilterChars] = useState<string[]>([]);
+  const checkAllRef = React.createRef<HTMLInputElement>();
+  const [pageList, selectedPages, hideDisabledFilter] = useSelector(
+    (state: AppState) => [state.pageList, state.selectedPages, state.extensionConfig.hideDisabledFilter] as const
+  );
 
   const setSelectedPages = (payload: string[]) => {
     dispatch({ type: 'UPDATE_SELECTED_PAGE', payload });
@@ -47,6 +47,7 @@ const PageContainer: React.FC = () => {
     for (let i = 65; i <= 90; i++) {
       const char = String.fromCharCode(i);
       const disabled = !filterChars.includes(char);
+      if (disabled && hideDisabledFilter) continue;
       const el = (
         <label
           className={classNames(`filter-char`, { disabled })}

@@ -1,8 +1,7 @@
-@import '../../less/colors-button.less';
-
 .muse-button {
   display: inline-block;
   box-sizing: border-box;
+  color: var(--vscode-button-foreground);
   outline: none;
   cursor: pointer;
   transition: color background 50ms linear;
@@ -13,10 +12,10 @@
   }
 
   &-text {
-    color: @button-primary-color;
+    color: var(--vscode-button-background);
     &.muse-button-disable,
     &:hover {
-      color: @button-primary-active-color;
+      color: var(--vscode-button-hoverBackground);
     }
   }
 
@@ -40,33 +39,30 @@
 
   &-dashed {
     box-sizing: border-box;
-    color: @button-dashed-color;
-    border: 1.5px dashed @button-dashed-border-color;
+    border: 1.5px dashed #d9d9d9;
 
     &.muse-button-disable,
     &:hover {
-      color: @button-primary-color;
-      border-color: @button-primary-active-color;
+      color: var(--vscode-button-background);
+      border-color: var(--vscode-button-hoverBackground);
     }
   }
 
   &-primary {
-    color: @button-text-color;
-    background: @button-primary-color;
+    background: var(--vscode-button-background);
 
     &.muse-button-disable,
     &:hover {
-      background: @button-primary-active-color;
+      background: var(--vscode-button-hoverBackground);
     }
   }
 
   &-danger {
-    color: @button-text-color;
-    background: @button-danger-color;
+    background: var(--vscode-statusBarItem-errorBackground);
 
     &.muse-button-disable,
     &:hover {
-      background: @button-danger-active-color;
+      opacity: 0.9;
     }
   }
 

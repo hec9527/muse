@@ -101,6 +101,7 @@ const Header: React.FC = () => {
       </div>
 
       <div className='muse-btn-group'>
+        {/* TODO 添加快捷键 */}
         <Button title='快捷键（cmd+）查看历史发布信息，并选择删除' onClick={handleClearSaveDate} type='danger'>
           <FontAwesomeIcon icon={faTrashAlt} />
           清除记录
@@ -127,6 +128,12 @@ const Header: React.FC = () => {
         <Button title='快捷键（Enter）发布代码' onClick={handlePublish}>
           <FontAwesomeIcon icon={faPaperPlane} />
           发布代码
+        </Button>
+
+        <Button type='dashed'>dashed</Button>
+        <Button type='text'>文字</Button>
+        <Button type='text' disable>
+          禁用
         </Button>
       </div>
     </div>

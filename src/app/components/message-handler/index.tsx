@@ -6,7 +6,7 @@ import * as Types from '../../../index.d';
 // 拉取发布信息失败，重试次数
 let times = 0;
 
-// 空组件， 使用 hooks 接收并且处理来自插件的消息
+// 空组件， 使用 hooks 接收并且处理来自插件的消息，同时发送消息给插件
 const MessageHandler: React.FC = () => {
   const state = useSelector((state: AppState) => state);
   const dispatch = useDispatch<AppDispatch>();
@@ -16,6 +16,7 @@ const MessageHandler: React.FC = () => {
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO' } });
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PAGE_INFO' } });
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PROJECT_INFO' } });
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_EXTENSIONCONFIG' } });
   }, []);
 
   useEffect(() => {
@@ -45,10 +46,15 @@ const MessageHandler: React.FC = () => {
         case 'UPDATE_PAGE_INFO':
           dispatch({ type: 'UPDATE_PAGE_INFO', payload: data.data });
           break;
+        case 'UPDATE_EXTENSIONCONFIG':
+          dispatch({ type: 'UPDATE_EXTENSIONCONFIG', payload: data.data });
+          break;
         case 'QUICK_PUBLISH':
           dispatch({ type: 'UPDATE_SELECTED_ENV', payload: data.data.env });
           dispatch({ type: 'UPDATE_SELECTED_PAGE', payload: data.data.pages });
-          dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: true });
+          if (state.extensionConfig.autoOpenQuickPublishModal) {
+            dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: true });
+          }
           break;
         case 'UPDATE_QUERY_CODE_BRANCH_RESULT':
           dispatch({ type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT', payload: data.data });
@@ -73,7 +79,7 @@ const MessageHandler: React.FC = () => {
       window.removeEventListener('message', handlerMessage);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [state.publishModalVisible, state.searchCodeBranchModakVisible]);
+  }, [state.publishModalVisible, state.searchCodeBranchModakVisible, state.extensionConfig]);
 
   return null;
 };

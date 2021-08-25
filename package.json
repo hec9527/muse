@@ -68,6 +68,11 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "### 隐藏被禁用的过滤器\n页面选择的过滤器是按照页面首字母编排的，如果某个首字母的页面不存在，该字母将会被禁用，隐藏没用的过滤器可以减少不必要内容，在小窗模式或者放大模式下不至于超出屏幕边界"
+        },
+        "muse.autoOpenQuickPublishModal": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "快速发布时，选择发布内容后自动打开发布弹窗"
         }
       }
     }

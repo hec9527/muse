@@ -24,6 +24,7 @@ export default class ViewManager implements vscode.Disposable {
   private pageInfo: string[] = [];
   // 本地git分支
   private branch: string | undefined;
+  private extensionConfig: Types.IExtensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
 
   constructor(private context: vscode.ExtensionContext) {
     const res = this.checkWorkSpace();
@@ -159,6 +160,9 @@ export default class ViewManager implements vscode.Disposable {
         case 'GET_PROJECT_INFO':
           this.postProjectInfo();
           break;
+        case 'GET_EXTENSIONCONFIG':
+          this.postExtensionConfig();
+          break;
         case 'SHOW_MESSAGE':
           this.showMessage(msg.data);
           break;
@@ -223,6 +227,14 @@ export default class ViewManager implements vscode.Disposable {
         appName,
         version,
       },
+    });
+  }
+
+  private postExtensionConfig() {
+    this.extensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+    this.postInfo({
+      cmd: 'UPDATE_EXTENSIONCONFIG',
+      data: this.extensionConfig,
     });
   }
 

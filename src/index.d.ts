@@ -41,6 +41,7 @@ export type IEnvInfo = {
 
 /** webview发送给扩展的消息类型 */
 export type IWebviewMessage =
+  | { cmd: 'GET_EXTENSIONCONFIG' }
   | { cmd: 'GET_PAGE_INFO' }
   | { cmd: 'GET_ENV_INFO' }
   | { cmd: 'GET_PROJECT_INFO' }
@@ -72,6 +73,10 @@ export type IExtensionMessage =
   | {
       cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT';
       data: string[];
+    }
+  | {
+      cmd: 'UPDATE_EXTENSIONCONFIG';
+      data: IExtensionConfig;
     };
 
 export interface IPublish {
@@ -93,8 +98,12 @@ export interface IPublish {
 }
 
 export type IExtensionConfig = vscode.WorkspaceConfiguration & {
+  /** 发布成功后自动在浏览器中查看日志 */
   autoOpenLog: boolean;
+  /** 隐藏禁用的页面过滤器 */
   hideDisabledFilter: boolean;
+  /** 快速发布时，自动打开确认发布弹窗 */
+  autoOpenQuickPublishModal: boolean;
 };
 
 export type IPublishResponse = {

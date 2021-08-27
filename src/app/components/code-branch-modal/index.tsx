@@ -12,7 +12,7 @@ const SearchCodeBranchModal: React.FC = () => {
     <Modal
       title='代码分支'
       size='small'
-      visible={state.searchCodeBranchModakVisible}
+      visible={state.searchCodeBranchModalVisible}
       showCancelButton={false}
       onOk={() => {
         dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE', payload: false });

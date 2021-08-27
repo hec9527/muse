@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { IProjectInfo } from '../../../index.d';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../../store/reducer';
 import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -9,9 +8,8 @@ import Button from '../button';
 import './index.less';
 
 const Header: React.FC = () => {
-  const { appName, version }: IProjectInfo = useSelector((state: AppState) => state.projectInfo);
-  const dispatch = useDispatch<AppDispatch>();
   const state = useSelector((state: AppState) => state);
+  const dispatch = useDispatch<AppDispatch>();
 
   const checkData = (action: string) => {
     let message;
@@ -75,6 +73,9 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (state.publishModalVisible || state.searchCodeBranchModalVisible) {
+        return;
+      }
       if (e.metaKey && e.key === 'Enter') {
         return handleQuickPublish();
       }
@@ -90,14 +91,14 @@ const Header: React.FC = () => {
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleQuickPublish, handlePublish, handleSaveData, handleCheckBranch]);
+  }, [state.searchCodeBranchModalVisible, state.publishModalVisible, state.selectedEnv, state.selectedPages]);
 
   return (
     <div className='header-container'>
       <div className='project-title'>
-        <span>{appName?.toUpperCase()}</span>
+        <span>{state.projectInfo?.appName?.toUpperCase()}</span>
         <span className='divider'>/</span>
-        <span>{version}</span>
+        <span>{state.projectInfo?.version}</span>
       </div>
 
       <div className='muse-btn-group'>

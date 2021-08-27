@@ -15,7 +15,7 @@ export interface AppState {
   hideDisabledFilter: boolean;
   selectedPages: string[];
   selectedEnv: Types.IEnvConfig;
-  searchCodeBranchModakVisible: boolean;
+  searchCodeBranchModalVisible: boolean;
   publishModalVisible: boolean;
   codeBranch: string[];
   queryCodeBranchLoading: boolean;
@@ -46,7 +46,7 @@ const initState: AppState = {
   hideDisabledFilter: false,
   selectedEnv: {} as Types.IEnvConfig,
   publishModalVisible: false,
-  searchCodeBranchModakVisible: false,
+  searchCodeBranchModalVisible: false,
   queryCodeBranchLoading: false,
   codeBranch: [],
   extensionConfig: {} as Types.IExtensionConfig,
@@ -76,7 +76,7 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
     case 'UPDATE_PUBLISH_MODAL_VISIBLE':
       return { ...state, publishModalVisible: action.payload };
     case 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE':
-      return { ...state, searchCodeBranchModakVisible: action.payload };
+      return { ...state, searchCodeBranchModalVisible: action.payload };
     case 'UPDATE_SEARCH_CODE_BRAMCH_RESULT':
       return { ...state, codeBranch: action.payload };
     case 'UPDATE_SEARCH_CODE_BRANCH_LOADING':

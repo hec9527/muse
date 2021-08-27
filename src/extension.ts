@@ -8,7 +8,7 @@ export async function activate(context: vscode.ExtensionContext) {
   try {
     new ViewManager(context);
   } catch (error) {
-    vscode.window.showErrorMessage(error);
+    vscode.window.showErrorMessage(error as string);
     console.log(error);
   }
 

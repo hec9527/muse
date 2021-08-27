@@ -71,7 +71,7 @@ export default class ViewManager implements vscode.Disposable {
   private initEnvInfo() {
     return api
       .request<{ data: Types.IEnvInfo }>({ url: api.URL.getEnvInfo, method: 'post' })
-      .then((res) => {
+      .then(res => {
         console.log('环境信息：', res);
         if (res) {
           this.envData = res.data;
@@ -101,7 +101,7 @@ export default class ViewManager implements vscode.Disposable {
     // 递归查找项目src/p目录
     const searchDir = (root: string) => {
       try {
-        fs.readdirSync(root).forEach((fileOrDir) => {
+        fs.readdirSync(root).forEach(fileOrDir => {
           const subPath = path.join(root, fileOrDir);
           const state = fs.statSync(subPath);
           if (state.isDirectory()) {
@@ -114,7 +114,7 @@ export default class ViewManager implements vscode.Disposable {
           }
         });
       } catch (error) {
-        vscode.window.showErrorMessage(error);
+        vscode.window.showErrorMessage(error as string);
       }
     };
 
@@ -126,18 +126,18 @@ export default class ViewManager implements vscode.Disposable {
   private initGitInfo() {
     util
       .getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'))
-      .then((branch) => {
+      .then(branch => {
         console.log('git分支:', branch);
         this.branch = branch;
       })
-      .catch((error) => {
+      .catch(error => {
         this.showMessage(error, 'error');
       });
   }
 
   private bindCommand() {
     const showWebview = vscode.commands.registerCommand(cmd.webview, () => this.getWebview());
-    const postInfo = vscode.commands.registerCommand(cmd.postInfo, (info) => {
+    const postInfo = vscode.commands.registerCommand(cmd.postInfo, info => {
       if (this.webview) {
         this.webview.webview.postMessage(info);
       }
@@ -291,7 +291,7 @@ export default class ViewManager implements vscode.Disposable {
             this.showMessage('保存成功', 'info');
           });
       } catch (error) {
-        return this.showMessage(error, 'error');
+        return this.showMessage(error as string, 'error');
       }
     }
   }
@@ -304,7 +304,7 @@ export default class ViewManager implements vscode.Disposable {
         return this.showMessage('没有找到保存的发布数据~', 'warning');
       }
       const title = await vscode.window.showQuickPick(
-        cacheList.map((c) => c.title),
+        cacheList.map(c => c.title),
         {
           placeHolder: '请选择将要发布的缓存数据',
           ignoreFocusOut: false,
@@ -312,7 +312,7 @@ export default class ViewManager implements vscode.Disposable {
         }
       );
       if (title) {
-        const item = cacheList.find((c) => c.title === title);
+        const item = cacheList.find(c => c.title === title);
         if (item) {
           this.postInfo({
             cmd: 'QUICK_PUBLISH',
@@ -321,7 +321,7 @@ export default class ViewManager implements vscode.Disposable {
         }
       }
     } catch (error) {
-      this.showMessage(error, 'error');
+      this.showMessage(error as string, 'error');
     }
   }
 
@@ -335,7 +335,7 @@ export default class ViewManager implements vscode.Disposable {
       }
 
       const titles = await vscode.window.showQuickPick(
-        CacheList.map((c) => c.title),
+        CacheList.map(c => c.title),
         {
           placeHolder: '请选择要删除的发布记录',
           canPickMany: true,
@@ -346,14 +346,14 @@ export default class ViewManager implements vscode.Disposable {
         this.context.globalState
           .update('cacheData', {
             ...CacheDate,
-            [appName]: CacheList.filter((c) => !titles.includes(c.title)),
+            [appName]: CacheList.filter(c => !titles.includes(c.title)),
           })
           .then(() => {
             this.showMessage('删除成功', 'info');
           });
       }
     } catch (error) {
-      return this.showMessage(error, 'error');
+      return this.showMessage(error as string, 'error');
     }
   }
 
@@ -382,19 +382,19 @@ export default class ViewManager implements vscode.Disposable {
     }
 
     util.publishCode(data, this.projectConfig!, userInfo).then(
-      (res) => {
+      res => {
         const openInBrowser = () => vscode.env.openExternal(vscode.Uri.parse(res));
         if (this.extensionConfig.autoOpenLog) {
           openInBrowser();
         } else {
-          this.showConfirmMessage('发布成功是否立即查看日志？', '查看日志').then((res) => {
+          this.showConfirmMessage('发布成功是否立即查看日志？', '查看日志').then(res => {
             if (res === '查看日志') {
               openInBrowser();
             }
           });
         }
       },
-      (reason) => {
+      reason => {
         console.log({ reason });
         if (typeof reason === 'number' && reason === 403) {
           // 输入成功后重新发布
@@ -428,9 +428,9 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private async showConfirmMessage(message: string, ...items: string[]) {
-    return new Promise<string | undefined>((resolve) => {
+    return new Promise<string | undefined>(resolve => {
       // 考虑添加系统弹窗，用户可配置使用系统弹窗还是vscode弹窗
-      vscode.window.showInformationMessage(message, ...items).then((res) => {
+      vscode.window.showInformationMessage(message, ...items).then(res => {
         resolve(res);
       });
     });

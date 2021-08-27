@@ -3,7 +3,7 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const babelLoader = {
   loader: 'babel-loader',
@@ -19,13 +19,13 @@ const plugins = [
   }),
 ];
 
-if (process.env.NODE_ENV === 'development') {
-  plugins.push(
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './src/app/template/index.html'),
-    })
-  );
-}
+// if (process.env.NODE_ENV === 'development') {
+//   plugins.push(
+//     new HtmlWebpackPlugin({
+//       template: path.resolve(__dirname, './src/app/template/index.html'),
+//     })
+//   );
+// }
 
 /** @type {import("webpack").Configuration} */
 const config = {
@@ -42,12 +42,8 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(j|t)sx?$/,
         use: [babelLoader],
-      },
-      {
-        test: /\.tsx?$/,
-        use: [babelLoader, 'ts-loader'],
       },
       {
         test: /\.less$/,

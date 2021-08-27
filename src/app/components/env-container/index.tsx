@@ -7,7 +7,7 @@ import './index.less';
 
 const ServerEnv: React.FC = ({}) => {
   const dispatch = useAppDispatch();
-  const [envInfo, selectedEnv] = useAppSelect((s) => [s.serverInfo, s.selectedEnv] as const);
+  const [envInfo, selectedEnv] = useAppSelect(s => [s.serverInfo, s.selectedEnv] as const);
 
   const handleEnvClick = (env: Types.IEnvConfig) => {
     dispatch({ type: 'UPDATE_SELECTED_ENV', payload: env });
@@ -18,7 +18,7 @@ const ServerEnv: React.FC = ({}) => {
       <div className='section-title'>环境选择</div>
       {envInfo.data && envInfo.envFilter ? (
         <div className='section-wrap muse-env-warp'>
-          {envInfo.envFilter?.map((f) => (
+          {envInfo.envFilter?.map(f => (
             <div key={f.key} className='env-group'>
               <div className='env-title'>{f.name}</div>
               <div className='env-list'>

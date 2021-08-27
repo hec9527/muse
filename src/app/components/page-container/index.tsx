@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppState, AppDispatch } from '../../store/reducer';
+import { useAppSelect, useAppDispatch } from '../../store/reducer';
 import classNames from 'classnames';
 import './index.less';
 
 const f = (n: number) => `${n < 10 ? 0 : ''}${n}`;
 
 const PageContainer: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const [pageList, selectedPages, hideDisabledFilter] = useAppSelect(
+    s => [s.pageList, s.selectedPages, s.extensionConfig.hideDisabledFilter] as const
+  );
+
   const [filter, setFilter] = useState('');
   const [checkAll, setCheckAll] = useState(false);
   const [checkOpposite, setCheckOpposite] = useState(false);
   const [filterChars, setFilterChars] = useState<string[]>([]);
   const checkAllRef = React.createRef<HTMLInputElement>();
-  const [pageList, selectedPages, hideDisabledFilter] = useSelector(
-    (state: AppState) => [state.pageList, state.selectedPages, state.extensionConfig.hideDisabledFilter] as const
-  );
 
   const setSelectedPages = (payload: string[]) => {
     dispatch({ type: 'UPDATE_SELECTED_PAGE', payload });
@@ -30,13 +30,13 @@ const PageContainer: React.FC = () => {
   };
 
   const handleCheckOpposite = () => {
-    setCheckOpposite((c) => !c);
-    setSelectedPages(pageList.filter((p) => !selectedPages.includes(p)));
+    setCheckOpposite(c => !c);
+    setSelectedPages(pageList.filter(p => !selectedPages.includes(p)));
   };
 
   const handlePageItemClick = (page: string) => {
     if (selectedPages.includes(page)) {
-      setSelectedPages(selectedPages.filter((p) => p !== page));
+      setSelectedPages(selectedPages.filter(p => p !== page));
     } else {
       setSelectedPages([...selectedPages, page]);
     }
@@ -95,7 +95,7 @@ const PageContainer: React.FC = () => {
   useEffect(() => {
     const set = new Set<string>();
     const reg = /^src\/p\/(\w).*$/i;
-    pageList.forEach((p) => {
+    pageList.forEach(p => {
       const res = reg.exec(p);
       if (res?.[1]) {
         set.add(res[1].toLocaleUpperCase());

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '../../store/reducer';
+import { useAppDispatch, useAppSelect } from '../../store/reducer';
 import * as Types from '../../../index.d';
 
 // 拉取发布信息失败，重试次数
@@ -8,8 +7,8 @@ let times = 0;
 
 // 空组件， 使用 hooks 接收并且处理来自插件的消息，同时发送消息给插件
 const MessageHandler: React.FC = () => {
-  const state = useSelector((state: AppState) => state);
-  const dispatch = useDispatch<AppDispatch>();
+  const state = useAppSelect(s => s);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // 初始化

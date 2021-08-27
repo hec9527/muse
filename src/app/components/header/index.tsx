@@ -7,7 +7,7 @@ import Button from '../button';
 import './index.less';
 
 const Header: React.FC = () => {
-  const state = useAppSelect((s) => s);
+  const state = useAppSelect(s => s);
   const dispatch = useAppDispatch();
 
   const checkData = (action: string) => {

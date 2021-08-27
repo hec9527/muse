@@ -1,12 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '../../store/reducer';
+import { useAppDispatch, useAppSelect } from '../../store/reducer';
 import Modal from '../modal/';
 import './index.less';
 
 const SearchCodeBranchModal: React.FC = () => {
-  const state = useSelector((state: AppState) => state);
-  const dispatch = useDispatch<AppDispatch>();
+  const state = useAppSelect(s => s);
+  const dispatch = useAppDispatch();
 
   return (
     <Modal
@@ -29,7 +28,7 @@ const SearchCodeBranchModal: React.FC = () => {
                 <th>页面</th>
                 <th>分支</th>
               </tr>
-              {state.codeBranch.map((p) => {
+              {state.codeBranch.map(p => {
                 const arr = p.split('|');
                 return (
                   <tr key={p}>

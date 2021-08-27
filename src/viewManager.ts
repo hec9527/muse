@@ -16,7 +16,7 @@ export default class ViewManager implements vscode.Disposable {
   private viewType = 'Muse';
   private viewTitle = 'muse';
   /** 可视化页面编译后的js */
-  private distPath = 'dist/webview/main.js';
+  private distPath = 'dist/webview/index.js';
   private webview: vscode.WebviewPanel | undefined;
   private workFolder: vscode.WorkspaceFolder;
   private envData: Types.IEnvInfo | undefined;

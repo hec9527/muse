@@ -3,29 +3,12 @@
 const path = require('path');
 const webpack = require('webpack');
 
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 const babelLoader = {
   loader: 'babel-loader',
   options: {
     presets: ['@babel/preset-env', '@babel/preset-react'],
   },
 };
-
-/** @type {import("webpack").Configuration['plugins']} */
-const plugins = [
-  new webpack.DefinePlugin({
-    NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-  }),
-];
-
-// if (process.env.NODE_ENV === 'development') {
-//   plugins.push(
-//     new HtmlWebpackPlugin({
-//       template: path.resolve(__dirname, './src/app/template/index.html'),
-//     })
-//   );
-// }
 
 /** @type {import("webpack").Configuration} */
 const config = {
@@ -36,7 +19,7 @@ const config = {
 
   output: {
     path: path.resolve(__dirname, './dist/webview'),
-    filename: 'main.js',
+    filename: 'index.js',
   },
 
   module: {
@@ -56,7 +39,11 @@ const config = {
     extensions: ['.ts', '.tsx', '.js', '.less'],
   },
 
-  plugins,
+  plugins: [
+    new webpack.DefinePlugin({
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    }),
+  ],
 };
 
 module.exports = config;

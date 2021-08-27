@@ -1,3 +1,4 @@
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import * as Types from '../../index.d';
 
 declare function acquireVsCodeApi(): {
@@ -85,3 +86,6 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
       return { ...state };
   }
 }
+
+export const useAppSelect: TypedUseSelectorHook<AppState> = useSelector;
+export const useAppDispatch = () => useDispatch<AppDispatch>();

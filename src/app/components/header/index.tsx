@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '../../store/reducer';
+import { useAppDispatch, useAppSelect } from '../../store/reducer';
 import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
@@ -8,8 +7,8 @@ import Button from '../button';
 import './index.less';
 
 const Header: React.FC = () => {
-  const state = useSelector((state: AppState) => state);
-  const dispatch = useDispatch<AppDispatch>();
+  const state = useAppSelect((s) => s);
+  const dispatch = useAppDispatch();
 
   const checkData = (action: string) => {
     let message;

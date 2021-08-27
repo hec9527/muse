@@ -1,17 +1,13 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from '../../store/reducer';
+import { useAppDispatch, useAppSelect } from '../../store/reducer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import * as Types from '../../../index.d';
 import './index.less';
 
 const ServerEnv: React.FC = ({}) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { envInfo, selectedEnv } = useSelector((state: AppState) => ({
-    envInfo: state.serverInfo,
-    selectedEnv: state.selectedEnv,
-  }));
+  const dispatch = useAppDispatch();
+  const [envInfo, selectedEnv] = useAppSelect((s) => [s.serverInfo, s.selectedEnv] as const);
 
   const handleEnvClick = (env: Types.IEnvConfig) => {
     dispatch({ type: 'UPDATE_SELECTED_ENV', payload: env });

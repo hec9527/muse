@@ -18,7 +18,7 @@ const config = {
   target: 'node',
 
   output: {
-    path: path.resolve(__dirname, './dist/webview'),
+    path: path.resolve(__dirname, './dist/view'),
     filename: 'index.js',
   },
 

@@ -1,18 +1,22 @@
+# folder
 .vscode/**
 .vscode-test/**
 out/test/**
 src/**
+script/
+
+# special file
 .yarnrc
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
 **/*.ts
+*.js.map
+*.LICENSE.txt
 yarn.lock
 
 .gitignore
 .eslintignore
 .prettierignore
 .stylelintrc.json
-
-
 vsc-extension-quickstart.md

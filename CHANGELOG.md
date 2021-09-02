@@ -2,9 +2,11 @@
 
 ## 0.3.0
 
-- 基于 `webpack` + `react` 重写 `webview` 内容
+- 使用 `react` 重写 `webview` 内容
 
-- 修改主题配色，`webview` 内容，根据 `vscode` 主题自适应
+- 使用 `webpack` 打包 `webview` 以及扩展，生产环境打包更小，加载时间更短
+
+- 修改主题配色，`webview` 内容根据 `vscode` 主题自适应
 
 - 重写插件逻辑，优化代码结构
 
@@ -13,8 +15,6 @@
 - `webview` 中添加新的图标
 
 - 删除 `webview` 中用户名和密码输入框，改为 `vscode` 自带 `input` 组件输入
-
-- \*添加 `vscode` 中日志查询和结果感知功能(日志中报错会在 `vscode` 中提示)
 
 ## 0.2.7
 

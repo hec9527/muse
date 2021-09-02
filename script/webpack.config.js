@@ -3,22 +3,15 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const babelLoader = {
-  loader: 'babel-loader',
-  options: {
-    presets: ['@babel/preset-env', '@babel/preset-react'],
-  },
-};
-
 /** @type {import("webpack").Configuration} */
 const config = {
   mode: 'development',
-  entry: path.resolve(__dirname, './src/app/index.tsx'),
+  entry: path.resolve(__dirname, '../src/app/index.tsx'),
 
   target: 'node',
 
   output: {
-    path: path.resolve(__dirname, './dist/view'),
+    path: path.resolve(__dirname, '../dist/view'),
     filename: 'index.js',
   },
 
@@ -26,7 +19,7 @@ const config = {
     rules: [
       {
         test: /\.(j|t)sx?$/,
-        use: [babelLoader],
+        use: ['babel-loader'],
       },
       {
         test: /\.less$/,

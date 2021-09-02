@@ -30,11 +30,12 @@
     "pub": "yarn lint && vsce publish",
     "clear": "rm -rf dist",
     "dev": "npm run dev:webview & npm run dev:extension",
-    "dev:webview": "cross-env NODE_ENV=development webpack -w",
-    "dev:extension": "tsc -w --module commonjs -p ./",
+    "dev:webview": "cross-env NODE_ENV=development webpack -w --config ./script/webpack.config.js",
+    "dev:extension": "cross-env NODE_ENV=production webpack -w --config ./script/webpack.extension.config.js",
     "build": "npm run build:webview && npm run build:extension",
-    "build:webview": "cross-env NODE_ENV=production webpack --mode production",
-    "build:extension": "tsc --module commonjs -p ./"
+    "build:webview": "cross-env NODE_ENV=production webpack --mode production --config ./script/webpack.config.js",
+    "build:extension": "cross-env NODE_ENV=production webpack --mode production --config ./script/webpack.extension.config.js",
+    "tsc": "tsc --module commonjs -p ./"
   },
   "contributes": {
     "commands": [
@@ -104,6 +105,7 @@
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^22.0.0",
     "stylelint-order": "^4.1.0",
+    "ts-loader": "^9.2.5",
     "typescript": "^4.3.4",
     "vsce": "1.93.0",
     "vscode-test": "1.5.2",

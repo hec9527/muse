@@ -21,8 +21,8 @@ const Api = {
 };
 
 function request<T extends {} = {}>(config: AxiosRequestConfig) {
-  return _axios.request(config).then((res) => {
-    console.log('请求结果', res);
+  return _axios.request(config).then(res => {
+    // console.log('请求结果', res);
 
     if (res.status === 302) {
       return { code: 0, message: 'login' };

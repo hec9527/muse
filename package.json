@@ -23,10 +23,10 @@
     "url": "http://gitlab.100credit.cn/fed/muse.git"
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
+    "vscode:prepublish": "npm run lint && yarn run compile",
     "compile": "yarn run clear && yarn run build",
     "vsix": "node ./script/install.js",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src --ext ts,tsx",
     "pub": "yarn lint && vsce publish",
     "clear": "rm -rf dist",
     "dev": "yarn run dev:webview & yarn run dev:extension",

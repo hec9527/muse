@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AppState } from '../store/reducer';
 
 const logger =

@@ -249,14 +249,17 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private inputUserInfo() {
-    return new Promise<Types.IUserInfo>(async (resolve, reject) => {
-      const info = await util.inputUserInfo();
-      if (!util.checkUserInfo(info)) {
-        this.showMessage('输入错误，稍后请重新输入');
-        reject();
-      } else {
-        this.context.globalState.update('userInfo', info).then(() => resolve(info));
-      }
+    return new Promise<Types.IUserInfo>((resolve, reject) => {
+      util.inputUserInfo().then(info => {
+        if (!util.checkUserInfo(info)) {
+          this.showMessage('输入错误，稍后请重新输入');
+          reject();
+        } else {
+          this.context.globalState.update('userInfo', info).then(() => {
+            resolve(info);
+          });
+        }
+      });
     });
   }
 

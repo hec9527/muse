@@ -1,4 +1,3 @@
-// import * as vscode from 'vscode';
 import axios, { AxiosRequestConfig } from 'axios';
 
 const _axios = axios.create();
@@ -20,7 +19,8 @@ const Api = {
   request,
 };
 
-function request<T extends {} = {}>(config: AxiosRequestConfig) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function request<T extends any = any>(config: AxiosRequestConfig) {
   return _axios.request(config).then(res => {
     // console.log('请求结果', res);
 

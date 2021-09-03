@@ -29,7 +29,6 @@ export type AppAction =
   | { type: 'UPDATE_SERVER_INFO'; payload: ServerInfo }
   | { type: 'UPDATE_PAGE_INFO'; payload: { pages: string[]; hideDisabledFilter: boolean } }
   | { type: 'UPDATE_EXTENSIONCONFIG'; payload: Types.IExtensionConfig }
-  | { type: 'UPDATE_QUERY_CODE_VERSION'; payload: any }
   | { type: 'UPDATE_SELECTED_PAGE'; payload: string[] }
   | { type: 'UPDATE_SELECTED_ENV'; payload: Types.IEnvConfig }
   | { type: 'UPDATE_PUBLISH_MODAL_VISIBLE'; payload: boolean }

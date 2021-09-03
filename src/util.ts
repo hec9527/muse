@@ -34,12 +34,12 @@ export async function inputUserInfo(): Promise<Partial<Types.IUserInfo>> {
 /**
  * 按照指定格式格式化时间
  */
-export function formatDate(format: string, date: string | number | Date = new Date()) {
+export function formatDate(format: string, date: string | number | Date = new Date()): string {
   type Keys = keyof typeof o;
 
   date = new Date(date);
 
-  var o = {
+  const o = {
     'M+': date.getMonth() + 1,
     //月份
     'd+': date.getDate(),
@@ -54,7 +54,7 @@ export function formatDate(format: string, date: string | number | Date = new Da
   if (/(y+)/i.test(format)) {
     format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
   }
-  for (var k in o) {
+  for (const k in o) {
     const _k = k as Keys;
     if (new RegExp('(' + k + ')').test(format)) {
       format = format.replace(
@@ -72,7 +72,7 @@ export function formatDate(format: string, date: string | number | Date = new Da
 export function getOnlineCodeBranch(
   { env, pages }: { env: Types.IEnvConfig; pages: string[] },
   config: Types.IProjectConfig
-) {
+): Promise<string[]> {
   const { appName, websiteHost } = config;
   const isGray = /灰度/.test(env.name);
   const isDaily = /日常/.test(env.name);
@@ -80,8 +80,8 @@ export function getOnlineCodeBranch(
   uri += isDaily ? `//${env.value.host}` : websiteHost;
   uri += `/${appName}/`;
 
-  pages = pages.map((p) => p.replace(/(.*?\/)[\d\.]+\/index/, `${uri}$1index.html`));
-  return Promise.all(pages.map((p) => parseHTML(p, isGray)));
+  pages = pages.map(p => p.replace(/(.*?\/)[\d.]+\/index/, `${uri}$1index.html`));
+  return Promise.all(pages.map(p => parseHTML(p, isGray)));
 }
 
 /**
@@ -90,10 +90,10 @@ export function getOnlineCodeBranch(
 function parseHTML(url: string, isGray: boolean) {
   const config = isGray ? { headers: { uid: 6593329 } } : {};
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
-  return new Promise<string>((resolve) => {
+  return new Promise<string>(resolve => {
     return Api.request<string>({ url, ...config, timeout: 10 * 1000 })
       .then((response: string) => {
-        const res = /\/([\d*\.?]+)\/index\.js/gi.exec(response);
+        const res = /\/([\d*.?]+)\/index\.js/gi.exec(response);
         if (res && res[1]) {
           resolve(`${page?.[1] || ''}|${res[1]}`);
         } else {
@@ -109,7 +109,7 @@ function parseHTML(url: string, isGray: boolean) {
 /**
  * 从本地git文件中读取当前分支
  */
-export function getCurrentBranck(gitPath: string) {
+export function getCurrentBranck(gitPath: string): Promise<string> {
   return new Promise<string>((resove, reject) => {
     if (fs.statSync(gitPath).isDirectory()) {
       const refFile = path.join(gitPath, 'HEAD');
@@ -135,9 +135,9 @@ export function publishCode(
   { env, pages }: { env: Types.IEnvConfig; pages: string[] },
   config: Types.IProjectConfig,
   user: Types.IUserInfo
-) {
+): Promise<string> {
   const { appName, version, websiteHost, cdnhost, remotes } = config;
-  const removeVersion = (str: string) => str.replace(`\/${version}`, '');
+  const removeVersion = (str: string) => str.replace(`/${version}`, '');
 
   const data: Types.IPublish = {
     appName,
@@ -150,8 +150,11 @@ export function publishCode(
     username: user.username,
     password: user.password,
     selectedEntry: pages,
-    htmlEntry: pages.map((p) => removeVersion(`./${p}.html`)),
-    jsEntry: pages.reduce((pre, cur) => ((pre[cur] = removeVersion(`./${cur}.js`)), pre), {} as any),
+    htmlEntry: pages.map(p => removeVersion(`./${p}.html`)),
+    jsEntry: pages.reduce(
+      (pre, cur) => ((pre[cur] = removeVersion(`./${cur}.js`)), pre),
+      {} as { [K in string]: string }
+    ),
   };
 
   console.log('发布信息', data);
@@ -162,7 +165,7 @@ export function publishCode(
       data,
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-    }).then((res) => {
+    }).then(res => {
       console.log('发布结果', res);
 
       if (res.code === 403) {

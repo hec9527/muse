@@ -44,6 +44,7 @@ const MessageHandler: React.FC = () => {
           break;
         case 'UPDATE_PAGE_INFO':
           dispatch({ type: 'UPDATE_PAGE_INFO', payload: data.data });
+          dispatch({ type: 'UPDATE_SELECTED_PAGE', payload: [] });
           break;
         case 'UPDATE_EXTENSIONCONFIG':
           dispatch({ type: 'UPDATE_EXTENSIONCONFIG', payload: data.data });

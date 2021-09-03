@@ -4,7 +4,7 @@
 
 - 使用 `react` 重写 `webview` 内容
 
-- 使用 `webpack` 打包 `webview` 以及扩展，生产环境打包更小，加载时间更短
+- 使用 `webpack` 打包 `webview` 以及扩展，生产环境打包更小(2.8mb -> 99kb)，加载时间更短
 
 - 修改主题配色，`webview` 内容根据 `vscode` 主题自适应
 

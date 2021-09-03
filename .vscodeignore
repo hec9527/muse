@@ -1,9 +1,12 @@
+# 采用 webpack 打包之后，打包后的产物不再需要包含 node_modules, 极大的降低了包的大小
+
 # folder
 .vscode/**
 .vscode-test/**
 out/test/**
 src/**
 script/
+node_modules
 
 # special file
 .yarnrc

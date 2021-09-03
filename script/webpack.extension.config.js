@@ -13,7 +13,7 @@ const config = {
   devtool: false,
 
   output: {
-    path: path.resolve(__dirname, '../dist/src'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'extension.js',
     libraryTarget: 'commonjs2',
   },

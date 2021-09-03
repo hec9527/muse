@@ -3,3 +3,4 @@ out
 yarn.lock
 package-lock.json
 *.d.ts
+script/

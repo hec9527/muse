@@ -17,7 +17,7 @@
   "publisher": "hec9527",
   "license": "MIT",
   "icon": "logo.png",
-  "main": "./dist/src/extension.js",
+  "main": "./dist/extension.js",
   "repository": {
     "type": "git",
     "url": "http://gitlab.100credit.cn/fed/muse.git"

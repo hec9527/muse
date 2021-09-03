@@ -11,8 +11,8 @@ const config = {
   target: 'node',
 
   output: {
-    path: path.resolve(__dirname, '../dist/view'),
-    filename: 'index.js',
+    path: path.resolve(__dirname, '../dist'),
+    filename: 'view.js',
   },
 
   module: {

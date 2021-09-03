@@ -32,7 +32,9 @@ const PublishCodeModal: React.FC = () => {
     >
       <>
         <h3 className='modal-section-title'>发布环境</h3>
-        <div className='modal-section-body'>{state.selectedEnv.name}</div>
+        <div className='modal-section-body' title={state.selectedEnv.name}>
+          {state.selectedEnv.name}
+        </div>
         <h3 className='modal-section-title'>发布页面（共发布{state.selectedPages.length}个页面）</h3>
         <div className='modal-section-body'>
           {state.selectedPages.map(p => (

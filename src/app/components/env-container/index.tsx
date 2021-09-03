@@ -5,7 +5,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import * as Types from '../../../index.d';
 import './index.less';
 
-const ServerEnv: React.FC = ({}) => {
+const ServerEnv: React.FC = () => {
   const dispatch = useAppDispatch();
   const [envInfo, selectedEnv] = useAppSelect(s => [s.serverInfo, s.selectedEnv] as const);
 

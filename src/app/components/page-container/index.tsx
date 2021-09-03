@@ -50,7 +50,7 @@ const PageContainer: React.FC = () => {
       if (disabled && hideDisabledFilter) continue;
       const el = (
         <label
-          className={classNames(`filter-char`, { disabled })}
+          className={classNames('filter-char', { disabled })}
           htmlFor={`filter-${char}`}
           title={char}
           key={char}
@@ -148,8 +148,8 @@ const PageContainer: React.FC = () => {
       <div className='section-wrap muse-page-wrap'>
         {pageList.map((p, i) => (
           <label
-            className={classNames(`page-item list-item`, {
-              hide: !new RegExp(`^src\/p\/${filter}.*$`, 'i').test(p),
+            className={classNames('page-item list-item', {
+              hide: !new RegExp(`^src/p/${filter}.*$`, 'i').test(p),
             })}
             htmlFor={`page-${i}`}
             title={p}

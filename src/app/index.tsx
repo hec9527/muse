@@ -14,7 +14,7 @@ import logger from './utils/redux-logger';
 import { reducer } from './store/reducer';
 import './index.less';
 
-let middlewares = [logger];
+const middlewares = [logger];
 if (NODE_ENV !== 'development') {
   middlewares.pop();
 }

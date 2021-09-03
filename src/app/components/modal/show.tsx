@@ -23,7 +23,9 @@ export default function show(config: ModalProps) {
     unmountComponentAtNode(el);
     try {
       document.body.removeChild(el);
-    } catch (error) {}
+    } catch (error) {
+      // do no thing
+    }
   };
 
   show({

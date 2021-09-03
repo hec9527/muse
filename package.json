@@ -24,18 +24,17 @@
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
-    "compile": "yarn run clear && npm run build",
-    "vsix": "vsce package -o muse.vsix && code --install-extension muse.vsix",
+    "compile": "yarn run clear && yarn run build",
+    "vsix": "node ./script/install.js",
     "lint": "eslint src --ext ts",
     "pub": "yarn lint && vsce publish",
     "clear": "rm -rf dist",
-    "dev": "npm run dev:webview & npm run dev:extension",
+    "dev": "yarn run dev:webview & yarn run dev:extension",
     "dev:webview": "cross-env NODE_ENV=development webpack -w --config ./script/webpack.config.js",
     "dev:extension": "cross-env NODE_ENV=production webpack -w --config ./script/webpack.extension.config.js",
-    "build": "npm run build:webview && npm run build:extension",
+    "build": "yarn run build:webview && yarn run build:extension",
     "build:webview": "cross-env NODE_ENV=production webpack --mode production --config ./script/webpack.config.js",
-    "build:extension": "cross-env NODE_ENV=production webpack --mode production --config ./script/webpack.extension.config.js",
-    "tsc": "tsc --module commonjs -p ./"
+    "build:extension": "cross-env NODE_ENV=production webpack --mode production --config ./script/webpack.extension.config.js"
   },
   "contributes": {
     "commands": [
@@ -95,10 +94,12 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.2.0",
     "eslint": "^7.15.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
     "glob": "^7.1.6",
     "less": "^4.1.1",
     "less-loader": "^10.0.1",
+    "shelljs": "^0.8.4",
     "style-loader": "^3.2.1",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",

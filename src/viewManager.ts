@@ -106,8 +106,8 @@ export default class ViewManager implements vscode.Disposable {
           const state = fs.statSync(subPath);
           if (state.isDirectory()) {
             return searchDir(subPath);
-          } else if (state.isFile() && /\.html$/.test(fileOrDir)) {
-            const relativeDir = /\/(src\/p.*)\/.*?\.html$/.exec(subPath);
+          } else if (state.isFile() && /index\.html$/.test(fileOrDir)) {
+            const relativeDir = /\/(src\/p.*)\/index\.html$/.exec(subPath);
             if (relativeDir && relativeDir[1]) {
               pages.push(`${relativeDir[1]}/${version}/index`);
             }

@@ -58,7 +58,7 @@ const Header: React.FC = () => {
         },
       },
     });
-    setTimeout(() => dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: false }), 10 * 1000);
+    setTimeout(() => dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: false }), 60 * 1000);
   };
 
   const handleClearSaveDate = () => {
@@ -84,6 +84,9 @@ const Header: React.FC = () => {
       if (e.metaKey && e.key === 'e') {
         return handleCheckBranch();
       }
+      if (e.metaKey && e.key === 'd') {
+        return handleClearSaveDate();
+      }
       if (e.key === 'Enter') {
         return handlePublish();
       }
@@ -101,8 +104,7 @@ const Header: React.FC = () => {
       </div>
 
       <div className='muse-btn-group'>
-        {/* TODO 添加快捷键 */}
-        <Button title='快捷键（cmd+）查看历史发布信息，并选择删除' onClick={handleClearSaveDate} type='danger'>
+        <Button title='快捷键（cmd+D）查看历史发布信息，并选择删除' onClick={handleClearSaveDate} type='danger'>
           <FontAwesomeIcon icon={faTrashAlt} />
           清除记录
         </Button>

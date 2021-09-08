@@ -28,9 +28,10 @@ const MessageHandler: React.FC = () => {
           }
           // 如果启动webview时，插件还未获取到发布服务器信息，2000ms后重试
           else {
-            if (times < 3) {
-              times++;
-              setTimeout(() => dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO' } }), 2000);
+            if (++times <= 3) {
+              setTimeout(() => {
+                dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO', refresh: true } });
+              }, 2000);
             } else {
               dispatch({
                 type: 'POST_MESSAGE_TO_EXTENSION',

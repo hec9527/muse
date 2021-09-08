@@ -1,9 +1,17 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelect } from '../../store/reducer';
-import { faBolt, faCodeBranch, faPaperPlane, faSave, faTrashAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
 import Button from '../button';
+import {
+  faBolt,
+  faCodeBranch,
+  faPaperPlane,
+  faSave,
+  faTrashAlt,
+  faSpinner,
+  faSyncAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import './index.less';
 
 const Header: React.FC = () => {
@@ -65,6 +73,10 @@ const Header: React.FC = () => {
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'DELETE_CACHE_INFO' } });
   };
 
+  const handleRefreshPageList = () => {
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PAGE_INFO', refresh: true } });
+  };
+
   const handlePublish = () => {
     if (checkData('发布')) return;
     dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: true });
@@ -87,6 +99,9 @@ const Header: React.FC = () => {
       if (e.metaKey && e.key === 'd') {
         return handleClearSaveDate();
       }
+      if (e.metaKey && e.key === 'r') {
+        return handleRefreshPageList();
+      }
       if (e.key === 'Enter') {
         return handlePublish();
       }
@@ -107,6 +122,10 @@ const Header: React.FC = () => {
         <Button title='快捷键（cmd+D）查看历史发布信息，并选择删除' onClick={handleClearSaveDate} type='danger'>
           <FontAwesomeIcon icon={faTrashAlt} />
           清除记录
+        </Button>
+        <Button title='快捷键（cmd+R）刷新发布页面列表' onClick={handleRefreshPageList}>
+          <FontAwesomeIcon icon={faSyncAlt} />
+          刷新列表
         </Button>
         <Button title='快捷键（cmd+Enter）读取保存的历史发布信息，快速发布' onClick={handleQuickPublish}>
           <FontAwesomeIcon icon={faBolt} />

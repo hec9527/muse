@@ -152,10 +152,10 @@ export default class ViewManager implements vscode.Disposable {
 
       switch (msg.cmd) {
         case 'GET_ENV_INFO':
-          this.postEnvInfo();
+          this.postEnvInfo(msg.refresh);
           break;
         case 'GET_PAGE_INFO':
-          this.postPageInfo();
+          this.postPageInfo(msg.refresh);
           break;
         case 'GET_PROJECT_INFO':
           this.postProjectInfo();
@@ -191,8 +191,8 @@ export default class ViewManager implements vscode.Disposable {
     return vscode.commands.executeCommand(cmd.postInfo, info);
   }
 
-  private async postEnvInfo() {
-    if (!this.envData) {
+  private async postEnvInfo(refresh?: boolean) {
+    if (!this.envData || refresh) {
       await this.initEnvInfo();
     }
     this.postInfo({
@@ -208,8 +208,11 @@ export default class ViewManager implements vscode.Disposable {
     });
   }
 
-  private postPageInfo() {
+  private postPageInfo(refresh?: boolean) {
     const hideDisabledFilter = this.context.globalState.get<boolean>('hideDisabledFilter') || false;
+    if (refresh) {
+      this.initPageInfo();
+    }
     this.postInfo({
       cmd: 'UPDATE_PAGE_INFO',
       data: {

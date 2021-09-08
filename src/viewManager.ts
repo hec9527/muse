@@ -10,6 +10,7 @@ type CacheItem = {
   title: string;
   env: Types.IEnvConfig;
   pages: string[];
+  branch: string;
 };
 
 export default class ViewManager implements vscode.Disposable {
@@ -124,8 +125,7 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private initGitInfo() {
-    util
-      .getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'))
+    this.getGitBranch()
       .then(branch => {
         console.log('git分支:', branch);
         this.branch = branch;
@@ -284,15 +284,14 @@ export default class ViewManager implements vscode.Disposable {
     });
     if (title) {
       try {
-        const [CacheItem, appName] = this.getCacheData();
+        const [CacheItems, appName] = this.getCacheData();
+        const branch = this.branch;
         this.context.globalState
           .update('cacheData', {
-            ...CacheItem,
-            [appName]: [...(CacheItem[appName] || []), { title, ...data }],
+            ...CacheItems,
+            [appName]: [...(CacheItems[appName] || []), { title, ...data, branch }],
           })
-          .then(() => {
-            this.showMessage('保存成功', 'info');
-          });
+          .then(() => this.showMessage('保存成功', 'info'));
       } catch (error) {
         return this.showMessage(error as string, 'error');
       }
@@ -315,12 +314,21 @@ export default class ViewManager implements vscode.Disposable {
         }
       );
       if (title) {
-        const item = cacheList.find(c => c.title === title);
-        if (item) {
-          this.postInfo({
-            cmd: 'QUICK_PUBLISH',
-            data: item,
-          });
+        const data = cacheList.find(c => c.title === title);
+        const branch = this.branch || '';
+        if (data) {
+          if (data.branch !== branch) {
+            const res = await this.showConfirmMessage(
+              `当前分支(${branch})和缓存数据时分支(${data.branch})不同，是否继续发布?\n (点击继续发布将暂时修改缓存数据为当前分支${data.branch}->${branch})`,
+              '继续发布',
+              '取消发布'
+            );
+            if (res !== '继续发布') {
+              return false;
+            }
+            data.pages = data.pages.map(p => p.replace(data.branch, branch));
+          }
+          this.postInfo({ cmd: 'QUICK_PUBLISH', data });
         }
       }
     } catch (error) {
@@ -334,7 +342,7 @@ export default class ViewManager implements vscode.Disposable {
       const CacheList = CacheDate[appName] || [];
 
       if (!CacheList.length) {
-        return this.showMessage('没有找到可以删除的发布记录', 'warning');
+        return this.showMessage('没有找到可以删除的发布记录', 'info');
       }
 
       const titles = await vscode.window.showQuickPick(
@@ -351,9 +359,7 @@ export default class ViewManager implements vscode.Disposable {
             ...CacheDate,
             [appName]: CacheList.filter(c => !titles.includes(c.title)),
           })
-          .then(() => {
-            this.showMessage('删除成功', 'info');
-          });
+          .then(() => this.showMessage('删除成功', 'info'));
       }
     } catch (error) {
       return this.showMessage(error as string, 'error');
@@ -364,11 +370,11 @@ export default class ViewManager implements vscode.Disposable {
     let userInfo = this.context.globalState.get<Types.IUserInfo>('userInfo');
 
     if (!this.branch) {
-      this.branch = await util.getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'));
+      this.branch = await this.getGitBranch();
     }
     if (this.branch !== this.projectConfig?.version) {
       const res = await this.showConfirmMessage(
-        '当前git所在分支和config.json分支不一致，是否继续发布（采用config.json分支）',
+        `当前git所在分支(${this.branch})和config.json分支(${this.projectConfig?.version})不一致，是否继续发布（采用config.json分支）`,
         '继续发布',
         '取消发布'
       );
@@ -437,6 +443,10 @@ export default class ViewManager implements vscode.Disposable {
         resolve(res);
       });
     });
+  }
+
+  private async getGitBranch() {
+    return util.getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'));
   }
 
   private getWebview() {

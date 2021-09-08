@@ -25,7 +25,7 @@
   "scripts": {
     "vscode:prepublish": "npm run lint && yarn run compile",
     "compile": "yarn run clear && yarn run build",
-    "vsix": "node ./script/install.js",
+    "vsix": "vsce package -o muse-$npm_package_version.vsix && code --install-extension muse-$npm_package_version.vsix",
     "lint": "eslint src --ext ts,tsx",
     "pub": "yarn lint && vsce publish",
     "clear": "rm -rf dist",
@@ -99,7 +99,6 @@
     "glob": "^7.1.6",
     "less": "^4.1.1",
     "less-loader": "^10.0.1",
-    "shelljs": "^0.8.4",
     "style-loader": "^3.2.1",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^8.0.2",

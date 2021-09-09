@@ -322,15 +322,17 @@ export default class ViewManager implements vscode.Disposable {
         if (data) {
           if (data.branch !== branch) {
             const res = await this.showConfirmMessage(
-              `当前分支(${branch})和缓存数据时分支(${data.branch})不同，是否继续发布?\n (点击继续发布将暂时修改缓存数据为当前分支${data.branch}->${branch})`,
+              `当前分支(${branch})和缓存数据时分支(${data.branch})不同，是否继续发布?`,
               '继续发布',
               '取消发布'
             );
             if (res !== '继续发布') {
               return false;
             }
-            data.pages = data.pages.map(p => p.replace(data.branch, branch));
           }
+          // 当前分支和保存发布信息时的分支不同时，无法选择页面，这里做一下替换，比如保存信息时在0.0.1分支，但是现在我们在0.0.2分支，替换后才能选择页面快速发布
+          data.pages = data.pages.map(p => p.replace(/\/((\d+\.?)*)\//, `/${branch}/`));
+          // console.log({ data });
           this.postInfo({ cmd: 'QUICK_PUBLISH', data });
         }
       }

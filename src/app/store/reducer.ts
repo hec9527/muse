@@ -70,7 +70,8 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
     case 'UPDATE_SELECTED_ENV':
       return { ...state, selectedEnv: action.payload };
     case 'UPDATE_SELECTED_PAGE':
-      return { ...state, selectedPages: action.payload };
+      // 过滤只有当前存在的页面才会被选中， 快速发布时，如果选择的页面为某一个分支特有的，当前分支不存在，如果添加到发布列表可能会存在问题
+      return { ...state, selectedPages: action.payload.filter(p => state.pageList.includes(p)) };
     case 'UPDATE_EXTENSIONCONFIG':
       return { ...state, extensionConfig: action.payload };
     case 'UPDATE_PUBLISH_MODAL_VISIBLE':

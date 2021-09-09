@@ -80,7 +80,7 @@ const MessageHandler: React.FC = () => {
       window.removeEventListener('message', handlerMessage);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [state.publishModalVisible, state.searchCodeBranchModalVisible, state.extensionConfig]);
+  }, [state.extensionConfig]);
 
   return null;
 };

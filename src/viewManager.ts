@@ -26,8 +26,10 @@ export default class ViewManager implements vscode.Disposable {
   // 本地git分支
   private branch: string | undefined;
   private extensionConfig: Types.IExtensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+  private outputChannel = vscode.window.createOutputChannel('Muse');
 
   constructor(private context: vscode.ExtensionContext) {
+    this.outputChannel.clear();
     const res = this.checkWorkSpace();
     if (res) {
       throw res;
@@ -35,6 +37,7 @@ export default class ViewManager implements vscode.Disposable {
     // 不考虑多个workspace的情况
     this.workFolder = vscode.workspace.workspaceFolders![0];
     this.init();
+    this.outputChannel.appendLine('[Start] muse is active!');
   }
 
   private checkWorkSpace() {
@@ -74,6 +77,7 @@ export default class ViewManager implements vscode.Disposable {
       .request<{ data: Types.IEnvInfo }>({ url: api.URL.getEnvInfo, method: 'post' })
       .then(res => {
         console.log('环境信息：', res);
+        this.outputChannel.appendLine(`\n[环境信息]\n${JSON.stringify(res)}`);
         if (res) {
           this.envData = res.data;
         }
@@ -128,6 +132,7 @@ export default class ViewManager implements vscode.Disposable {
     this.getGitBranch()
       .then(branch => {
         console.log('git分支:', branch);
+        this.outputChannel.appendLine(`\n[Git分支] ${branch}`);
         this.branch = branch;
       })
       .catch(error => {
@@ -149,6 +154,7 @@ export default class ViewManager implements vscode.Disposable {
   private bindWebviewReceiveMessage() {
     this.webview!.webview.onDidReceiveMessage((msg: Types.IWebviewMessage) => {
       console.log('来自webview的消息:', msg);
+      this.outputChannel.appendLine(`\n[来自webview的消息]\n${JSON.stringify(msg)}`);
 
       switch (msg.cmd) {
         case 'GET_ENV_INFO':
@@ -183,6 +189,7 @@ export default class ViewManager implements vscode.Disposable {
           break;
         default:
           console.error('未知的消息类型');
+          this.outputChannel.appendLine('[未知类型]');
       }
     });
   }
@@ -245,6 +252,7 @@ export default class ViewManager implements vscode.Disposable {
     if (!this.projectConfig) return Promise.resolve([]);
     const branchs = await util.getOnlineCodeBranch(queryInfo, this.projectConfig);
     console.log('查询结果', branchs);
+    this.outputChannel.appendLine(`\n[在线分支查询]\n${JSON.stringify(branchs)}`);
     this.postInfo({
       cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT',
       data: branchs,
@@ -273,6 +281,7 @@ export default class ViewManager implements vscode.Disposable {
       throw '未知的项目名称，请检查项目中的config.json文件';
     }
     console.log('缓存数据', { CacheData, appName });
+    this.outputChannel.appendLine(`\n[读取缓存数据]\n${JSON.stringify({ CacheData, appName })}`);
 
     return [CacheData || {}, appName] as const;
   }
@@ -397,6 +406,7 @@ export default class ViewManager implements vscode.Disposable {
 
     util.publishCode(data, this.projectConfig!, userInfo).then(
       res => {
+        this.outputChannel.appendLine(`\n[发布成功] ${res}`);
         const openInBrowser = () => vscode.env.openExternal(vscode.Uri.parse(res));
         if (this.extensionConfig.autoOpenLog) {
           openInBrowser();
@@ -410,6 +420,7 @@ export default class ViewManager implements vscode.Disposable {
       },
       reason => {
         console.log({ reason });
+        this.outputChannel.appendLine(`\n[发布失败] ${JSON.stringify({ reason })}}`);
         if (typeof reason === 'number' && reason === 403) {
           // 输入成功后重新发布
           this.showMessage('权限不足，请重新输入用户名和密码', 'error');

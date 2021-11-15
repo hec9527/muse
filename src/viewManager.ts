@@ -64,6 +64,7 @@ export default class ViewManager implements vscode.Disposable {
   private watchFile() {
     fs.watchFile(path.join(this.workFolder.uri.fsPath, 'config.json'), () => {
       this.initProjectInfo();
+      this.postProjectInfo();
       this.initPageInfo();
       this.postPageInfo();
     });

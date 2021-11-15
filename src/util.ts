@@ -91,7 +91,7 @@ function parseHTML(url: string, isGray: boolean) {
   const config = isGray ? { headers: { uid: 6593329 } } : {};
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
   return new Promise<string>(resolve => {
-    return Api.request<string>({ url, ...config, timeout: 60 * 1000 })
+    return Api.request<string>({ url, ...config, timeout: 20 * 1000 })
       .then((response: string) => {
         const res = /\/([\d*.?]+)\/index\.js/gi.exec(response);
         if (res && res[1]) {

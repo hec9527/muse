@@ -28,12 +28,12 @@ export type AppAction =
   | { type: 'UPDATE_PROJECT_INFO'; payload: Types.IProjectInfo }
   | { type: 'UPDATE_SERVER_INFO'; payload: ServerInfo }
   | { type: 'UPDATE_PAGE_INFO'; payload: { pages: string[]; hideDisabledFilter: boolean } }
-  | { type: 'UPDATE_EXTENSIONCONFIG'; payload: Types.IExtensionConfig }
+  | { type: 'UPDATE_EXTENSION_CONFIG'; payload: Types.IExtensionConfig }
   | { type: 'UPDATE_SELECTED_PAGE'; payload: string[] }
   | { type: 'UPDATE_SELECTED_ENV'; payload: Types.IEnvConfig }
   | { type: 'UPDATE_PUBLISH_MODAL_VISIBLE'; payload: boolean }
   | { type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE'; payload: boolean }
-  | { type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT'; payload: string[] }
+  | { type: 'UPDATE_SEARCH_CODE_BRANCH_RESULT'; payload: string[] }
   | { type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING'; payload: boolean };
 
 export type AppDispatch = (action: AppAction) => void;
@@ -72,13 +72,13 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
     case 'UPDATE_SELECTED_PAGE':
       // 过滤只有当前存在的页面才会被选中， 快速发布时，如果选择的页面为某一个分支特有的，当前分支不存在，如果添加到发布列表可能会存在问题
       return { ...state, selectedPages: action.payload.filter(p => state.pageList.includes(p)) };
-    case 'UPDATE_EXTENSIONCONFIG':
+    case 'UPDATE_EXTENSION_CONFIG':
       return { ...state, extensionConfig: action.payload };
     case 'UPDATE_PUBLISH_MODAL_VISIBLE':
       return { ...state, publishModalVisible: action.payload };
     case 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE':
       return { ...state, searchCodeBranchModalVisible: action.payload };
-    case 'UPDATE_SEARCH_CODE_BRAMCH_RESULT':
+    case 'UPDATE_SEARCH_CODE_BRANCH_RESULT':
       return { ...state, codeBranch: action.payload };
     case 'UPDATE_SEARCH_CODE_BRANCH_LOADING':
       return { ...state, queryCodeBranchLoading: action.payload };

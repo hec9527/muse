@@ -167,7 +167,7 @@ export default class ViewManager implements vscode.Disposable {
         case 'GET_PROJECT_INFO':
           this.postProjectInfo();
           break;
-        case 'GET_EXTENSIONCONFIG':
+        case 'GET_EXTENSION_CONFIG':
           this.postExtensionConfig();
           break;
         case 'SHOW_MESSAGE':
@@ -244,7 +244,7 @@ export default class ViewManager implements vscode.Disposable {
   private postExtensionConfig() {
     this.extensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
     this.postInfo({
-      cmd: 'UPDATE_EXTENSIONCONFIG',
+      cmd: 'UPDATE_EXTENSION_CONFIG',
       data: this.extensionConfig,
     });
   }

@@ -15,7 +15,7 @@ const MessageHandler: React.FC = () => {
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_ENV_INFO' } });
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PAGE_INFO' } });
     dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_PROJECT_INFO' } });
-    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_EXTENSIONCONFIG' } });
+    dispatch({ type: 'POST_MESSAGE_TO_EXTENSION', payload: { cmd: 'GET_EXTENSION_CONFIG' } });
   }, []);
 
   useEffect(() => {
@@ -47,8 +47,8 @@ const MessageHandler: React.FC = () => {
           dispatch({ type: 'UPDATE_PAGE_INFO', payload: data.data });
           dispatch({ type: 'UPDATE_SELECTED_PAGE', payload: [] });
           break;
-        case 'UPDATE_EXTENSIONCONFIG':
-          dispatch({ type: 'UPDATE_EXTENSIONCONFIG', payload: data.data });
+        case 'UPDATE_EXTENSION_CONFIG':
+          dispatch({ type: 'UPDATE_EXTENSION_CONFIG', payload: data.data });
           break;
         case 'QUICK_PUBLISH':
           dispatch({ type: 'UPDATE_SELECTED_ENV', payload: data.data.env });
@@ -58,7 +58,7 @@ const MessageHandler: React.FC = () => {
           }
           break;
         case 'UPDATE_QUERY_CODE_BRANCH_RESULT':
-          dispatch({ type: 'UPDATE_SEARCH_CODE_BRAMCH_RESULT', payload: data.data });
+          dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_RESULT', payload: data.data });
           dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE', payload: true });
           dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: false });
           break;

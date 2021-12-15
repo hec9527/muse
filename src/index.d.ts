@@ -41,7 +41,7 @@ export type IEnvInfo = {
 
 /** webview发送给扩展的消息类型 */
 export type IWebviewMessage =
-  | { cmd: 'GET_EXTENSIONCONFIG' }
+  | { cmd: 'GET_EXTENSION_CONFIG' }
   | { cmd: 'GET_PAGE_INFO'; refresh?: boolean }
   | { cmd: 'GET_ENV_INFO'; refresh?: boolean }
   | { cmd: 'GET_PROJECT_INFO' }
@@ -75,7 +75,7 @@ export type IExtensionMessage =
       data: string[];
     }
   | {
-      cmd: 'UPDATE_EXTENSIONCONFIG';
+      cmd: 'UPDATE_EXTENSION_CONFIG';
       data: IExtensionConfig;
     };
 

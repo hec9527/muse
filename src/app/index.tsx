@@ -12,21 +12,21 @@ import SearchCodeBranchModal from './components/code-branch-modal';
 
 import logger from './utils/redux-logger';
 import { reducer } from './store/reducer';
-import './index.less';
+import './less/index.less';
 
-const middlewares = [logger];
+const middleware = [logger];
 if (NODE_ENV !== 'development') {
-  middlewares.pop();
+  middleware.pop();
 }
 
-const store = createStore(reducer, applyMiddleware(...middlewares));
+const store = createStore(reducer, applyMiddleware(...middleware));
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
       <MessageHandler />
       <Header />
-      <div className='muse-body'>
+      <div className='muse-body better-scrollbar'>
         <EnvContainer />
         <PageContainer />
       </div>

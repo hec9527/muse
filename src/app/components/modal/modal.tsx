@@ -4,10 +4,11 @@ import './index.less';
 
 export interface ModalProps {
   visible: boolean;
-  size?: 'small' | 'middle' | 'larg';
+  size?: 'small' | 'middle' | 'large';
   title?: string;
   okButtonType?: ButtonProps['type'];
   okButtonText?: string;
+  okButtonDisable?: boolean;
   cancelButtonType?: ButtonProps['type'];
   cancelButtonText?: string;
   onOk?: () => void;
@@ -28,6 +29,7 @@ const Modal: React.FC<ModalProps> = ({
   extButtons,
   okButtonText,
   okButtonType,
+  okButtonDisable,
   cancelButtonText,
   cancelButtonType,
   showCancelButton,
@@ -47,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({
               </Button>
             )}
             {showOkButton && (
-              <Button type={okButtonType} onClick={onOk}>
+              <Button type={okButtonType} onClick={onOk} disable={okButtonDisable}>
                 {okButtonText}
               </Button>
             )}

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelect } from '../../store/reducer';
-import Modal from '../modal/';
-import './index.less';
+import useCount from '../../hooks/useCount';
+import Modal from '../modal';
 
 const PublishCodeModal: React.FC = () => {
+  const [count, setCount] = useCount(0);
   const state = useAppSelect(s => s);
   const dispatch = useAppDispatch();
 
@@ -11,24 +12,32 @@ const PublishCodeModal: React.FC = () => {
     dispatch({ type: 'UPDATE_PUBLISH_MODAL_VISIBLE', payload: false });
   };
 
+  const handlePublishButtonClick = () => {
+    handleOnCancel();
+    dispatch({
+      type: 'POST_MESSAGE_TO_EXTENSION',
+      payload: {
+        cmd: 'PUBLISH_CODE',
+        data: {
+          env: state.selectedEnv,
+          pages: state.selectedPages,
+        },
+      },
+    });
+  };
+
+  useEffect(() => {
+    setCount(state.publishModalVisible ? 5 : 0);
+  }, [state.publishModalVisible]);
+
   return (
     <Modal
       size='small'
       visible={state.publishModalVisible}
       onCancel={handleOnCancel}
-      onOk={() => {
-        handleOnCancel();
-        dispatch({
-          type: 'POST_MESSAGE_TO_EXTENSION',
-          payload: {
-            cmd: 'PUBLISH_CODE',
-            data: {
-              env: state.selectedEnv,
-              pages: state.selectedPages,
-            },
-          },
-        });
-      }}
+      onOk={handlePublishButtonClick}
+      okButtonDisable={count > 0}
+      okButtonText={count > 0 ? `请仔细核对(${count}s)` : '发布'}
     >
       <>
         <h3 className='modal-section-title'>发布环境</h3>

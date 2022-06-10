@@ -1,9 +1,7 @@
-body.vscode-dark {
-  --list-item-color: var(--vscode-editor-foreground);
-}
+@import './variable.less';
 
-body.vscode-light {
-  --list-item-color: var(--vscode-editor-background);
+:root {
+  color-scheme: light dark;
 }
 
 * {
@@ -18,10 +16,11 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: var(--muse-body-color);
 }
 
 .muse-body {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 70px);
   margin-top: 70px;
   padding: 0 7%;
   overflow: overlay;
@@ -46,19 +45,19 @@ body,
 
   & > span {
     overflow: hidden;
+    color: var(--muse-list-item-color);
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   &:hover {
-    color: var(--list-item-color);
-    background: var(--vscode-button-secondaryHoverBackground);
+    background: var(--muse-list-item-hover-background);
   }
 }
 
 input[type='checkbox']:checked ~ *,
 input[type='radio']:checked ~ * {
-  color: #5ca9f8;
+  color: var(--muse-list-item-active-color);
 }
 
 .hide {
@@ -69,7 +68,7 @@ input[type='radio']:checked ~ * {
   overflow: overlay;
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 7px;
     background-color: transparent;
   }
 
@@ -78,7 +77,8 @@ input[type='radio']:checked ~ * {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #3b414d;
+    background-color: var(--muse-thumb-background);
     border-radius: 2px;
+    cursor: pointer;
   }
 }

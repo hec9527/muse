@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import './index.less';
 
 export interface ButtonProps {
-  type?: 'primary' | 'text' | 'dashed' | 'danger';
-  size?: 'larg' | 'middle' | 'small';
+  type?: 'primary' | 'text' | 'danger';
+  size?: 'middle' | 'small';
   title?: string;
   onClick?: () => void;
   disable?: boolean;

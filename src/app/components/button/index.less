@@ -1,7 +1,7 @@
 .muse-button {
   display: inline-block;
   box-sizing: border-box;
-  color: var(--vscode-button-foreground);
+  color: var(--muse-button-color);
   outline: none;
   cursor: pointer;
   transition: color background 50ms linear;
@@ -11,20 +11,7 @@
     margin-right: 4px;
   }
 
-  &-text {
-    color: var(--vscode-button-background);
-    &.muse-button-disable,
-    &:hover {
-      color: var(--vscode-button-hoverBackground);
-    }
-  }
-
-  &-larg {
-    padding: 4px 10px;
-    font-size: 14px;
-    border-radius: 4px;
-  }
-
+  // size
   &-middle {
     padding: 3px 8px;
     font-size: 12px;
@@ -37,33 +24,31 @@
     border-radius: 2px;
   }
 
-  &-dashed {
-    box-sizing: border-box;
-    color: var(--vscode-button-background);
-    border: 1.5px dashed var(--vscode-button-background);
-
-    &.muse-button-disable,
-    &:hover {
-      color: var(--vscode-button-hoverBackground);
-      border-color: var(--vscode-button-hoverBackground);
-    }
-  }
-
+  // type
   &-primary {
-    background: var(--vscode-button-background);
+    background: var(--muse-button-primary-color);
 
     &.muse-button-disable,
     &:hover {
-      background: var(--vscode-button-hoverBackground);
+      background: var(--muse-button-primary-color-lighter);
     }
   }
 
   &-danger {
-    background: var(--vscode-statusBarItem-errorBackground);
+    background: var(--muse-button-danger-color);
 
     &.muse-button-disable,
     &:hover {
       opacity: 0.9;
+    }
+  }
+
+  &-text {
+    color: var(--muse-button-primary-color);
+
+    &.muse-button-disable,
+    &:hover {
+      color: var(--muse-button-primary-color-lighter);
     }
   }
 

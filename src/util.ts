@@ -85,10 +85,10 @@ export function getOnlineCodeBranch(
 }
 
 /**
- * 从hmtl中解析代码版本号
+ * 从html中解析代码版本号
  */
 function parseHTML(url: string, isGray: boolean) {
-  const config = isGray ? { headers: { uid: 6593329 } } : {};
+  const config = isGray ? { headers: { uid: 6593329, Cookie: 'uid=6593329' } } : {};
   const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
   return new Promise<string>(resolve => {
     return Api.request<string>({ url, ...config, timeout: 20 * 1000 })
@@ -109,8 +109,8 @@ function parseHTML(url: string, isGray: boolean) {
 /**
  * 从本地git文件中读取当前分支
  */
-export function getCurrentBranck(gitPath: string): Promise<string> {
-  return new Promise<string>((resove, reject) => {
+export function getCurrentBranch(gitPath: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     if (fs.statSync(gitPath).isDirectory()) {
       const refFile = path.join(gitPath, 'HEAD');
       if (fs.existsSync(refFile) && fs.statSync(refFile).isFile()) {
@@ -119,7 +119,7 @@ export function getCurrentBranck(gitPath: string): Promise<string> {
         const res = reg.exec(data.trimEnd());
 
         if (res?.[1]) {
-          return resove(res[1]);
+          return resolve(res[1]);
         }
         reject('读取本地git分支出错，请检查git仓库');
       }

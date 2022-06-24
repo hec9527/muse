@@ -90,8 +90,8 @@ export default class ViewManager implements vscode.Disposable {
 
   private initProjectInfo() {
     const option = { encoding: 'utf-8' };
-    const fpath = path.join(this.workFolder.uri.fsPath, 'config.json');
-    if (!fs.existsSync(fpath) || !fs.statSync(fpath).isFile) {
+    const fPath = path.join(this.workFolder.uri.fsPath, 'config.json');
+    if (!fs.existsSync(fPath) || !fs.statSync(fPath).isFile) {
       return this.showMessage('项目中未找到config.json');
     }
     const file = fs.readFileSync(path.join(this.workFolder.uri.fsPath, 'config.json'), option);
@@ -251,12 +251,12 @@ export default class ViewManager implements vscode.Disposable {
 
   private async queryOnlineCodeBranch(queryInfo: { env: Types.IEnvConfig; pages: string[] }) {
     if (!this.projectConfig) return Promise.resolve([]);
-    const branchs = await util.getOnlineCodeBranch(queryInfo, this.projectConfig);
-    console.log('查询结果', branchs);
-    this.outputChannel.appendLine(`\n[在线分支查询]\n${JSON.stringify(branchs)}`);
+    const branch = await util.getOnlineCodeBranch(queryInfo, this.projectConfig);
+    console.log('查询结果', branch);
+    this.outputChannel.appendLine(`\n[在线分支查询]\n${JSON.stringify(branch)}`);
     this.postInfo({
       cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT',
-      data: branchs,
+      data: branch,
     });
   }
 
@@ -463,7 +463,7 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private async getGitBranch() {
-    return util.getCurrentBranck(path.join(this.workFolder.uri.fsPath, '.git'));
+    return util.getCurrentBranch(path.join(this.workFolder.uri.fsPath, '.git'));
   }
 
   private getWebview() {

@@ -75,12 +75,12 @@ export default class ViewManager implements vscode.Disposable {
 
   private initEnvInfo() {
     return api
-      .request<{ data: Types.IEnvInfo }>({ url: api.URL.getEnvInfo, method: 'post' })
+      .request<Types.IEnvInfo>({ url: api.URL.getEnvInfo, method: 'post' })
       .then(res => {
-        console.log('环境信息：', res);
+        console.log('环境信息：', JSON.stringify(res));
         this.outputChannel.appendLine(`\n[环境信息]\n${JSON.stringify(res)}`);
         if (res) {
-          this.envData = res.data;
+          this.envData = res;
         }
       })
       .catch(() => {

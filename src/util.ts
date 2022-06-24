@@ -170,7 +170,7 @@ export function publishCode(
 
       if (res.code === 403) {
         reject(403);
-      } else if (res.code === 200) {
+      } else if (res.code === 0) {
         resolve(Api.URL.publishLog(res.data.appName, res.data.publishKey));
       } else {
         reject(`发布失败，请到 ${Api.HOST} 查看发布日志`);

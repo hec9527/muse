@@ -14,7 +14,7 @@ const Api = {
     /** 发布，提交代码 */
     publish: `${HOST}/api/awp/publishNoTag.do`,
     /** 发布日志地址 */
-    publishLog: (appName: string, publishKey: string) => `${HOST}/awp/logmonitor?f=${appName}/${publishKey}.log`,
+    publishLog: (appName: string, publishKey: string) => `${HOST}/page/awp/deployDetail?f=${appName}/${publishKey}.log`,
   },
   request,
 };

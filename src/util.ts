@@ -72,7 +72,7 @@ export function formatDate(format: string, date: string | number | Date = new Da
 export function getOnlineCodeBranch(
   { env, pages }: { env: Types.IEnvConfig; pages: string[] },
   config: Types.IProjectConfig
-): Promise<string[]> {
+): Promise<Types.IPagesInfo[]> {
   const { appName, websiteHost } = config;
   const isGray = /灰度/.test(env.name);
   const isDaily = /日常/.test(env.name);
@@ -89,19 +89,25 @@ export function getOnlineCodeBranch(
  */
 function parseHTML(url: string, isGray: boolean) {
   const config = isGray ? { headers: { uid: 6593329, Cookie: 'uid=6593329' } } : {};
-  const page = /\/src\/p\/(.*?)\/index\.html/.exec(url);
-  return new Promise<string>(resolve => {
+  const pageRes = /\/src\/p\/(.*?)\/index\.html/.exec(url);
+  return new Promise<Types.IPagesInfo>(resolve => {
+    let name = '';
+    let version = '';
+    let env = '';
+    let updateTime = '';
     return Api.request<string>({ url, ...config, timeout: 20 * 1000 })
       .then((response: string) => {
-        const res = /\/([\d*.?]+)\/index\.js/gi.exec(response);
-        if (res && res[1]) {
-          resolve(`${page?.[1] || ''}|${res[1]}`);
-        } else {
-          resolve(`${page?.[1] || ''}| null`);
-        }
+        const versionRes = /\/([\d*.?]+)\/index\.js/gi.exec(response);
+        const envRes = /<meta name="env" content="(.*?)">/.exec(response);
+        const updateRef = /<meta update-time="(.*?)">/.exec(response);
+
+        name = pageRes?.[1] || '-';
+        version = versionRes?.[1] || '-';
+        env = envRes?.[1] || '-';
+        updateTime = updateRef?.[1] || '-';
       })
-      .catch(() => {
-        resolve(`${page?.[1] || url}| null`);
+      .finally(() => {
+        resolve({ name, version, env, updateTime });
       });
   });
 }

@@ -10,7 +10,7 @@ const SearchCodeBranchModal: React.FC = () => {
   return (
     <Modal
       title='代码分支'
-      size='small'
+      size='middle'
       visible={state.searchCodeBranchModalVisible}
       showCancelButton={false}
       onOk={() => {
@@ -27,16 +27,17 @@ const SearchCodeBranchModal: React.FC = () => {
               <tr>
                 <th>页面</th>
                 <th>分支</th>
+                <th>环境</th>
+                <th>发布时间</th>
               </tr>
-              {state.codeBranch.map(p => {
-                const arr = p.split('|');
-                return (
-                  <tr key={p}>
-                    <td>{arr?.[0]}</td>
-                    <td>{arr?.[1] || 'null'}</td>
-                  </tr>
-                );
-              })}
+              {state.pageInfo.map(p => (
+                <tr key={p.name}>
+                  <td>{p.name}</td>
+                  <td>{p.version}</td>
+                  <td>{p.env}</td>
+                  <td>{p.updateTime}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

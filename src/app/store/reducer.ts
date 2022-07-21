@@ -18,7 +18,7 @@ export interface AppState {
   selectedEnv: Types.IEnvConfig;
   searchCodeBranchModalVisible: boolean;
   publishModalVisible: boolean;
-  codeBranch: string[];
+  pageInfo: Types.IPagesInfo[];
   queryCodeBranchLoading: boolean;
   extensionConfig: Types.IExtensionConfig;
 }
@@ -33,8 +33,8 @@ export type AppAction =
   | { type: 'UPDATE_SELECTED_ENV'; payload: Types.IEnvConfig }
   | { type: 'UPDATE_PUBLISH_MODAL_VISIBLE'; payload: boolean }
   | { type: 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE'; payload: boolean }
-  | { type: 'UPDATE_SEARCH_CODE_BRANCH_RESULT'; payload: string[] }
-  | { type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING'; payload: boolean };
+  | { type: 'UPDATE_SEARCH_PAGE_INFO_RESULT'; payload: Types.IPagesInfo[] }
+  | { type: 'UPDATE_SEARCH_PAGE_INFO_LOADING'; payload: boolean };
 
 export type AppDispatch = (action: AppAction) => void;
 
@@ -48,7 +48,7 @@ const initState: AppState = {
   publishModalVisible: false,
   searchCodeBranchModalVisible: false,
   queryCodeBranchLoading: false,
-  codeBranch: [],
+  pageInfo: [],
   extensionConfig: {} as Types.IExtensionConfig,
 };
 
@@ -78,9 +78,9 @@ export function reducer(state: AppState = initState, action: AppAction): AppStat
       return { ...state, publishModalVisible: action.payload };
     case 'UPDATE_SEARCH_CODE_BRANCH_MODAL_VISIBLE':
       return { ...state, searchCodeBranchModalVisible: action.payload };
-    case 'UPDATE_SEARCH_CODE_BRANCH_RESULT':
-      return { ...state, codeBranch: action.payload };
-    case 'UPDATE_SEARCH_CODE_BRANCH_LOADING':
+    case 'UPDATE_SEARCH_PAGE_INFO_RESULT':
+      return { ...state, pageInfo: action.payload };
+    case 'UPDATE_SEARCH_PAGE_INFO_LOADING':
       return { ...state, queryCodeBranchLoading: action.payload };
     default:
       return { ...state };

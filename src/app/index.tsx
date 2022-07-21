@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { legacy_createStore, applyMiddleware } from 'redux';
 
 import Header from './components/header';
 import EnvContainer from './components/env-container';
@@ -19,7 +19,7 @@ if (NODE_ENV !== 'development') {
   middleware.pop();
 }
 
-const store = createStore(reducer, applyMiddleware(...middleware));
+const store = legacy_createStore(reducer, applyMiddleware(...middleware));
 
 const App: React.FC = () => {
   return (

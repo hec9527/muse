@@ -5,6 +5,13 @@ export type INoticeType = 'error' | 'warning' | 'info';
 
 export type IEnvType = 'daily' | 'gray' | 'productionNoTag';
 
+export type IPagesInfo = {
+  name: string;
+  version: string;
+  env: string;
+  updateTime: string;
+};
+
 export type IProjectInfo = {
   appName?: string;
   version?: string;
@@ -72,7 +79,7 @@ export type IExtensionMessage =
     }
   | {
       cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT';
-      data: string[];
+      data: IPagesInfo[];
     }
   | {
       cmd: 'UPDATE_EXTENSION_CONFIG';

@@ -55,7 +55,7 @@ const Header: React.FC = () => {
 
   const handleCheckBranch = () => {
     if (checkData('查询')) return;
-    dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: true });
+    dispatch({ type: 'UPDATE_SEARCH_PAGE_INFO_LOADING', payload: true });
     dispatch({
       type: 'POST_MESSAGE_TO_EXTENSION',
       payload: {
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
         },
       },
     });
-    setTimeout(() => dispatch({ type: 'UPDATE_SEARCH_CODE_BRANCH_LOADING', payload: false }), 60 * 1000);
+    setTimeout(() => dispatch({ type: 'UPDATE_SEARCH_PAGE_INFO_LOADING', payload: false }), 60 * 1000);
   };
 
   const handleClearSaveDate = () => {

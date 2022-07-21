@@ -251,12 +251,12 @@ export default class ViewManager implements vscode.Disposable {
 
   private async queryOnlineCodeBranch(queryInfo: { env: Types.IEnvConfig; pages: string[] }) {
     if (!this.projectConfig) return Promise.resolve([]);
-    const branch = await util.getOnlineCodeBranch(queryInfo, this.projectConfig);
-    console.log('查询结果', branch);
-    this.outputChannel.appendLine(`\n[在线分支查询]\n${JSON.stringify(branch)}`);
+    const data = await util.getOnlineCodeBranch(queryInfo, this.projectConfig);
+    console.log('查询结果', data);
+    this.outputChannel.appendLine(`\n[在线分支查询]\n${JSON.stringify(data)}`);
     this.postInfo({
       cmd: 'UPDATE_QUERY_CODE_BRANCH_RESULT',
-      data: branch,
+      data,
     });
   }
 

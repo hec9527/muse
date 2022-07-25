@@ -25,7 +25,6 @@ export default class ViewManager implements vscode.Disposable {
   private pageInfo: string[] = [];
   // 本地git分支
   private branch: string | undefined;
-  private extensionConfig: Types.IExtensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
   private outputChannel = vscode.window.createOutputChannel('Muse');
 
   constructor(private context: vscode.ExtensionContext) {
@@ -242,10 +241,10 @@ export default class ViewManager implements vscode.Disposable {
   }
 
   private postExtensionConfig() {
-    this.extensionConfig = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+    const data = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
     this.postInfo({
       cmd: 'UPDATE_EXTENSION_CONFIG',
-      data: this.extensionConfig,
+      data,
     });
   }
 
@@ -268,7 +267,7 @@ export default class ViewManager implements vscode.Disposable {
           reject();
         } else {
           this.context.globalState.update('userInfo', info).then(() => {
-            resolve(info);
+            resolve(info as Types.IUserInfo);
           });
         }
       });
@@ -316,7 +315,7 @@ export default class ViewManager implements vscode.Disposable {
       const [cacheData, appName] = this.getCacheData();
       const cacheList = cacheData[appName] || [];
       if (!cacheList.length) {
-        return this.showMessage('没有找到保存的发布数据~', 'warning');
+        return this.showMessage('没有找到保存的发布数据~', 'warn');
       }
       const title = await vscode.window.showQuickPick(
         cacheList.map(c => c.title),
@@ -405,18 +404,35 @@ export default class ViewManager implements vscode.Disposable {
       }
     }
 
-    util.publishCode(data, this.projectConfig!, userInfo).then(
+    util.publishCode(data, this.projectConfig!, userInfo as Types.IUserInfo).then(
       res => {
         this.outputChannel.appendLine(`\n[发布成功] ${res}`);
         const openInBrowser = () => vscode.env.openExternal(vscode.Uri.parse(res));
-        if (this.extensionConfig.autoOpenLog) {
-          openInBrowser();
-        } else {
-          this.showConfirmMessage('发布成功是否立即查看日志？', '查看日志').then(res => {
-            if (res === '查看日志') {
-              openInBrowser();
-            }
-          });
+        const { publishAction } = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+        const fileName = res.split('?')?.[1].substring(2) || '';
+
+        switch (publishAction) {
+          case 'default':
+            this.showConfirmMessage('发布成功是否立即查看日志？', '浏览器中查看', '监听日志(实验中)').then(res => {
+              if (res === '浏览器中查看') {
+                openInBrowser();
+              } else if (res === '监听日志(实验中)') {
+                this.detectPublishLogo(fileName);
+              }
+            });
+            break;
+          case 'detectLogo':
+            this.detectPublishLogo(fileName);
+            break;
+          case 'openInBrowse':
+            openInBrowser();
+            break;
+          case 'none':
+            break;
+          default:
+            // eslint-disable-next-line
+            const NEVER: never = publishAction;
+            console.log(NEVER);
         }
       },
       reason => {
@@ -448,14 +464,52 @@ export default class ViewManager implements vscode.Disposable {
     const types = {
       error: 'showErrorMessage',
       info: 'showInformationMessage',
-      warning: 'showWarningMessage',
+      warn: 'showWarningMessage',
     } as const;
     vscode.window[types[type]](message);
   }
 
+  private detectPublishLogo(fileName: string) {
+    util.detectPublishLogo(this.context, fileName).then(res => {
+      console.log('%c 获取结果', 'color: abf', res);
+      const data: Types.ISystemNoticeInfo = {
+        title: '发布失败',
+        subTitle: '',
+        type: 'error',
+      };
+
+      switch (res.type) {
+        case 'keyword':
+          data.subTitle = `发布失败，关键字匹配：${res.data}`;
+          break;
+        case 'statusError':
+        case 'success':
+          data.subTitle = res.data;
+          res.type === 'success' && (data.title = '发布成功');
+          break;
+        case 'tokenError':
+          data.subTitle = `token校验失败${res.data}`;
+          break;
+        default:
+          const NEVER: never = res.type;
+          console.log(NEVER);
+      }
+
+      this.showMessage({ message: data.subTitle, type: data.type });
+
+      // TODO 系统通知
+      // const { publishResultNoticeType } = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+
+      // if (publishResultNoticeType === 'integration') {
+      //   this.showMessage({ message: data.subTitle, type: data.type });
+      // } else {
+      //   util.showSystemNotice(data);
+      // }
+    });
+  }
+
   private async showConfirmMessage(message: string, ...items: string[]) {
     return new Promise<string | undefined>(resolve => {
-      // 考虑添加系统弹窗，用户可配置使用系统弹窗还是vscode弹窗
       vscode.window.showInformationMessage(message, ...items).then(res => {
         resolve(res);
       });

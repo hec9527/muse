@@ -3,11 +3,14 @@ import * as Types from './index.d';
 import * as path from 'path';
 import * as fs from 'fs';
 import Api from './api';
+import Md5 from '@bairong/lib-util/es/crypto';
+import notifier from 'node-notifier';
+import io from 'socket.io-client';
 
 /**
  * 检查用户名和密码
  */
-export function checkUserInfo(info?: Partial<Types.IUserInfo>): info is Types.IUserInfo {
+export function checkUserInfo(info?: Partial<Types.IUserInfo>) {
   return Boolean(info && info.username && info.password);
 }
 
@@ -182,5 +185,110 @@ export function publishCode(
         reject(`发布失败，请到 ${Api.HOST} 查看发布日志`);
       }
     });
+  });
+}
+
+export function userLogin(userInfo: Types.IUserInfo) {
+  // console.log({ userName: userInfo.username, password: Md5(userInfo.password) });
+  return Api.request<Types.ILoginResponse>({
+    url: Api.URL.login,
+    method: 'post',
+    data: { username: userInfo.username, password: Md5(userInfo.password), platform: 2 },
+  }).then(res => {
+    if (!res.uid) {
+      vscode.window.showErrorMessage(`获取token出错，错误信息： ${res.message}`);
+      return;
+    }
+    return res;
+  });
+}
+
+export function detectPublishLogo(context: vscode.ExtensionContext, fileName: string): Promise<Types.IPublishStatus> {
+  return new Promise<Types.IPublishStatus>(resolve => {
+    // 校验用户信息
+    const userInfo = (context.globalState.get('userInfo') || {}) as Types.IUserInfo;
+    if (!checkUserInfo(userInfo)) {
+      return inputUserInfo().then(res => {
+        if (checkUserInfo(res)) {
+          userInfo.username = res.username || userInfo.username;
+          userInfo.password = res.password || userInfo.password;
+          context.globalState.update('userInfo', res).then(() => {
+            return detectPublishLogo(context, fileName);
+          });
+        }
+      });
+    }
+
+    vscode.window.withProgress(
+      {
+        cancellable: false,
+        location: vscode.ProgressLocation.Window,
+        title: 'publish logo detecting...',
+      },
+      async () => {
+        return new Promise<Types.IPublishStatus>(_resolve => {
+          userLogin(userInfo).then(res => {
+            if (!res?.token || !res.uid) {
+              _resolve({ type: 'tokenError', data: `uid=${res?.uid}, token=${res?.token}` });
+            }
+
+            const log = (...args: any[]) => console.log('%c [websocket log]', 'color:green', ...args);
+            const socket = io(Api.URL.webSocketUrl, {
+              query: res,
+              transports: ['websocket'],
+            });
+
+            socket.on('connect', () => {
+              log('连接成功...');
+              socket.emit('accessUser', res);
+            });
+            socket.on('accessSuccess', () => {
+              log('用户身份认证成功...');
+              socket.emit('startCheckLog', { fileName });
+            });
+            socket.on('accessFailed', () => {
+              const str = '用户身份认证失败...';
+              log(str);
+              vscode.window.showErrorMessage(str);
+            });
+            socket.on('updateLog', (data: Types.IPublishLogoInfo) => {
+              log('更新日志', data);
+              if (!data.isFinishDeploy) {
+                setTimeout(() => socket.open(), 5000);
+              } else {
+                const { logKeyWord } = vscode.workspace.getConfiguration('muse') as Types.IExtensionConfig;
+                let keyWord = '';
+                logKeyWord.some(k => {
+                  if (data.info.indexOf(k) !== -1) {
+                    keyWord = k;
+                    return true;
+                  }
+                });
+                if (keyWord) {
+                  _resolve({ type: 'keyword', data: keyWord });
+                } else {
+                  _resolve(
+                    data.success ? { type: 'success', data: '发布成功' } : { type: 'statusError', data: '发布失败' }
+                  );
+                }
+              }
+            });
+            socket.on('loadFailed', (data: { msg: string }) => {
+              log('加载失败', data.msg);
+              vscode.window.showErrorMessage(data.msg);
+            });
+            socket.on('disconnect', () => log('断开链接'));
+            socket.on('error', () => log('出错了'));
+            socket.open();
+          });
+        }).then(resolve);
+      }
+    );
+  });
+}
+
+export function showSystemNotice(data: Types.ISystemNoticeInfo) {
+  notifier.notify({
+    ...data,
   });
 }

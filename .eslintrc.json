@@ -18,7 +18,9 @@
     // "indent": ["error", 2, { "SwitchCase": 1 }],
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "linebreak-style": ["error", "unix"],
+    "no-case-declarations": "off",
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "react/prop-types": ["off"]
